@@ -16,7 +16,8 @@ const HeroSection = () => {
                 <p>From engineers to designers and product thinkers — every profile is handpicked, reviewed, and backed by the community.</p>
             </div>
             <div className='mt-[52px]'>
-                <Button className='bg-primary w-[178px] h-[42px]'>join the Talent Board</Button>
+                
+                <Button className='bg-primary w-[178px] h-[42px]'>Join the Talent Board</Button>
                 <Button variant={'outline'} className='w-[138px] h-[42px] ml-2'>Find Top Talent</Button>
             </div>
         </section>
