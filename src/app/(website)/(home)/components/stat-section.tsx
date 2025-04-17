@@ -49,7 +49,7 @@ const cardVariants = {
   },
 }
 
-export const StatSection = () => {
+const StatSection = () => {
   return (
     <section className="mt-[64px] max-w-7xl mx-auto">
       <motion.div
@@ -85,7 +85,7 @@ type StatCardProps = {
 
 const MotionCard = motion(Card)
 
-export const StatCard: React.FC<StatCardProps> = ({
+const StatCard: React.FC<StatCardProps> = ({
   img,
   icon,
   stat,
@@ -113,3 +113,5 @@ export const StatCard: React.FC<StatCardProps> = ({
     </MotionCard>
   )
 }
+
+export default StatSection
