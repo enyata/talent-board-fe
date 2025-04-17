@@ -1,7 +1,9 @@
 import FeaturedTalentsSection from "./components/featured-talents-section";
 import HeroSection from "./components/hero-section";
+import Walkthrough from "./components/how-it-works-section";
 import SkillsSection from "./components/skills-section";
 import StatSection from "./components/stat-section";
+import WhyEnyata from "./components/why-enyata-section";
 
 export default function Home() {
   return (
@@ -10,6 +12,8 @@ export default function Home() {
       <StatSection />
       <SkillsSection />
       <FeaturedTalentsSection />
+      <Walkthrough />
+      <WhyEnyata />
     </div>
   );
 }

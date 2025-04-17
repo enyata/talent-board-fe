@@ -53,7 +53,7 @@ const StatSection = () => {
   return (
     <section className="mt-[64px] max-w-7xl mx-auto">
       <motion.div
-        className="flex justify-between"
+        className="flex flex-col md:flex-row justify-between"
         variants={containerVariants}
         initial="hidden"
         animate="show"
@@ -96,7 +96,7 @@ const StatCard: React.FC<StatCardProps> = ({
   return (
     <MotionCard
       variants={cardVariants}
-      className={`w-[394px] h-[480px] p-[20px] ${reverse ? 'pt-[36px]' : 'pb-[36px]'} ${bg} flex ${reverse ? 'flex-col-reverse' : 'flex-col'} justify-between`}
+      className={`max-w-[394px] w-full h-[480px] p-[20px] ${reverse ? 'pt-[36px]' : 'pb-[36px]'} ${bg} flex ${reverse ? 'flex-col-reverse' : 'flex-col'} justify-between`}
     >
       <Image src={img} alt="statImage" width={394} height={480} />
       <div className="flex items-center justify-between">

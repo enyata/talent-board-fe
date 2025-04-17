@@ -40,7 +40,7 @@ const SkillsRow = ({
                     <Button
                         key={`${skill}-${index}`}
                         variant="outline"
-                        className="h-[38px] whitespace-nowrap text-sm md:text-base px-3 md:px-4"
+                        className="h-[38px] whitespace-nowrap text-sm md:text-base px-3 md:px-4 text-[#5F5F5F]"
                     >
                         {skill}
                     </Button>
