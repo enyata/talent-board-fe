@@ -1,10 +1,11 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="h-screen relative">
-      <div className="absolute top-15 left-15">Talentboard</div>
+      <Link href={'/'} className="absolute top-15 left-15">Talentboard</Link>
 
       <div className="h-screen flex items-center justify-center">
         <div className="w-full md:w-1/2">{children}</div>
