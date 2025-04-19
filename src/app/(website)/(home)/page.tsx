@@ -1,3 +1,4 @@
+import Footer from "@/components/footer";
 import FeaturedTalentsSection from "./components/featured-talents-section";
 import HeroSection from "./components/hero-section";
 import Walkthrough from "./components/how-it-works-section";
@@ -14,6 +15,7 @@ export default function Home() {
       <FeaturedTalentsSection />
       <Walkthrough />
       <WhyEnyata />
+      <Footer />
     </div>
   );
 }
