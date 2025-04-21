@@ -152,4 +152,8 @@ body {
   animation-play-state: paused !important;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 

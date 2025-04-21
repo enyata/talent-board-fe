@@ -53,9 +53,15 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <span className="font-semibold text-[24px] cursor-pointer">Talentboard</span>
           <ul className="flex gap-[28px] font-medium">
-            <li>About</li>
-            <li>Browse Talents</li>
-            <li>How it works</li>
+            <Link href='/#about'>
+              <li>About</li>
+            </Link>
+            <Link href='/#talents'>
+              <li>Browse Talents</li>
+            </Link>
+            <Link href='/#how-it-works'>
+              <li>How it works</li>
+            </Link>
           </ul>
           <div>
             <Link href="/signup">

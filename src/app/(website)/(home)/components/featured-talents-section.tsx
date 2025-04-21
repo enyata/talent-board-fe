@@ -7,7 +7,7 @@ import React from 'react'
 
 const FeaturedTalentsSection = () => {
     return (
-        <section className='mt-[80px] bg-[#F2F2F2]'>
+        <section id='talents' className='mt-[80px] bg-[#F2F2F2]'>
             <div className='py-[80px] max-w-7xl w-full mx-auto'>
                 <div className='flex justify-between'>
                     <div className='flex items-center h-fit '>

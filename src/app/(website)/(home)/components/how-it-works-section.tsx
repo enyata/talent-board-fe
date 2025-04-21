@@ -31,7 +31,7 @@ const cardDetails = [
 const Walkthrough = () => {
     return (
 
-        <section className='py-[80px] max-w-7xl w-full mx-auto'>
+        <section id='how-it-works' className='py-[80px] max-w-7xl w-full mx-auto'>
             <div className='flex justify-between'>
                 <div className='flex items-center h-fit '>
                     <span className='text-[#A18BDD] text-4xl'>•</span>

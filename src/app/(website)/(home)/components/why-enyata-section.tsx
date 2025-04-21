@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
 import React from 'react'
 
 const WhyEnyata = () => {
@@ -74,8 +75,12 @@ const WhyEnyata = () => {
                         </div>
                     </div>
                     <div className='mt-[52px]'>
-                        <Button className='bg-primary w-[178px] h-[42px]'>Join the Talent Board</Button>
-                        <Button variant={'outline'} className='w-[138px] h-[42px] ml-2'>Find Top Talent</Button>
+                        <Link href={'/signup'}>
+                            <Button className='bg-primary w-[178px] h-[42px] cursor-pointer'>Join the Talent Board</Button>
+                        </Link>
+                        <Link href={'/#talents'}>
+                            <Button variant={'outline'} className='w-[138px] h-[42px] ml-2 cursor-pointer'>Find Top Talent</Button>
+                        </Link>
                     </div>
                 </div>
             </div>
