@@ -1,14 +1,21 @@
+import Footer from "@/components/footer";
+import FeaturedTalentsSection from "./components/featured-talents-section";
+import HeroSection from "./components/hero-section";
+import Walkthrough from "./components/how-it-works-section";
+import SkillsSection from "./components/skills-section";
+import StatSection from "./components/stat-section";
+import WhyEnyata from "./components/why-enyata-section";
 
 export default function Home() {
   return (
     <div>
-      <div className="max-w-7xl p-5 mx-auto">
-        <h1 className="text-[29px] text-primary font-bold text-center">
-          ENYATA COMMUNITY TALENT DASHBOARD LANDING PAGE
-        </h1>
-        <p>/login for login page</p>
-        <p>/signup for signup page</p>
-      </div>
+      <HeroSection />
+      <StatSection />
+      <SkillsSection />
+      <FeaturedTalentsSection />
+      <Walkthrough />
+      <WhyEnyata />
+      <Footer />
     </div>
   );
 }
