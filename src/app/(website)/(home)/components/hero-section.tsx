@@ -1,10 +1,16 @@
+'use client';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import React from 'react'
 
 const HeroSection = () => {
     return (
-        <section id='about' className='flex flex-col justify-center items-center w-full max-w-[1198px] mx-auto'>
+        <motion.section
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2 }}
+            className='flex flex-col justify-center items-center w-full max-w-[1198px] mx-auto'>
             <div className='text-[49px] leading-[120%] font-semibold text-center'>
                 <p >
                     Discover Africa’s top tech talent.
@@ -24,7 +30,7 @@ const HeroSection = () => {
                     <Button variant={'outline'} className='w-[138px] h-[42px] ml-2 cursor-pointer'>Find Top Talent</Button>
                 </Link>
             </div>
-        </section>
+        </motion.section>
     )
 }
 

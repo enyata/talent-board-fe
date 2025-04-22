@@ -5,7 +5,7 @@ import React from 'react'
 
 const WhyEnyata = () => {
     return (
-        <section className='my-[80px] max-w-[1198px] w-full mx-auto'>
+        <section id='about' className='py-[80px] max-w-[1198px] w-full mx-auto'>
             <div className='flex justify-between'>
                 <div className='flex items-center h-fit '>
                     <span className='text-[#A18BDD] text-4xl'>•</span>
