@@ -4,7 +4,7 @@ import React from 'react'
 
 const HeroSection = () => {
     return (
-        <section id='about' className='flex flex-col justify-center items-center w-full max-w-7xl mx-auto'>
+        <section id='about' className='flex flex-col justify-center items-center w-full max-w-[1198px] mx-auto'>
             <div className='text-[49px] leading-[120%] font-semibold text-center'>
                 <p >
                     Discover Africa’s top tech talent.

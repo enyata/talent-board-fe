@@ -50,7 +50,7 @@ const Navbar = () => {
         }}
         className="fixed left-0 right-0 z-50 px-6 py-4 text-foreground transition-all will-change-transform"
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-[1198px] mx-auto flex items-center justify-between">
           <span className="font-semibold text-[24px] cursor-pointer">Talentboard</span>
           <ul className="flex gap-[28px] font-medium">
             <Link href='/#about'>
