@@ -83,7 +83,7 @@ type StatCardProps = {
   reverse: boolean
 }
 
-const MotionCard = motion(Card)
+const MotionCard = motion.create(Card)
 
 const StatCard: React.FC<StatCardProps> = ({
   img,
