@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useFormContext } from 'react-hook-form'
 
-const FirstForm = () => {
+const RoleForm = () => {
     const { watch, setValue } = useFormContext();
     const router = useRouter();
     return (
@@ -61,4 +61,4 @@ const ChooseRole = ({ image, title, desc }: { image: string; title: string; desc
     )
 }
 
-export default FirstForm
+export default RoleForm

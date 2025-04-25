@@ -1,9 +1,9 @@
 'use client';
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
-import FirstForm from './first-form';
-import SecoondForm from './second-form';
-import ThirdForm from './third-form';
+import PersonalInfoForm from './second-form';
+import ExperienceForm from './third-form';
+import RoleForm from './first-form';
 
 const OnboardingFlow = () => {
     const { watch } = useFormContext();
@@ -11,13 +11,13 @@ const OnboardingFlow = () => {
     let currentFormComponent;
     switch (currentForm) {
         case 1:
-            currentFormComponent = <FirstForm />;
+            currentFormComponent = <RoleForm />;
             break;
         case 2:
-            currentFormComponent = <SecoondForm />;
+            currentFormComponent = <PersonalInfoForm/>;
             break;
         case 3:
-            currentFormComponent = <ThirdForm />;
+            currentFormComponent = <ExperienceForm/>;
             break;
     }
     return (
