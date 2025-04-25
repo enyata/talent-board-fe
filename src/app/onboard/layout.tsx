@@ -9,8 +9,8 @@ import { useForm } from 'react-hook-form';
 
 const steps = [
     { step: 1, requiredFields: ["data.role"] },
-    { step: 2, requiredFields: ["data.age", "data.country"] },
-    { step: 3, requiredFields: ["data.agreement"] },
+    { step: 2, requiredFields: ["data.first_name", "data.last_name", "data.location", "data.linkedin", "data.portfolio"] },
+    { step: 3, requiredFields: ["data.qualification", "data.skills", "data.experience_level"] },
 ];
 
 interface FormDataProps {
@@ -24,7 +24,7 @@ interface FormDataProps {
         location?: string;
         portfolio?: string;
         linkedin?: string;
-        qualifications?: string;
+        qualification?: string;
         skills?: string[];
         experience_level?: string;
     };
@@ -43,8 +43,8 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
                 location: "",
                 portfolio: "",
                 linkedin: "",
-                qualifications: "",
-                skills: [],
+                qualification: "",
+                skills: undefined,
                 experience_level: "",
             },
         },
