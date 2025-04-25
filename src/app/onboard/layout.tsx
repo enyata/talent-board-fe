@@ -69,14 +69,14 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <div className='md:h-screen w-full flex items-center justify-center relative'>
-            <Link href='/' className="font-semibold text-[24px] cursor-pointer p-[32px] absolute top-0 left-0">Talentboard</Link>
-            <FormContext form={form}>
-                <div className={`flex flex-col items-center justify-center gap-[36px] ${currentStep !== 2 ? 'md:max-w-[428px]' : 'md:max-w-[534px]'} px-[24px] py-[32px] rounded-[12px] shadow-sm w-full`}>
+        <div className='relative flex justify-center xl:items-center w-full md:py-[140px]'>
+            <nav className="fixed w-full top-0 z-50 p-[32px] backdrop-blur-sm bg-white/30 border-b border-white/20">
+                <div className=' max-w-[1198px] mx-auto flex items-center justify-between'>
+                    <Link href='/' className="font-semibold text-[24px] cursor-pointer ">Talentboard</Link>
                     {
                         watch("config.currentForm") !== 1 && (
 
-                            <div className='hidden md:flex items-center absolute top-0 right-0 p-[32px] gap-4 text-[14px] font-medium'>
+                            <div className='hidden md:flex items-center  gap-4 text-[14px] font-medium'>
                                 <div className={`flex items-center gap-2 ${watch("config.currentForm") === 2 ? 'text-[#7557D3]' : 'text-[#CACACA]'}`}>
                                     <span className='text-[22px]'>•</span>
                                     <span>Personal Details</span>
@@ -88,6 +88,10 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
                             </div>
                         )
                     }
+                </div>
+            </nav>
+            <FormContext form={form}>
+                <div className={`flex flex-col items-center justify-center gap-[36px] ${currentStep !== 2 ? 'md:max-w-[428px]' : 'md:max-w-[534px]'} px-[24px] py-[32px] rounded-[12px] shadow-sm w-full`}>
 
                     <div className="max-w-[340px] w-full flex">
                         {steps.map((stepObj, idx) => {

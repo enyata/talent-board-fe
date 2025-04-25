@@ -1,7 +1,7 @@
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { ButtonWithLoader } from '@/components/ui/button-with-loader'
 import MultipleSelector from '@/components/ui/multi-selector'
@@ -14,7 +14,7 @@ const OPTIONS = [
 ];
 
 const ExperienceForm = () => {
-    const { register, watch, setValue } = useFormContext();
+    const { register, watch, setValue, control } = useFormContext();
     const handleSubmit = () => {
         console.log('your form data here', watch())
     }
@@ -35,15 +35,26 @@ const ExperienceForm = () => {
                 </div>
                 <div>
                     <Label htmlFor='skills' className='font-normal'>Skills</Label>
-                    <MultipleSelector
-                        className='mt-[8px]'
-                        defaultOptions={OPTIONS}
-                        placeholder="e.g product designer, ux designer"
-                        emptyIndicator={
-                            <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                                no results found.
-                            </p>
-                        }
+                    <Controller
+                        name="data.skills"
+                        control={control}
+                        render={({ field }) => (
+                            <MultipleSelector
+                                className="mt-[8px]"
+                                defaultOptions={OPTIONS}
+                                placeholder="e.g product designer, ux designer"
+                                emptyIndicator={
+                                    <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                                        no results found.
+                                    </p>
+                                }
+                                value={OPTIONS.filter(opt => field.value?.includes(opt.value))}
+                                onChange={(selected) => {
+                                    const valuesOnly = selected.map(opt => opt.value)
+                                    field.onChange(valuesOnly)
+                                }}
+                            />
+                        )}
                     />
                 </div>
                 <div>
