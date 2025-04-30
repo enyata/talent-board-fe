@@ -19,7 +19,7 @@ const DashboardOverview = () => {
                             <span className='text-[14px] font-medium text-[#475467]'>Evening is here! Ready to wrap up your day. 🌇</span>
                         </div>
                     </div>
-                    <Button className={`h-[34px] bg-[#F9F2E5] text-[#C99B00] border-[1px] border-[#C99B00]`}>
+                    <Button variant={'outline'} className={`h-[34px] bg-[#F9F2E5] text-[#C99B00] border-[1px] border-[#C99B00]`}>
                         <span><ClockFading /></span>
                         <span className=''>Pending Approval</span>
                     </Button>

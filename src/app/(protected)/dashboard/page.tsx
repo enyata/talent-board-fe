@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button'
 import { PencilLine } from 'lucide-react'
 import React from 'react'
-import DashboardOverview from './components/overview'
+import TalentDashboard from './components/talentDashboard'
 
 const DashboardPage = () => {
     return (
@@ -13,7 +13,7 @@ const DashboardPage = () => {
                     <span>Edit Profile</span>
                 </Button>
             </div>
-            <DashboardOverview />
+            <TalentDashboard />
         </div>
     )
 }
