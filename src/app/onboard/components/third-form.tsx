@@ -36,11 +36,14 @@ const ExperienceForm = () => {
                 <div>
                     <Label htmlFor='skills' className='font-normal'>Skills</Label>
                     <Controller
+                
                         name="data.skills"
                         control={control}
                         render={({ field }) => (
                             <MultipleSelector
                                 className="mt-[8px]"
+                                hidePlaceholderWhenSelected={true}
+                                hideClearAllButton={true}
                                 defaultOptions={OPTIONS}
                                 placeholder="e.g product designer, ux designer"
                                 emptyIndicator={
