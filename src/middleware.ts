@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
     const isAuth = !!token;
     const { pathname } = request.nextUrl;
 
-    const protectedPaths = ["/dashboard", "/profile", "/talents", "/settings", "/onboard"]; //add "/onboard"
+    const protectedPaths = ["/dashboard", "/profile", "/talents", "/settings", "/onboard"];
     const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
 
     if (isProtected && !isAuth) {
@@ -18,5 +18,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/onboard", "/dashboard/:path*", "/settings/:path*", "/profile/:path*", "/talents/:path*",] // add "/onboard"
+    matcher: ["/onboard", "/settings/:path*", "/profile/:path*", "/talents/:path*"] 
 };
