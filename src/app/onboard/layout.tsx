@@ -6,6 +6,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { onboardFormSchema, OnboardFormSchema } from '@/types/form';
 
 const steps = [
     { step: 1, requiredFields: ["data.role"] },
@@ -13,25 +15,27 @@ const steps = [
     { step: 3, requiredFields: ["data.qualification", "data.skills", "data.experience_level"] },
 ];
 
-interface FormDataProps {
-    config: {
-        currentForm: number;
-    };
-    data: {
-        role?: string;
-        first_name?: string;
-        last_name?: string;
-        location?: string;
-        portfolio?: string;
-        linkedin?: string;
-        qualification?: string;
-        skills?: string[];
-        experience_level?: string;
-    };
-}
+// interface FormDataProps {
+//     config: {
+//         currentForm: number;
+//     };
+//     data: {
+//         role?: string;
+//         first_name?: string;
+//         last_name?: string;
+//         location?: string;
+//         portfolio?: string;
+//         linkedin?: string;
+//         qualification?: string;
+//         resume?: File;
+//         skills?: string[];
+//         experience_level?: string;
+//     };
+// }
 
 const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
-    const form = useForm<FormDataProps>({
+    const form = useForm<OnboardFormSchema>({
+        resolver: zodResolver(onboardFormSchema),
         defaultValues: {
             config: {
                 currentForm: 1,
@@ -42,10 +46,12 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
                 last_name: "",
                 location: "",
                 portfolio: "",
+                work_email: "",
                 linkedin: "",
-                qualification: "",
-                skills: undefined,
+                company_industry: "",
                 experience_level: "",
+                skills: [],
+                resume: undefined,
             },
         },
     });
@@ -83,7 +89,7 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
                                 </div>
                                 <div className={`flex items-center gap-2 ${watch("config.currentForm") === 3 ? 'text-[#7557D3]' : 'text-[#CACACA]'}`}>
                                     <span className='text-[22px]'>•</span>
-                                    <span>Experience</span>
+                                    {watch("data.role") === 'recruiter' ? <span>Other information</span> : <span>Experience</span>}
                                 </div>
                             </div>
                         )

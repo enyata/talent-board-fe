@@ -5,6 +5,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { ButtonWithLoader } from '@/components/ui/button-with-loader'
 import MultipleSelector from '@/components/ui/multi-selector'
+import { FileUploadFrame } from './file-upload-frame'
 
 const OPTIONS = [
     { label: 'nextjs', value: 'Nextjs' },
@@ -15,6 +16,7 @@ const OPTIONS = [
 
 const ExperienceForm = () => {
     const { register, watch, setValue, control } = useFormContext();
+    const role = watch("data.role");
     const handleSubmit = () => {
         console.log('your form data here', watch())
     }
@@ -25,18 +27,34 @@ const ExperienceForm = () => {
             </p>
             <p className='text-center mt-[12px] text-[14px]'>Be a part of Enyata talentboard today!</p>
             <div className='flex flex-col gap-[36px] mt-[36px] text-[14px] font-normal'>
+                {role === 'talent' && (
+                    <div>
+                        <Label htmlFor='qualification' className='font-normal'>Upload resume</Label>
+                        <div className='mt-2'>
+                            <FileUploadFrame />
+                        </div>
+                    </div>
+                )}
+
+                {
+                    role === 'recruiter' && (
+                        <div>
+                            <Label htmlFor='qualification' className='font-normal'>Company Industry</Label>
+                            <Input
+                                id='qualification'
+                                type='text'
+                                className='mt-2'
+                                placeholder='enter company industry'
+                                {...register('data.company_industry',)}
+                            />
+                        </div>
+                    )
+                }
+
                 <div>
-                    <Label htmlFor='qualification' className='font-normal'>Qualification</Label>
-                    <Input
-                        id='qualification' className='h-[42px] mt-2'
-                        placeholder='Enter your qualification'
-                        {...register('data.qualification')}
-                    />
-                </div>
-                <div>
-                    <Label htmlFor='skills' className='font-normal'>Skills</Label>
+                    <Label htmlFor='skills' className='font-normal'>{role === 'recruiter' ? 'What roles are you looking to hire for?' : 'Skills'}</Label>
                     <Controller
-                
+
                         name="data.skills"
                         control={control}
                         render={({ field }) => (
@@ -60,14 +78,17 @@ const ExperienceForm = () => {
                         )}
                     />
                 </div>
-                <div>
-                    <Label htmlFor='experience-level' className='font-normal'>Experience Level</Label>
-                    <div id='experience-level' className='flex gap-[10px] mt-[8px] w-full justify-between'>
-                        <ChooseExperienceLevel level='entry' />
-                        <ChooseExperienceLevel level='intermediate' />
-                        <ChooseExperienceLevel level='expert' />
+
+                {role === 'talent' && (
+                    <div>
+                        <Label htmlFor='experience-level' className='font-normal'>Experience Level</Label>
+                        <div id='experience-level' className='flex gap-[10px] mt-[8px] w-full justify-between'>
+                            <ChooseExperienceLevel level='entry' />
+                            <ChooseExperienceLevel level='intermediate' />
+                            <ChooseExperienceLevel level='expert' />
+                        </div>
                     </div>
-                </div>
+                )}
                 <div className='flex justify-between gap-3 h-[42px] w-full'>
                     <Button
                         onClick={() => setValue('config.currentForm', 2)}

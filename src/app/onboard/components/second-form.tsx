@@ -6,7 +6,8 @@ import { Label } from '@/components/ui/label'
 import { useFormContext } from 'react-hook-form'
 
 const PersonalInfoForm = () => {
-    const { register, setValue, formState: { isValid, isDirty }, } = useFormContext();
+    const { register, setValue, watch, formState: { isValid, isDirty }, } = useFormContext();
+    const role = watch("data.role");
     return (
         <form>
             <p style={{ wordSpacing: '3px' }} className='text-[30px] font-bold leading-[38px] text-center'>
@@ -43,15 +44,28 @@ const PersonalInfoForm = () => {
                         {...register('data.location')}
                     />
                 </div>
-                <div className='w-full'>
-                    <Label htmlFor='portfolio' className='font-normal'>Portfolion Link</Label>
-                    <Input
-                        id='portfolio'
-                        className='h-[42px] mt-2'
-                        placeholder='enter your portfolio link here'
-                        {...register('data.portfolio')}
-                    />
-                </div>
+                {role === 'recruiter' && (
+                    <div className='w-full'>
+                        <Label htmlFor='work-email' className='font-normal'>Work Email</Label>
+                        <Input
+                            id='work-email'
+                            className='h-[42px] mt-2'
+                            placeholder='example@workdomain.com'
+                            {...register('data.work_email')}
+                        />
+                    </div>
+                )}
+                {role === 'talent' && (
+                    <div className='w-full'>
+                        <Label htmlFor='portfolio' className='font-normal'>Portfolio Link</Label>
+                        <Input
+                            id='portfolio'
+                            className='h-[42px] mt-2'
+                            placeholder='enter your portfolio link here'
+                            {...register('data.portfolio')}
+                        />
+                    </div>
+                )}
                 <div className='w-full'>
                     <Label htmlFor='linkedin' className='font-normal'>Linkedin Profile</Label>
                     <Input
@@ -63,10 +77,9 @@ const PersonalInfoForm = () => {
                 </div>
                 <div className='flex justify-center gap-3 h-[42px] w-full'>
                     <Button
-                    disabled={isDirty}
-                        onClick={() => setValue('config.currentForm', 3)}
-                        variant={'outline'} className='h-full flex-1 cursor-pointer'>I
-                        ’ll do this later
+                        onClick={() => setValue('config.currentForm', 1)}
+                        variant={'outline'} className='h-full flex-1 cursor-pointer'>
+                        Go Back
                     </Button>
                     <Button
                         disabled={!isDirty || !isValid}
