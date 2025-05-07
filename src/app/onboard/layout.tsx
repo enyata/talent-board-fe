@@ -36,8 +36,8 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
     const role = form.watch('data.role');
 
     return (
-        <div className="relative flex justify-center xl:items-center w-full md:py-[140px]">
-            <nav className="fixed w-full top-0 z-50 p-[32px] backdrop-blur-sm bg-white/30 border-b border-white/20">
+        <div className="relative flex justify-center xl:items-center w-full py-[100px] md:py-[140px]">
+            <nav className="fixed w-full top-0 z-50 md:p-[32px] p-[16px] backdrop-blur-sm bg-white/30 border-b border-white/20">
                 <div className="max-w-[1198px] mx-auto flex items-center justify-between">
                     <Link href="/" className="font-semibold text-[24px] cursor-pointer">
                         Talentboard
@@ -60,7 +60,7 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
 
             <FormContext form={form}>
                 <div
-                    className={`flex flex-col items-center justify-center gap-[36px] ${currentStep !== 2 ? 'md:max-w-[428px]' : 'md:max-w-[534px]'
+                    className={`flex flex-col mx-[12px] items-center justify-center gap-[36px] ${currentStep !== 2 ? 'md:max-w-[428px]' : 'md:max-w-[534px]'
                         } px-[24px] py-[32px] rounded-[12px] shadow-sm w-full`}
                 >
                     <Stepper currentStep={currentStep} />

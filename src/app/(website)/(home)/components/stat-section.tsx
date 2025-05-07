@@ -51,9 +51,9 @@ const cardVariants = {
 
 const StatSection = () => {
   return (
-    <section className="mt-[64px] max-w-[1198px] mx-auto">
+    <section className="mt-[64px] max-w-[1198px] md:mx-auto md:px-0 px-4 ">
       <motion.div
-        className="flex flex-col md:flex-row gap-[8px] justify-between"
+        className="flex flex-col md:flex-row gap-[8px] justify-between items-center"
         variants={containerVariants}
         initial="hidden"
         animate="show"

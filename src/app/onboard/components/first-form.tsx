@@ -32,10 +32,10 @@ const RoleForm = () => {
 const ChooseRole = ({ image, title, desc }: { image: string; title: string; desc: string }) => {
     const { watch, setValue, reset } = useFormContext();
     const role = watch("data.role");
-    const handleRoleChange = (role: string) => {
+    const handleRoleChange = (newRole: string) => {
         // reset();
-        setValue('data.role', role);
-    }
+        setValue('data.role', newRole);
+    };
     return (
         <div
             className={`relative cursor-pointer max-w-[178px] w-full rounded-[6px] p-[8px] shadow-sm ${role === title && 'border-[1px] border-[#7B1FA2]'}`}

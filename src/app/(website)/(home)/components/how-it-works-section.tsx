@@ -31,14 +31,14 @@ const cardDetails = [
 const Walkthrough = () => {
     return (
 
-        <section id='how-it-works' className='py-[80px] max-w-[1198px] w-full mx-auto'>
-            <div className='flex justify-between'>
+        <section id='how-it-works' className='py-[80px] max-w-[1198px] w-full md:mx-auto px-4 md:px-0'>
+            <div className='flex flex-col md:flex-row justify-between'>
                 <div className='flex items-center h-fit '>
                     <span className='text-[#A18BDD] text-4xl'>•</span>
                     <p className='text-[13px] font-semibold ml-2'>How It Works</p>
                 </div>
                 <div className='max-w-[901px] w-full font-semibold'>
-                    <div className='text-[40px]'>
+                    <div className='md:text-[40px] text-3xl'>
                         <p className='leading-[120%]'>Your journey to exceptional talent or your next big opportunity starts here.</p>
 
                     </div>
