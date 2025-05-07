@@ -17,7 +17,8 @@ import * as React from "react";;
 
 export function FileUploadFrame() {
     const { setError, control } = useFormContext();
-    const onUpload = React.useCallback(
+
+    const createOnUpload = (onChange: (value: File[]) => void) =>
         async (
             files: File[],
             {
@@ -31,46 +32,35 @@ export function FileUploadFrame() {
             },
         ) => {
             try {
-                // Process each file individually
-                const uploadPromises = files.map(async (file) => {
-                    try {
-                        // Simulate file upload with progress
-                        const totalChunks = 10;
-                        let uploadedChunks = 0;
+                const latestFile = files[files.length - 1]; // get last uploaded file
 
-                        // Simulate chunk upload with delays
-                        for (let i = 0; i < totalChunks; i++) {
-                            // Simulate network delay (100-300ms per chunk)
-                            await new Promise((resolve) =>
-                                setTimeout(resolve, Math.random() * 200 + 100),
-                            );
+                const totalChunks = 10;
+                let uploadedChunks = 0;
 
-                            // Update progress for this specific file
-                            uploadedChunks++;
-                            const progress = (uploadedChunks / totalChunks) * 100;
-                            onProgress(file, progress);
-                        }
+                for (let i = 0; i < totalChunks; i++) {
+                    await new Promise((resolve) =>
+                        setTimeout(resolve, Math.random() * 200 + 100),
+                    );
 
-                        // Simulate server processing delay
-                        await new Promise((resolve) => setTimeout(resolve, 500));
-                        onSuccess(file);
-                    } catch (error) {
-                        onError(
-                            file,
-                            error instanceof Error ? error : new Error("Upload failed"),
-                        );
-                    }
-                });
+                    uploadedChunks++;
+                    const progress = (uploadedChunks / totalChunks) * 100;
+                    onProgress(latestFile, progress);
+                }
 
-                // Wait for all uploads to complete
-                await Promise.all(uploadPromises);
+                await new Promise((resolve) => setTimeout(resolve, 500));
+
+                // Replace any existing file with only the new one
+                onChange([latestFile]);
+
+                onSuccess(latestFile);
             } catch (error) {
-                // This handles any error that might occur outside the individual upload processes
-                console.error("Unexpected error during upload:", error);
+                onError(
+                    files[0],
+                    error instanceof Error ? error : new Error("Upload failed"),
+                );
             }
-        },
-        [],
-    );
+        };
+
 
     return (
         <div>
@@ -79,11 +69,11 @@ export function FileUploadFrame() {
                 control={control}
                 render={({ field }) => (
                     <FileUpload
-                        onUpload={onUpload}
+                        onUpload={createOnUpload(field.onChange)}
                         value={field.value}
                         onValueChange={field.onChange}
-                        // accept="image/*"
-                        maxFiles={1}
+                        accept="application/pdf"
+                        maxFiles={2}
                         maxSize={5 * 1024 * 1024}
                         onFileReject={(_, message) => {
                             setError("data.resume", {
@@ -91,18 +81,37 @@ export function FileUploadFrame() {
                             });
                         }}
                     >
-                        <FileUploadDropzone>
-                            <div className="flex flex-col items-center justify-center gap-2 w-full bg-gradient-to-b from-[#A1A2A22E] to-transparent h-[160px]">
-                                <div className="flex items-center justify-center">
-                                    <FileUp className="size-6 text-[#2D2D2D]" />
-                                </div>
-                                <p className="font-medium text-sm text-[#2D2D2D]">Click to upload or drag & drop here</p>
-                                <p className="text-[#71717A] text-xs">
-                                    Max 2mb file size (.pdf)
-                                </p>
+                        <FileUploadDropzone className={`border-[1px] ${field.value?.length ? "border-primary " : ""}`}>
+                            <div
+                                className={`flex flex-col items-center justify-center gap-2 w-full h-[160px] rounded-md text-[#2D2D2D]
+                                        ${field.value?.length
+                                        ? "bg-gradient-to-b from-primary/20 to-transparent border-primary"
+                                        : "bg-gradient-to-b from-[#A1A2A22E] to-transparent border-muted"}`}
+                            >
+                                {field.value?.length > 0 ? (
+                                    <p className="text-sm font-medium truncate max-w-[80%]">
+                                        {field.value[0]?.name}{" "}
+                                        <span className="text-xs text-muted-foreground">
+                                            (
+                                            {field.value[0].size < 1024 * 1024
+                                                ? `${(field.value[0].size / 1024).toFixed(1)} KB`
+                                                : `${(field.value[0].size / (1024 * 1024)).toFixed(2)} MB`}
+                                            )
+                                        </span>
+                                    </p>
+                                ) : (
+                                    <>
+                                        <div className="flex items-center justify-center">
+                                            <FileUp className="size-6 text-[#2D2D2D]" />
+                                        </div>
+                                        <p className="font-medium text-sm">Click to upload or drag & drop here</p>
+                                        <p className="text-[#71717A] text-xs">Max 2mb file size (.pdf)</p>
+                                    </>
+                                )}
                             </div>
                         </FileUploadDropzone>
-                        <FileUploadList>
+
+                        <FileUploadList className="hidden">
                             {field?.value?.map((file: File, index: number) => (
                                 <FileUploadItem key={index} value={file}>
                                     <FileUploadItemPreview>
@@ -120,6 +129,7 @@ export function FileUploadFrame() {
                     </FileUpload>
                 )}
             />
+
 
         </div>
     );

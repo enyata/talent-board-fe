@@ -13,12 +13,53 @@ const OPTIONS = [
     { label: 'Nuxt', value: 'nuxt' },
     { label: 'Vue', value: 'vue,', disable: true },
 ];
+const ROLESOPTIONS = [
+    { label: 'product designer', value: 'product-designer' },
+    { label: 'ux designer', value: 'ux-designer' },
+    { label: 'ui designer', value: 'ui-designer' },
+    { label: 'software engineer', value: 'software-engineer' },
+    { label: 'data analyst', value: 'data-analyst' },
+    { label: 'data scientist', value: 'data-scientist' },
+]
 
 const ExperienceForm = () => {
-    const { register, watch, setValue, control } = useFormContext();
+    const { register, watch, setValue, control, formState: { isValid } } = useFormContext();
     const role = watch("data.role");
+
+    const commonFieldsFilled = !!watch("data.linkedin");
+
+    const recruiterFieldsFilled = !!watch("data.company_industry") &&
+        (watch("data.roles_looking_for")?.length > 0);
+
+    const talentFieldsFilled =
+        !!watch("data.experience_level") &&
+        (watch("data.skills")?.length > 0);
+
+    const allFieldsFilled = role === "recruiter"
+        ? commonFieldsFilled && recruiterFieldsFilled
+        : commonFieldsFilled && talentFieldsFilled;
+
     const handleSubmit = () => {
-        console.log('your form data here', watch())
+        console.log('your form here', watch())
+        const form = new FormData();
+        if (role === 'talent') {
+            form.append('portfolio_url', watch('data.portfolio'));
+        }
+        if (role === 'recruiter') {
+            form.append('work_email', watch('data.work_email'));
+        }
+        if (role === 'recruiter') {
+            form.append('company_industry', watch('data.company_industry'));
+        }
+        form.append('linkedin_profile', watch('data.linkedin'))
+        form.append('resume', watch('data.resume'))
+        if (role === 'talent') {
+            form.append('experience_level', watch('data.experience_level'))
+        }
+        if (role === 'talent') {
+            form.append('skills', watch('data.skills'))
+        }
+        console.log('your formdata here', form)
     }
     return (
         <div>
@@ -55,21 +96,21 @@ const ExperienceForm = () => {
                     <Label htmlFor='skills' className='font-normal'>{role === 'recruiter' ? 'What roles are you looking to hire for?' : 'Skills'}</Label>
                     <Controller
 
-                        name="data.skills"
+                        name={`data.${role === 'recruiter' ? 'roles_looking_for' : 'skills'}`}
                         control={control}
                         render={({ field }) => (
                             <MultipleSelector
                                 className="mt-[8px]"
                                 hidePlaceholderWhenSelected={true}
                                 hideClearAllButton={true}
-                                defaultOptions={OPTIONS}
+                                defaultOptions={role === 'recruiter' ? ROLESOPTIONS : OPTIONS}
                                 placeholder="e.g product designer, ux designer"
                                 emptyIndicator={
                                     <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
                                         no results found.
                                     </p>
                                 }
-                                value={OPTIONS.filter(opt => field.value?.includes(opt.value))}
+                                value={role === 'recruiter' ? ROLESOPTIONS.filter(opt => field.value?.includes(opt.value)) : OPTIONS.filter(opt => field.value?.includes(opt.value))}
                                 onChange={(selected) => {
                                     const valuesOnly = selected.map(opt => opt.value)
                                     field.onChange(valuesOnly)
@@ -96,6 +137,7 @@ const ExperienceForm = () => {
                         Go Back
                     </Button>
                     <ButtonWithLoader
+                        disabled={!allFieldsFilled || !isValid}
                         onClick={() => handleSubmit()}
                         className='bg-primary  h-full max-w-[182px] w-full flex-1 cursor-pointer'>
                         Submit

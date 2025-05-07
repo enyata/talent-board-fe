@@ -6,8 +6,22 @@ import { Label } from '@/components/ui/label'
 import { useFormContext } from 'react-hook-form'
 
 const PersonalInfoForm = () => {
-    const { register, setValue, watch, formState: { isValid, isDirty }, } = useFormContext();
+    const { register, setValue, watch, formState: { isValid }, } = useFormContext();
     const role = watch("data.role");
+    const values = watch();
+    const requiredFields = ['data.first_name', 'data.last_name', 'data.location', 'data.linkedin'];
+
+    // if (role === 'recruiter') {
+    //     requiredFields.push('data.work_email');
+    // } else if (role === 'talent') {
+    //     requiredFields.push('data.portfolio');
+    // }
+
+    const allFieldsFilled = requiredFields.every((field) => {
+        const value = field.split('.').reduce((acc, key) => acc?.[key], values);
+        return value?.toString().trim() !== '';
+    })
+
     return (
         <form>
             <p style={{ wordSpacing: '3px' }} className='text-[30px] font-bold leading-[38px] text-center'>
@@ -82,7 +96,7 @@ const PersonalInfoForm = () => {
                         Go Back
                     </Button>
                     <Button
-                        disabled={!isDirty || !isValid}
+                        disabled={!allFieldsFilled || !isValid}
                         onClick={() => setValue('config.currentForm', 3)}
                         className='bg-primary  h-full flex-1 cursor-pointer'>
                         Continue
