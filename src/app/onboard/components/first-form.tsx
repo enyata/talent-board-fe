@@ -20,7 +20,7 @@ const RoleForm = () => {
                 <div className='mt-[36px] flex justify-center gap-3 h-[42px] w-full'>
                     <Button onClick={() => router.push('/')} variant={'outline'} className='h-full flex-1 cursor-pointer'>Back</Button>
                     <Button
-                        disabled={watch("data.role") === ""}
+                        disabled={watch("data.role") === "" || watch("data.role") === undefined}
                         onClick={() => setValue('config.currentForm', 2)}
                         className='bg-primary  h-full flex-1 cursor-pointer'>
                         Continue

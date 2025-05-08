@@ -6,8 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import React from 'react';
+import { useAuthStore } from '@/store/authStore';
 
 const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
+    const user = useAuthStore.getState().user;
+    console.log('user info here', user);
+
+    const { first_name, last_name } = user || {};
     const form = useForm<OnboardFormSchema>({
         resolver: zodResolver(onboardFormSchema),
         defaultValues: {
@@ -16,8 +21,8 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
             },
             data: {
                 role: undefined,
-                first_name: '',
-                last_name: '',
+                first_name: first_name || '',
+                last_name: last_name || '',
                 location: '',
                 portfolio: '',
                 work_email: '',
@@ -33,6 +38,8 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
 
     const currentStep = form.watch('config.currentForm');
     const role = form.watch('data.role');
+
+
 
     return (
         <div className={`relative flex justify-center items-center w-full py-[100px] md:py-[140px] min-h-screen`}>

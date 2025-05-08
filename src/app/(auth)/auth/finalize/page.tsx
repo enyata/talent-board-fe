@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useAuth } from "@/hooks/useAuth";
+import { Loader } from "@/components/ui/loader";
 
 export default function FinalizeAuth() {
     const searchParams = useSearchParams();
@@ -22,21 +23,23 @@ export default function FinalizeAuth() {
 
             setAccessToken(accessToken);
             setRefreshToken(refreshToken);
-            // try {
-            //     const user = await fetchUser();
+            try {
+                const user = await fetchUser();
+                console.log("User fetched: at finalizing", user);
 
-            //     if (user?.profile_completed) {
-            //         router.replace("/dashboard");
-            //     } else {
-            //         router.replace("/onboard");
-            //     }
-            // } catch {
-            //     router.replace("/login");
-            // }
+                if (user?.profile_completed) {
+                    router.replace("/dashboard");
+                } else {
+                    router.replace("/onboard");
+                }
+            } catch (err) {
+                console.error("Error fetching user:", err);
+                router.replace("/login");
+            }
         };
-
+        console.log("Finalizing auth...");
         finalize();
     }, [accessToken]);
 
-    return <p>Loading...</p>;
+    return <Loader className="text-primary shadow-none size-[40px]" />;
 }

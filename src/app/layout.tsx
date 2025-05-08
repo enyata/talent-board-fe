@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -76,6 +79,18 @@ export default function RootLayout({
       <body
         className={` ${neueHaas.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         {children}
       </body>
     </html>

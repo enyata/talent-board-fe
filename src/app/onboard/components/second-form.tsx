@@ -34,6 +34,7 @@ const PersonalInfoForm = () => {
                     <div className='w-full'>
                         <Label htmlFor='first_name' className='font-normal'>First Name</Label>
                         <Input
+                            disabled={watch('data.first_name') !== ''}
                             id='first_name'
                             className='h-[42px] mt-2'
                             placeholder='enter your first name'
@@ -43,6 +44,7 @@ const PersonalInfoForm = () => {
                     <div className='w-full'>
                         <Label htmlFor='last_name' className='font-normal'>Last Name</Label>
                         <Input
+                            disabled={watch('data.last_name') !== ''}
                             id='last_name'
                             className='h-[42px] mt-2'
                             placeholder='enter your last name'

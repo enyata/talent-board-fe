@@ -2,8 +2,8 @@ import { create } from 'zustand';
 
 type User = {
     id: string;
-    firstName: string;
-    lastName: string;
+    first_name: string;
+    last_name: string;
     email: string;
     role: string | null;
     provider: string;
@@ -15,6 +15,8 @@ interface AuthState {
     accessToken: string | null;
     refreshToken: string | null;
     loading: boolean;
+    is_authenticated: boolean;
+    set_isAuthenticated: (isAuthenticated: boolean) => void;
     setUser: (user: User) => void;
     setAccessToken: (token: string) => void;
     setRefreshToken: (refreshToken: string) => void;
@@ -25,8 +27,10 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     accessToken: null,
-    refreshToken:null,
+    refreshToken: null,
     loading: false,
+    is_authenticated: false,
+    set_isAuthenticated: (isAuthenticated) => set({ is_authenticated: isAuthenticated }),
     setUser: (user) => set({ user }),
     setAccessToken: (token) => set({ accessToken: token }),
     setRefreshToken: (refreshToken) => set({ refreshToken: refreshToken }),

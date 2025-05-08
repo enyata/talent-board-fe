@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useTransition } from 'react'
+import { toast } from 'react-toastify';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Controller, useFormContext } from 'react-hook-form'
@@ -7,6 +8,7 @@ import { ButtonWithLoader } from '@/components/ui/button-with-loader'
 import MultipleSelector from '@/components/ui/multi-selector'
 import { FileUploadFrame } from './file-upload-frame'
 import FormLayout from './formLayout'
+import { PATCH } from '@/lib/requests'
 
 const OPTIONS = [
     { label: 'nextjs', value: 'Nextjs' },
@@ -40,28 +42,53 @@ const ExperienceForm = () => {
         ? commonFieldsFilled && recruiterFieldsFilled
         : commonFieldsFilled && talentFieldsFilled;
 
-    const handleSubmit = () => {
-        console.log('your form here', watch())
-        const form = new FormData();
-        if (role === 'talent') {
-            form.append('portfolio_url', watch('data.portfolio'));
-        }
-        if (role === 'recruiter') {
-            form.append('work_email', watch('data.work_email'));
-        }
-        if (role === 'recruiter') {
-            form.append('company_industry', watch('data.company_industry'));
-        }
-        form.append('linkedin_profile', watch('data.linkedin'))
-        form.append('resume', watch('data.resume'))
-        if (role === 'talent') {
-            form.append('experience_level', watch('data.experience_level'))
-        }
-        if (role === 'talent') {
-            form.append('skills', watch('data.skills'))
-        }
-        console.log('your formdata here', form)
+    const form = new FormData();
+    if (role === 'talent' && watch('data.portfolio_url')) {
+        form.append('portfolio_url', watch('data.portfolio'));
     }
+    if (role === 'recruiter') {
+        form.append('work_email', watch('data.work_email'));
+    }
+    if (role === 'recruiter') {
+        form.append('company_industry', watch('data.company_industry'));
+    }
+    form.append('location', watch('data.location'));
+    form.append('linkedin_profile', watch('data.linkedin'))
+    form.append('resume', watch('data.resume[0]'))
+
+    if (role === 'talent') {
+        form.append('experience_level', watch('data.experience_level'))
+    }
+    if (role === 'talent') {
+        form.append('skills', JSON.stringify(watch('data.skills')))
+    }
+    if (role === 'recruiter') {
+        form.append('roles_looking_for', JSON.stringify(watch('data.roles_looking_for')))
+    }
+
+    const [isPending, startTransition] = useTransition();
+
+    const handleSubmit = () => {
+        startTransition(async () => {
+            try {
+                const res = await PATCH(
+                    `/api/v1/onboarding/${role === "talent" ? "talent" : "recruiter"}`,
+                    form
+                );
+                if (res.status === "failure") {
+                    toast.error(res.message || "Something went wrong");
+                    return;
+                }
+                toast.success("You have successfully updated your profile");
+                setValue('config.currentForm', 4);
+                console.log("Profile update response:", res);
+            } catch (error) {
+                console.error("Error from form submission:", error);
+                toast.error("Something went wrong. Please try again.");
+            }
+        });
+    };
+
     return (
         <FormLayout>
             <p style={{ wordSpacing: '3px' }} className='text-[30px] font-bold leading-[38px] text-center'>
@@ -138,7 +165,8 @@ const ExperienceForm = () => {
                         Go Back
                     </Button>
                     <ButtonWithLoader
-                        disabled={!allFieldsFilled || !isValid}
+                        isLoading={isPending}
+                        disabled={!allFieldsFilled || !isValid || isPending}
                         onClick={() => handleSubmit()}
                         className='bg-primary  h-full max-w-[182px] w-full flex-1 cursor-pointer'>
                         Submit
