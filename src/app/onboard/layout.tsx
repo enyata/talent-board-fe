@@ -60,7 +60,7 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
 
             <FormContext form={form}>
                 <div
-                    className={`flex flex-col mx-[12px] items-center justify-center gap-[36px] ${currentStep !== 2 ? 'md:max-w-[428px]' : 'md:max-w-[534px]'
+                    className={`flex flex-col mx-4 items-center justify-center gap-[36px] ${currentStep !== 2 ? 'md:max-w-[428px]' : 'md:max-w-[534px]'
                         } px-[24px] py-[32px] rounded-[12px] shadow-sm w-full`}
                 >
                     <Stepper currentStep={currentStep} />

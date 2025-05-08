@@ -1,17 +1,70 @@
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import TestimonyCarousel from "./components/testimony-carousel";
+'use client'
+
+import { useEffect, useRef } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import TestimonyCarousel from './components/testimony-carousel'
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const currentIndex = useRef(0)
+  const isThrottled = useRef(false)
+  const sectionCount = 2
+
+  const scrollToSection = (index: number) => {
+    const container = containerRef.current
+    if (!container) return
+
+    const sections = container.querySelectorAll<HTMLElement>('section')
+    const target = sections[index]
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container || window.innerWidth >= 768) return // Only on mobile
+
+    const handleScroll = (e: WheelEvent) => {
+      if (isThrottled.current) return
+
+      isThrottled.current = true
+      setTimeout(() => (isThrottled.current = false), 800)
+
+      const delta = e.deltaY
+
+      if (delta > 0 && currentIndex.current < sectionCount - 1) {
+        currentIndex.current++
+        scrollToSection(currentIndex.current)
+      } else if (delta < 0 && currentIndex.current > 0) {
+        currentIndex.current--
+        scrollToSection(currentIndex.current)
+      }
+    }
+
+    container.addEventListener('wheel', handleScroll, { passive: false })
+    return () => container.removeEventListener('wheel', handleScroll)
+  }, [])
+
   return (
-    <div className="md:h-screen relative">
-      <Link href={'/'} className="absolute md:top-[32px] top-[24px] md:left-[32px] left-[24px] text-[24px] font-semibold">Talentboard</Link>
+    <div className="relative md:h-screen">
+      <Link
+        href="/"
+        className="absolute md:top-[32px] top-[24px] md:left-[32px] left-[24px] text-[24px] font-semibold z-10"
+      >
+        Talentboard
+      </Link>
 
-      <div className="md:h-screen flex flex-col md:flex-row items-center justify-center">
-        <div className="w-full md:w-1/2  h-screen flex items-center justify-center">{children}</div>
+      <div
+        ref={containerRef}
+        className="block md:flex md:h-screen overflow-y-scroll md:overflow-hidden"
+      >
+        <section className="w-full md:w-1/2 h-screen flex items-center justify-center px-4">
+          {children}
+        </section>
 
-        <div className="md:w-1/2 w-full  h-screen group relative">
+        <section className="w-full md:w-1/2 h-screen relative">
           <Image
             src="/assets/images/auth-img.svg"
             alt="Auth image"
@@ -19,11 +72,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             height={500}
             className="object-cover w-full h-full"
           />
-          <TestimonyCarousel/>
-        </div>
+          <TestimonyCarousel />
+        </section>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AuthLayout;
+export default AuthLayout

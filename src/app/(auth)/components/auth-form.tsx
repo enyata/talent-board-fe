@@ -1,24 +1,24 @@
 'use client';
 import { ButtonWithLoader } from "@/components/ui/button-with-loader";
-// import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
 import { useState } from "react";
 
 export default function AuthForm({ action }: { action: 'login' | 'signup' }) {
-  // const { loginWithProvider } = useAuth();
+  const { loginWithProvider } = useAuth();
   const { loading } = useAuthStore();
   const [provider, setProvider] = useState<'google' | 'linkedin' | undefined>();
 
   const handleClick = (provider: 'google' | 'linkedin') => {
     setProvider(provider);
-    // loginWithProvider(provider);
+    loginWithProvider(provider);
     // window.open(
     //   "https://talent-board-be.onrender.com/api/v1/auth/linkedin?state=http://localhost:3000/auth/callback",
     //   "_blank",
     //   "width=500,height=600"
     // );
-    window.location.href = "https://talent-board-be.onrender.com/api/v1/auth/linkedin?state=http://localhost:3000/auth/callback";
+    // window.location.href = "https://talent-board-be.onrender.com/api/v1/auth/linkedin?state=http://localhost:3000/auth/callback";
   }
 
   return (
