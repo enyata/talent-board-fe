@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useFormContext } from 'react-hook-form'
+import FormLayout from './formLayout'
 
 const PersonalInfoForm = () => {
     const { register, setValue, watch, formState: { isValid }, } = useFormContext();
@@ -23,7 +24,7 @@ const PersonalInfoForm = () => {
     })
 
     return (
-        <form>
+        <FormLayout>
             <p style={{ wordSpacing: '3px' }} className='text-[30px] font-bold leading-[38px] text-center'>
                 Let’s continue setting up <br />your account
             </p>
@@ -104,7 +105,7 @@ const PersonalInfoForm = () => {
 
                 </div>
             </div>
-        </form>
+        </FormLayout>
     )
 }
 

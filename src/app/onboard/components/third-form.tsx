@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { ButtonWithLoader } from '@/components/ui/button-with-loader'
 import MultipleSelector from '@/components/ui/multi-selector'
 import { FileUploadFrame } from './file-upload-frame'
+import FormLayout from './formLayout'
 
 const OPTIONS = [
     { label: 'nextjs', value: 'Nextjs' },
@@ -62,7 +63,7 @@ const ExperienceForm = () => {
         console.log('your formdata here', form)
     }
     return (
-        <div>
+        <FormLayout>
             <p style={{ wordSpacing: '3px' }} className='text-[30px] font-bold leading-[38px] text-center'>
                 Finalise setting up your account
             </p>
@@ -145,7 +146,7 @@ const ExperienceForm = () => {
 
                 </div>
             </div>
-        </div>
+        </FormLayout>
     )
 }
 const ChooseExperienceLevel = ({ level }: { level: string }) => {

@@ -46,7 +46,7 @@ export const Stepper = ({ currentStep }: StepperProps) => {
                             <div className="flex-1">
                                 <Progress
                                     value={currentStep > step ? 100 : currentStep === step ? 50 : 0}
-                                    className={`h-[1px] transition-all ${currentStep > step
+                                    className={`h-[1px] transition-all  ${currentStep > step
                                         ? 'bg-[#57D375]/30'
                                         : 'bg-[#E4E7EC]'
                                         }`}

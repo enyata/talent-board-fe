@@ -4,6 +4,7 @@ import { useFormContext } from 'react-hook-form'
 import PersonalInfoForm from './second-form';
 import ExperienceForm from './third-form';
 import RoleForm from './first-form';
+import SuccessComponent from './success';
 
 const OnboardingFlow = () => {
     const { watch } = useFormContext();
@@ -19,9 +20,12 @@ const OnboardingFlow = () => {
         case 3:
             currentFormComponent = <ExperienceForm/>;
             break;
+        case 4:
+            currentFormComponent = <SuccessComponent/>;
+            break;
     }
     return (
-        <div className='w-full'>
+        <div className='w-full flex justify-center'>
             {currentFormComponent}
         </div>
     )
