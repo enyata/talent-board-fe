@@ -26,7 +26,7 @@ function Loader({ size, className, ...props }: LoaderProps) {
   return (
     <div className={cn(loaderVariants({ size }), className)} {...props}>
       <svg
-        className="motion-safe:animate-spin h-[65%] w-[65%] text-secondary"
+        className="motion-safe:animate-spin h-[65%] w-[65%] "
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"

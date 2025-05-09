@@ -5,7 +5,7 @@ const WebsiteLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <div className='w-full'>
             <Navbar />
-            <div className='mt-[170px]'>
+            <div className='md:mt-[170px] mt-[40px]'>
                 {children}
             </div>
         </div>

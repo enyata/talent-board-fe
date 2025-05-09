@@ -8,6 +8,7 @@ import { ButtonHTMLAttributes, ReactNode } from "react";
 interface ButtonWithLoaderProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
   isLoading?: boolean;
+  variant?: "default" | "outline" | "link";
 }
 
 function ButtonWithLoader({ children, isLoading = false, disabled, ...props }: ButtonWithLoaderProps) {

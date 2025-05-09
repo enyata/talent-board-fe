@@ -4,11 +4,27 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useFormContext } from 'react-hook-form'
+import FormLayout from './formLayout'
 
 const PersonalInfoForm = () => {
-    const { register, setValue, formState: { isValid, isDirty }, } = useFormContext();
+    const { register, setValue, watch, formState: { isValid }, } = useFormContext();
+    const role = watch("data.role");
+    const values = watch();
+    const requiredFields = ['data.first_name', 'data.last_name', 'data.location', 'data.linkedin'];
+
+    // if (role === 'recruiter') {
+    //     requiredFields.push('data.work_email');
+    // } else if (role === 'talent') {
+    //     requiredFields.push('data.portfolio');
+    // }
+
+    const allFieldsFilled = requiredFields.every((field) => {
+        const value = field.split('.').reduce((acc, key) => acc?.[key], values);
+        return value?.toString().trim() !== '';
+    })
+
     return (
-        <form>
+        <FormLayout>
             <p style={{ wordSpacing: '3px' }} className='text-[30px] font-bold leading-[38px] text-center'>
                 Let’s continue setting up <br />your account
             </p>
@@ -18,6 +34,7 @@ const PersonalInfoForm = () => {
                     <div className='w-full'>
                         <Label htmlFor='first_name' className='font-normal'>First Name</Label>
                         <Input
+                            disabled={watch('data.first_name') !== ''}
                             id='first_name'
                             className='h-[42px] mt-2'
                             placeholder='enter your first name'
@@ -27,6 +44,7 @@ const PersonalInfoForm = () => {
                     <div className='w-full'>
                         <Label htmlFor='last_name' className='font-normal'>Last Name</Label>
                         <Input
+                            disabled={watch('data.last_name') !== ''}
                             id='last_name'
                             className='h-[42px] mt-2'
                             placeholder='enter your last name'
@@ -43,15 +61,28 @@ const PersonalInfoForm = () => {
                         {...register('data.location')}
                     />
                 </div>
-                <div className='w-full'>
-                    <Label htmlFor='portfolio' className='font-normal'>Portfolion Link</Label>
-                    <Input
-                        id='portfolio'
-                        className='h-[42px] mt-2'
-                        placeholder='enter your portfolio link here'
-                        {...register('data.portfolio')}
-                    />
-                </div>
+                {role === 'recruiter' && (
+                    <div className='w-full'>
+                        <Label htmlFor='work-email' className='font-normal'>Work Email</Label>
+                        <Input
+                            id='work-email'
+                            className='h-[42px] mt-2'
+                            placeholder='example@workdomain.com'
+                            {...register('data.work_email')}
+                        />
+                    </div>
+                )}
+                {role === 'talent' && (
+                    <div className='w-full'>
+                        <Label htmlFor='portfolio' className='font-normal'>Portfolio Link</Label>
+                        <Input
+                            id='portfolio'
+                            className='h-[42px] mt-2'
+                            placeholder='enter your portfolio link here'
+                            {...register('data.portfolio')}
+                        />
+                    </div>
+                )}
                 <div className='w-full'>
                     <Label htmlFor='linkedin' className='font-normal'>Linkedin Profile</Label>
                     <Input
@@ -63,13 +94,12 @@ const PersonalInfoForm = () => {
                 </div>
                 <div className='flex justify-center gap-3 h-[42px] w-full'>
                     <Button
-                    disabled={isDirty}
-                        onClick={() => setValue('config.currentForm', 3)}
-                        variant={'outline'} className='h-full flex-1 cursor-pointer'>I
-                        ’ll do this later
+                        onClick={() => setValue('config.currentForm', 1)}
+                        variant={'outline'} className='h-full flex-1 cursor-pointer'>
+                        Go Back
                     </Button>
                     <Button
-                        disabled={!isDirty || !isValid}
+                        disabled={!allFieldsFilled || !isValid}
                         onClick={() => setValue('config.currentForm', 3)}
                         className='bg-primary  h-full flex-1 cursor-pointer'>
                         Continue
@@ -77,7 +107,7 @@ const PersonalInfoForm = () => {
 
                 </div>
             </div>
-        </form>
+        </FormLayout>
     )
 }
 

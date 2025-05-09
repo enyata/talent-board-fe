@@ -10,8 +10,8 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 }}
-            className='flex flex-col justify-center items-center w-full max-w-[1198px] mx-auto'>
-            <div className='text-[49px] leading-[120%] font-semibold text-center'>
+            className='flex flex-col justify-center items-center w-full max-w-[1198px] mx-auto px-4 md:px-0'>
+            <div className='md:text-[49px] text-4xl leading-[120%] font-semibold text-center'>
                 <p >
                     Discover Africa’s top tech talent.
                 </p>

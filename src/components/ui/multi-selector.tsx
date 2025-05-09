@@ -440,7 +440,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       >
         <div
           className={cn(
-            'min-h-10 rounded-md border border-input text-base ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 md:text-sm',
+            'min-h-10 rounded-md border border-input focus-within:border-primary text-base ring-offset-background focus-within:ring-2 focus-within:ring-[#F4F3F8] focus-within:ring-offset-2 md:text-sm',
             {
               'px-3 py-2': selected.length !== 0,
               'cursor-text': !disabled && selected.length !== 0,
@@ -483,7 +483,8 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                     }}
                     onClick={() => handleUnselect(option)}
                   >
-                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                    {/* text-muted-foreground hover:text-foreground */}
+                    <X className="h-3 w-3 cursor-pointer " />
                   </button>
                 </Badge>
               );
