@@ -2,6 +2,7 @@
 
 import { GET } from "@/lib/requests";
 import { useAuthStore } from "@/store/authStore";
+import Cookies from 'js-cookie';
 
 export const useAuth = () => {
   const { setUser, setLoading, set_isAuthenticated } = useAuthStore();
@@ -16,10 +17,13 @@ export const useAuth = () => {
   const fetchUser = async () => {
     try {
       const response = await GET("/api/v1/users/me");
-      const user = response.data.user;
-      if (!user) {
+      if (!response) {
         return null;
       }
+      const user = response.data.user;
+      console.log('response', response)
+      // Cookies.set('txuf', response.tokens.access_token)
+      // Cookies.set('rf_tuxf', response.tokens.refresh_token)
       setUser(user);
       set_isAuthenticated(true);
       return user;

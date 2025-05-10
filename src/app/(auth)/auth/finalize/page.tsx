@@ -5,24 +5,23 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import { useAuth } from "@/hooks/useAuth";
 import { Loader } from "@/components/ui/loader";
+import Cookies from 'js-cookie';
 
 export default function FinalizeAuth() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const accessToken = searchParams.get("access_token");
-    const refreshToken = searchParams.get("refresh_token");
-    const { setAccessToken, setRefreshToken } = useAuthStore();
+    const { setAccessToken } = useAuthStore();
     const { fetchUser } = useAuth();
 
     useEffect(() => {
         const finalize = async () => {
-            if (!accessToken || !refreshToken) {
+            if (!accessToken) {
                 router.replace("/not-found");
                 return;
             }
-
+            console.log('your access token at finalizing', accessToken)
             setAccessToken(accessToken);
-            setRefreshToken(refreshToken);
             try {
                 const user = await fetchUser();
                 console.log("User fetched: at finalizing", user);
