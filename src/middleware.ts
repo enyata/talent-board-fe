@@ -1,9 +1,20 @@
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-import { NextRequest, NextResponse } from 'next/server';
+export function middleware(request: NextRequest) {
+    const refreshToken = request.cookies.get("access_token")?.value; //change to refresh token later
+    const { pathname } = request.nextUrl;
 
-export default function middleware(req: NextRequest) {
-    console.log('Cookie Header:', req.headers.get('cookie'));
-    console.log('All Headers:', Object.fromEntries(req.headers));
-    
+    const protectedPaths = ["/dashboard", "/profile", "/settings", "onboard"];
+    const isProtected = protectedPaths.some((path) => pathname.startsWith(path));
+
+    if (isProtected && !refreshToken) {
+        return NextResponse.redirect(new URL("/login", request.url));
+    }
+
     return NextResponse.next();
-  }
+}
+
+export const config = {
+    matcher: ["/dashboard/:path*", "/profile/:path*", "/settings/:path*", "/onboard/:path*",]
+};
