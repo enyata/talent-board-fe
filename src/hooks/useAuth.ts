@@ -16,10 +16,11 @@ export const useAuth = () => {
   const fetchUser = async () => {
     try {
       const response = await GET("/api/v1/users/me");
-      const user = response.data.user;
-      if (!user) {
+      if (!response) {
         return null;
       }
+      const user = response.data.user;
+      console.log('response', response)
       setUser(user);
       set_isAuthenticated(true);
       return user;

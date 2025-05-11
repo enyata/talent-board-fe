@@ -1,29 +1,14 @@
-'use client'
-import React, { useEffect } from 'react'
+import { getUser } from '@/api/user';
 import OnboardingFlow from './components'
-import { useAuth } from '@/hooks/useAuth';
-import { useRouter } from 'next/navigation';
-
-const Onboard = () => {
-    const { fetchUser } = useAuth();
-    const router = useRouter();
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const user = await fetchUser();
-                console.log("User fetched:", user);
-                if (!user) {
-                    router.replace('/login')
-                }
-            } catch (error) {
-                console.error('Error fetching user:', error);
-                router.replace('/login');
-            }
-        };
-        fetchUserData();
-
-    }, [])
-
+import { redirect } from 'next/navigation';
+const Onboard = async () => {
+    const user = await getUser();
+    if (!user) {
+        redirect('/login');
+    }
+    if (user.data.user.profile_completed) {
+        redirect('/dashboard')
+    }
     return (
         <div className='w-full mx-auto'>
             <OnboardingFlow />

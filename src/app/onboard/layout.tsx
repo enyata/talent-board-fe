@@ -7,10 +7,15 @@ import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import React from 'react';
 import { useAuthStore } from '@/store/authStore';
+import { useRouter } from 'next/navigation';
 
 const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
     const user = useAuthStore.getState().user;
     console.log('user info here', user);
+    const router = useRouter();
+    if (!user) {
+        router.replace('/login')
+    }
 
     const { first_name, last_name } = user || {};
     const form = useForm<OnboardFormSchema>({
@@ -39,7 +44,9 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
     const currentStep = form.watch('config.currentForm');
     const role = form.watch('data.role');
 
-
+    if (user?.profile_completed && currentStep !== 4) {
+        router.replace('/dashboard')
+    }
 
     return (
         <div className={`relative flex justify-center items-center w-full py-[100px] md:py-[140px] min-h-screen`}>

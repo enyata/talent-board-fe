@@ -3,7 +3,7 @@ import { PencilLine } from 'lucide-react'
 import React from 'react'
 import TalentDashboard from './components/talentDashboard'
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
     return (
         <div className='mt-[64px] w-full'>
             <div className='flex justify-between'>
@@ -15,6 +15,7 @@ const DashboardPage = () => {
             </div>
             <TalentDashboard />
         </div>
+
     )
 }
 
