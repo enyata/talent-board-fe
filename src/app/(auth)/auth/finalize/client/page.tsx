@@ -9,13 +9,15 @@ import { Loader } from "@/components/ui/loader";
 export default function FinalizeAuthClientPage() {
     const searchParams = useSearchParams();
     const accessToken = searchParams.get("access_token")
+    const refreshToken = searchParams.get('refresh_token')
     const router = useRouter();
     const { fetchUser } = useAuth();
-    const { setAccessToken } = useAuthStore();
+    const { setAccessToken, setRefreshToken } = useAuthStore();
 
     useEffect(() => {
         console.log('access token at client finalize', accessToken)
         setAccessToken(accessToken as string)
+        setRefreshToken(refreshToken as string)
         const finalize = async () => {
             try {
                 const user = await fetchUser();

@@ -20,7 +20,7 @@ function ButtonWithLoader({ children, isLoading = false, disabled, ...props }: B
       type="submit"
       {...props}
     >
-      {isLoading || pending ? <Loader size="sm" /> : children}
+      {isLoading || pending ? <Loader className="shadow-none bg-transparent" size="sm" /> : children}
     </Button>
   );
 }

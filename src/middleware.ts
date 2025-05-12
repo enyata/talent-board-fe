@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-    const refreshToken = request.cookies.get("access_token")?.value; //change to refresh token later
+    const refreshToken = request.cookies.get("refresh_token")?.value;
     const { pathname } = request.nextUrl;
 
     const protectedPaths = ["/dashboard", "/profile", "/settings", "onboard"];

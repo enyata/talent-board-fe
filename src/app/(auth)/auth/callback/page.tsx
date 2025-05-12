@@ -11,9 +11,9 @@ export default function AuthCallbackPage({ searchParams }: CallbackPageProps) {
   const accessToken = searchParams.access_token;
   const refreshToken = searchParams.refresh_token;
 
-  // if (!accessToken || !refreshToken) {
-  //   redirect("/login");
-  // }
+  if (!accessToken || !refreshToken) {
+    redirect("/login");
+  }
   console.log('refresh token at callback', refreshToken)
   console.log('access token at callback', accessToken)
 
