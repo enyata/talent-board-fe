@@ -5,7 +5,7 @@ export async function GET(req: NextRequest) {
     const accessToken = req.nextUrl.searchParams.get("access_token");
     const refreshToken = req.nextUrl.searchParams.get("refresh_token");
 
-    if (!accessToken) {
+    if (!accessToken || !refreshToken) {
         return NextResponse.redirect(new URL("/login", req.url));
     }
 
@@ -20,14 +20,14 @@ export async function GET(req: NextRequest) {
         path: "/",
     });
 
-    //   cookieStore.set({
-    //     name: "refresh_token",
-    //     value: refreshToken,
-    //     httpOnly: true,
-    //     sameSite: "strict",
-    //     secure: true,
-    //     path: "/",
-    //   });
+    cookieStore.set({
+        name: "refresh_token",
+        value: refreshToken,
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+        path: "/",
+    });
 
-    return NextResponse.redirect(new URL(`/auth/finalize/client?access_token=${accessToken}`, req.url));
+    return NextResponse.redirect(new URL(`/auth/finalize/client?access_token=${accessToken}&refresh_token=${refreshToken}`, req.url));
 }

@@ -26,7 +26,7 @@ const ROLESOPTIONS = [
 ]
 
 const ExperienceForm = () => {
-    const { register, watch, setValue, control, formState: { isValid } } = useFormContext();
+    const { register, watch, setValue, control, formState: { isValid, errors } } = useFormContext();
     const role = watch("data.role");
 
     const commonFieldsFilled = !!watch("data.linkedin");
@@ -108,7 +108,7 @@ const ExperienceForm = () => {
                 {
                     role === 'recruiter' && (
                         <div>
-                            <Label htmlFor='qualification' className='font-normal'>Company Industry</Label>
+                            <Label htmlFor='qualification' className='font-normal'>Company Industry*</Label>
                             <Input
                                 id='qualification'
                                 type='text'
@@ -121,7 +121,7 @@ const ExperienceForm = () => {
                 }
 
                 <div>
-                    <Label htmlFor='skills' className='font-normal'>{role === 'recruiter' ? 'What roles are you looking to hire for?' : 'Skills'}</Label>
+                    <Label htmlFor='skills' className='font-normal'>{role === 'recruiter' ? 'What roles are you looking to hire for?*' : 'Skills*'}</Label>
                     <Controller
 
                         name={`data.${role === 'recruiter' ? 'roles_looking_for' : 'skills'}`}
@@ -150,7 +150,7 @@ const ExperienceForm = () => {
 
                 {role === 'talent' && (
                     <div>
-                        <Label htmlFor='experience-level' className='font-normal'>Experience Level</Label>
+                        <Label htmlFor='experience-level' className='font-normal'>Experience Level*</Label>
                         <div id='experience-level' className='flex gap-[10px] mt-[8px] w-full justify-between'>
                             <ChooseExperienceLevel level='entry' />
                             <ChooseExperienceLevel level='intermediate' />

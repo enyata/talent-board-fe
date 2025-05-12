@@ -32,7 +32,7 @@ const PersonalInfoForm = () => {
             <div className='flex flex-col gap-[36px] mt-[36px] text-[14px] font-normal'>
                 <div className='flex flex-col md:flex-row gap-[24px] justify-between'>
                     <div className='w-full'>
-                        <Label htmlFor='first_name' className='font-normal'>First Name</Label>
+                        <Label htmlFor='first_name' className='font-normal'>First Name*</Label>
                         <Input
                             disabled={watch('data.first_name') !== ''}
                             id='first_name'
@@ -42,7 +42,7 @@ const PersonalInfoForm = () => {
                         />
                     </div>
                     <div className='w-full'>
-                        <Label htmlFor='last_name' className='font-normal'>Last Name</Label>
+                        <Label htmlFor='last_name' className='font-normal'>Last Name*</Label>
                         <Input
                             disabled={watch('data.last_name') !== ''}
                             id='last_name'
@@ -53,7 +53,7 @@ const PersonalInfoForm = () => {
                     </div>
                 </div>
                 <div className='w-full'>
-                    <Label htmlFor='location' className='font-normal'>Add your Location</Label>
+                    <Label htmlFor='location' className='font-normal'>Add your Location*</Label>
                     <Input
                         id='location'
                         className='h-[42px] mt-2'
@@ -84,7 +84,7 @@ const PersonalInfoForm = () => {
                     </div>
                 )}
                 <div className='w-full'>
-                    <Label htmlFor='linkedin' className='font-normal'>Linkedin Profile</Label>
+                    <Label htmlFor='linkedin' className='font-normal'>Linkedin Profile*</Label>
                     <Input
                         id='portfolio'
                         className='h-[42px] mt-2'

@@ -1,7 +1,7 @@
 import { getUser } from '@/api/user';
 import Navbar from '@/components/navbar'
 import { redirect } from 'next/navigation';
-import React from 'react'
+import React from 'react';
 
 const WebsiteLayout = async ({ children }: { children: React.ReactNode }) => {
     const user = await getUser();

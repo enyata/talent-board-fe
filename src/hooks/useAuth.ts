@@ -10,7 +10,7 @@ export const useAuth = () => {
     const redirect = `${window.location.origin}/auth/callback`;
 
     setLoading(true);
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/${provider}?state=${redirect}`;
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/${provider}?redirect_uri=${redirect}&include_tokens_in_url=true`;
   };
 
   const fetchUser = async () => {
