@@ -25,32 +25,17 @@
 //   }
 
 // }
-import { env } from "@/lib/env";
-import { redirect } from "next/navigation";
+'use client'
+import { Suspense } from 'react';
+import AuthCallbackPageComponent from './callbackPageComponent';
+import { Loader } from '@/components/ui/loader';
 
-interface CallbackPageProps {
-  searchParams: Record<string, string | string[] | undefined>;
+export default function CallbackPage() {
+  return (
+    <Suspense fallback={<Loader className="text-primary shadow-none size-[40px]" />}>
+      <AuthCallbackPageComponent />
+    </Suspense>
+  );
 }
 
-export default async function AuthCallbackPage({ searchParams }: CallbackPageProps) {
-  const accessToken = searchParams.access_token as string | undefined;
-  const refreshToken = searchParams.refresh_token as string | undefined;
-
-  if (!accessToken || !refreshToken) {
-    redirect("/login");
-  }
-
-  console.log("refresh token at callback", refreshToken);
-  console.log("access token at callback", accessToken);
-
-  if (env("appEnv") === "local") {
-    redirect(
-      `/api/auth/finalize?access_token=${accessToken}&refresh_token=${refreshToken}`
-    );
-  } else {
-    redirect(
-      `/auth/finalize/client?access_token=${accessToken}&refresh_token=${refreshToken}`
-    );
-  }
-}
 
