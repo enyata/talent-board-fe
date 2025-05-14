@@ -10,8 +10,8 @@ export const onboardFormSchema = z
       role: z.enum(["recruiter", "talent"]).optional().or(z.literal("")),
       first_name: z.string(),
       last_name: z.string(),
-      location: z.string().optional(),
-
+      state: z.string(),
+      country: z.string(),
       work_email: z.string().email("Enter a valid email").optional().or(z.literal("")),
       portfolio: z.string().url("Enter a valid URL").optional().or(z.literal("")),
 

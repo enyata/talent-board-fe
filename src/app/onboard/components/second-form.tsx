@@ -3,19 +3,27 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import { ErrorMessage } from "@hookform/error-message"
 import FormLayout from './formLayout'
+import { Country, State } from 'country-state-city';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 
 const PersonalInfoForm = () => {
-    const { register, setValue, watch, formState: { isValid, errors }, } = useFormContext();
+    const { register, control, setValue, watch, formState: { isValid, errors }, } = useFormContext();
     const role = watch("data.role");
+    const selectedCountryCode = watch('data.country');
+    const countries = Country.getAllCountries();
+    const states = selectedCountryCode ? State.getStatesOfCountry(selectedCountryCode) : [];
+
     const values = watch();
-    const requiredFields = ['data.first_name', 'data.last_name', 'data.location', 'data.linkedin'];
+    const requiredFields = ['data.first_name', 'data.last_name', 'data.state', 'data.country', 'data.linkedin'];
     const allFieldsFilled = requiredFields.every((field) => {
         const value = field.split('.').reduce((acc, key) => acc?.[key], values);
         return value?.toString().trim() !== '';
     })
+
+    console.log('errror your form data at second form', errors)
 
     return (
         <FormLayout>
@@ -46,15 +54,67 @@ const PersonalInfoForm = () => {
                         />
                     </div>
                 </div>
-                <div className='w-full'>
-                    <Label htmlFor='location' className='font-normal'>Add your Location*</Label>
-                    <Input
-                        id='location'
-                        className='h-[42px] mt-2'
-                        placeholder='enter your location'
-                        {...register('data.location')}
-                    />
+
+                <div className="flex flex-col md:flex-row gap-[24px] justify-between">
+                    {/* Country Select */}
+                    <div className="w-full">
+                        <Label htmlFor="country" className="font-normal">Country*</Label>
+                        <Controller
+                            control={control}
+                            name="data.country"
+                            render={({ field }) => (
+                                <Select
+                                    onValueChange={(value) => {
+                                        field.onChange(value);
+                                        setValue('data.state', ''); // reset state
+                                    }}
+                                    value={field.value}
+
+                                >
+                                    <SelectTrigger className="w-full mt-2" id="country">
+                                        <SelectValue placeholder="Select your country" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {countries.map((country) => (
+                                            <SelectItem key={country.isoCode} value={country.name}>
+                                                {country.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
+
+                    {/* State Select */}
+                    <div className="w-full">
+                        <Label htmlFor="state" className="font-normal">State*</Label>
+                        <Controller
+                            control={control}
+                            name="data.state"
+                            render={({ field }) => (
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                    disabled={!selectedCountryCode}
+                                >
+                                    <SelectTrigger className=" w-full mt-2" id="state">
+                                        <SelectValue placeholder={selectedCountryCode ? "Select your state" : "Select a country first"} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {states.map((state) => (
+                                            <SelectItem key={state.isoCode} value={state.name}>
+                                                {state.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                    </div>
                 </div>
+
+
                 {role === 'recruiter' && (
                     <div className='w-full'>
                         <Label htmlFor='work-email' className='font-normal'>Work Email</Label>
