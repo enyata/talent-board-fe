@@ -1,9 +1,9 @@
 'use client';
 
-import { FormContext } from '@/components/providers/form-context';
+// import { FormContext } from '@/components/providers/form-context';
 import { onboardFormSchema, OnboardFormSchema } from '@/types/form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import Link from 'next/link';
 import React from 'react';
 import { useAuthStore } from '@/store/authStore';
@@ -24,7 +24,7 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
                 first_name: first_name || '',
                 last_name: last_name || '',
                 state: '',
-                country:'',
+                country: '',
                 portfolio: '',
                 work_email: '',
                 linkedin: '',
@@ -64,9 +64,9 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
                 </div>
             </nav>
 
-            <FormContext form={form}>
+            <FormProvider {...form}>
                 <div className="w-full">{children}</div>
-            </FormContext>
+            </FormProvider>
         </div>
     );
 };
