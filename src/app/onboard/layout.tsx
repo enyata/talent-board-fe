@@ -10,10 +10,11 @@ import { useAuthStore } from '@/store/authStore';
 
 const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
     const user = useAuthStore.getState().user;
-    console.log('user info here', user);
+    // console.log('user info here', user);
 
     const { first_name, last_name } = user || {};
     const form = useForm<OnboardFormSchema>({
+        mode: "onTouched",
         resolver: zodResolver(onboardFormSchema),
         defaultValues: {
             config: {
@@ -28,6 +29,7 @@ const OnboardingLayout = ({ children }: { children: React.ReactNode }) => {
                 portfolio: '',
                 work_email: '',
                 linkedin: '',
+                hiring_for:'',
                 company_industry: '',
                 experience_level: '',
                 skills: [],

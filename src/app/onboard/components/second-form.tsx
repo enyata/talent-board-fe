@@ -4,26 +4,32 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useFormContext, Controller } from 'react-hook-form'
-import { ErrorMessage } from "@hookform/error-message"
 import FormLayout from './formLayout'
 import { Country, State } from 'country-state-city';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { formSteps, OnboardFormSchema } from '@/types/form'
 
 const PersonalInfoForm = () => {
-    const { register, control, setValue, watch, formState: { isValid, errors }, } = useFormContext();
+    const { register, control, setValue, watch, formState: { isValid, errors, touchedFields, dirtyFields }, } = useFormContext<OnboardFormSchema>();
     const role = watch("data.role");
+    const step = watch('config.currentForm');
     const selectedCountryCode = watch('data.country');
     const countries = Country.getAllCountries();
     const states = selectedCountryCode ? State.getStatesOfCountry(selectedCountryCode) : [];
 
-    const values = watch();
-    const requiredFields = ['data.first_name', 'data.last_name', 'data.state', 'data.country', 'data.linkedin'];
-    const allFieldsFilled = requiredFields.every((field) => {
-        const value = field.split('.').reduce((acc, key) => acc?.[key], values);
-        return value?.toString().trim() !== '';
-    })
-
-    console.log('errror your form data at second form', errors)
+    let fields = formSteps[step];
+    if (role !== "recruiter") {
+        fields = fields.filter((field) => field !== "work_email");
+    }
+    const onNext = () => {
+        setValue('config.currentForm', step + 1)
+    };
+    const isStepValid =
+        fields.every((field) => {
+            const dirty = dirtyFields?.data?.[field];
+            const error = errors?.data?.[field];
+            return dirty && !error;
+        });
 
     return (
         <FormLayout>
@@ -76,8 +82,9 @@ const PersonalInfoForm = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         {countries.map((country) => (
-                                            <SelectItem key={country.isoCode} value={country.name}>
-                                                {country.name}
+                                            <SelectItem className='flex gap-1 items-center' key={country.isoCode} value={country.isoCode}>
+                                                <span>{country.flag}</span>
+                                                <span>   {country.name}</span>
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -124,11 +131,11 @@ const PersonalInfoForm = () => {
                             placeholder='example@workdomain.com'
                             {...register('data.work_email')}
                         />
-                        <ErrorMessage
-                            errors={errors}
-                            name="data.work_email"
-                            render={({ message }) => <p>{message}</p>}
-                        />
+                        {touchedFields?.data?.work_email && errors?.data && "work_email" in errors.data && (
+                            <p className="text-sm text-red-500 mt-1">
+                                {(errors.data.work_email as { message?: string })?.message}
+                            </p>
+                        )}
                     </div>
                 )}
                 {role === 'talent' && (
@@ -140,11 +147,11 @@ const PersonalInfoForm = () => {
                             placeholder='enter your portfolio link here'
                             {...register('data.portfolio')}
                         />
-                        <ErrorMessage
-                            errors={errors}
-                            name="data.portfolio"
-                            render={({ message }) => <p>{message}</p>}
-                        />
+                        {touchedFields?.data?.portfolio && errors?.data && "portfolio" in errors.data && (
+                            <p className="text-sm text-red-500 mt-1">
+                                {(errors.data.portfolio as { message?: string })?.message}
+                            </p>
+                        )}
                     </div>
                 )}
                 <div className='w-full'>
@@ -155,11 +162,12 @@ const PersonalInfoForm = () => {
                         placeholder='e.g https://www.linkedin.com/in/example/'
                         {...register('data.linkedin')}
                     />
-                    <ErrorMessage
-                        errors={errors}
-                        name="data.linkedin"
-                        render={({ message }) => <p>{message}</p>}
-                    />
+
+                    {touchedFields?.data?.linkedin && errors?.data && "linkedin" in errors.data && (
+                        <p className="text-sm text-red-500 mt-1">
+                            {(errors.data.linkedin as { message?: string })?.message}
+                        </p>
+                    )}
                 </div>
                 <div className='flex justify-center gap-3 h-[42px] w-full'>
                     <Button
@@ -168,8 +176,8 @@ const PersonalInfoForm = () => {
                         Go Back
                     </Button>
                     <Button
-                        disabled={!allFieldsFilled || !isValid}
-                        onClick={() => setValue('config.currentForm', 3)}
+                        disabled={!isStepValid || !isValid}
+                        onClick={onNext}
                         className='bg-primary  h-full flex-1 cursor-pointer'>
                         Continue
                     </Button>
