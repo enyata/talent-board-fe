@@ -53,7 +53,7 @@ const ExperienceForm = () => {
 
     const form = new FormData();
     const resumeFiles = watch('data.resume') as File[] | undefined;
-    if (role === 'talent') {
+    if (role === 'talent' && watch('data.portfolio') !== '') {
         form.append('portfolio_url', watch('data.portfolio') ?? '');
     }
     if (role === 'recruiter') {

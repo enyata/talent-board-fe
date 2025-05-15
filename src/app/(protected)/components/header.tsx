@@ -65,7 +65,7 @@ const ProtectedHeader = () => {
                     </div>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end" className="max-w-48 shadow-none">
+                <DropdownMenuContent align="end" className="w-full max-w-[88px] md:max-w-[200px] mt-5 shadow-none">
                     {isMobile && (
                         <div className="px-3 py-2 text-sm font-medium">
                             {user?.first_name} {user?.last_name}
