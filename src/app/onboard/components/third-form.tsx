@@ -80,7 +80,7 @@ const ExperienceForm = () => {
         form.append('roles_looking_for', JSON.stringify(watch('data.roles_looking_for')))
     }
     if (role === 'recruiter') {
-        form.append('data.hiring_for', watch('data.hiring_for') ?? '')
+        form.append('hiring_for', watch('data.hiring_for') ?? '')
     }
 
     const [isPending, startTransition] = useTransition();

@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ButtonWithLoader } from '@/components/ui/button-with-loader';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { POST } from '@/lib/requests';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
@@ -71,17 +71,19 @@ const ProtectedHeader = () => {
                             {user?.first_name} {user?.last_name}
                         </div>
                     )}
-                    <DropdownMenuItem asChild={true}>
-                        <ButtonWithLoader
-                            disabled={isPending}
-                            isLoading={isPending}
-                            variant='outline'
-                            className='w-full mt-[24px] cursor-pointer'
-                            onClick={handleLogout}
-                        >
-                            Logout
-                        </ButtonWithLoader>
-                    </DropdownMenuItem>
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem asChild={true}>
+                            <ButtonWithLoader
+                                disabled={isPending}
+                                isLoading={isPending}
+                                variant='outline'
+                                className='w-full mt-[24px] cursor-pointer'
+                                onClick={handleLogout}
+                            >
+                                Logout
+                            </ButtonWithLoader>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>
