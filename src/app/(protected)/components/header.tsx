@@ -40,7 +40,7 @@ const ProtectedHeader = () => {
 
     return (
         <div className="flex items-center justify-between w-full p-6 fixed top-0 z-50 bg-white border-b">
-            <h1 className="font-semibold text-xl">Talentboard</h1>
+            <h1 className="font-semibold text-[24px]">Talentboard</h1>
 
             <DropdownMenu >
                 <DropdownMenuTrigger asChild>
@@ -59,6 +59,7 @@ const ProtectedHeader = () => {
                                     alt='arrow'
                                     height={10}
                                     width={8.33}
+                                    className='ml-2'
                                 />
                             </>
                         )}

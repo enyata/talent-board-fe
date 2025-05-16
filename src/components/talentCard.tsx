@@ -2,11 +2,15 @@ import React from 'react'
 import { Card } from './ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
-import { Bookmark, ChevronUp, MapPinned, SquareArrowOutUpRightIcon } from 'lucide-react'
+import { Bookmark, BookmarkCheck, ChevronUp, MapPinned, SquareArrowOutUpRightIcon } from 'lucide-react'
 
-const TalentCard = () => {
+interface TalentboardProps {
+    width?: string;
+    bookmarked?: boolean;
+}
+const TalentCard = ({ width = 'max-w-[418px]', bookmarked = false }: TalentboardProps) => {
     return (
-        <Card className='max-w-[418px] w-full h-[291px] p-[20px] shadow-none'>
+        <Card className={`${width} w-full md:h-[291px] p-[20px] shadow-none`}>
             <div>
                 <div className='flex justify-between items-center'>
                     <div className='flex gap-2 items-center'>
@@ -20,7 +24,7 @@ const TalentCard = () => {
                         </div>
                     </div>
                     <Button variant={'outline'} className='w-[75px] h-[28px] text-[#5F5F5F] rounded-[2px]'>
-                        Save <span><Bookmark /></span>
+                        Save <span>{bookmarked ? <BookmarkCheck /> : <Bookmark />}</span>
                     </Button>
                 </div>
                 <div className='flex items-center gap-1 text-[#5F5F5F] font-semibold text-[13px] mt-[24px]'>
