@@ -9,7 +9,7 @@ export function AuthHydrator({
   children,
 }: {
   user: User;
-  refreshToken:string | undefined;
+  refreshToken?:string | undefined;
   children: React.ReactNode;
 }) {
   const { setUser, setRefreshToken } = useAuthStore();
