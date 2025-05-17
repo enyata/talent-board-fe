@@ -43,24 +43,55 @@ export default function TalentSearchFilter() {
         <div className="relative">
             <div className="flex items-center gap-2">
                 {/* Input with shortcut hint */}
-                <div ref={wrapperRef} className="relative w-full">
-                    <p className="text-muted-foreground absolute right-2 top-1/2 -translate-y-1/2">
-                        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 px-1.5 font-mono text-[10px] font-medium">
-                            <span className="text-xs rounded bg-muted text-muted-foreground opacity-100 size-5 flex items-center justify-center">
-                                ⌘
-                            </span>{' '}
-                            <span className="rounded bg-muted text-muted-foreground opacity-100 size-5 flex items-center justify-center">
-                                F
-                            </span>
-                        </kbd>
-                    </p>
-                    <span className={`${value !== '' ? 'hidden' : 'block'} absolute left-3 top-1/2 -translate-y-1/2 text-[#AFAFAF]`}><Search strokeWidth={1} size={18} /></span>
-                    <Input
-                        className={`w-full h-[42px] text-[14px] pr-10 ${value !== '' ? 'pl-3' : 'pl-8'}`}
-                        placeholder="Search by skill, job title or name"
-                        value={value}
-                        onChange={handleChange}
-                    />
+                <div ref={wrapperRef}>
+                    <div className="relative w-full">
+                        <p className="text-muted-foreground absolute right-2 top-1/2 -translate-y-1/2">
+                            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 px-1.5 font-mono text-[10px] font-medium">
+                                <span className="text-xs rounded bg-muted text-muted-foreground opacity-100 size-5 flex items-center justify-center">
+                                    ⌘
+                                </span>{' '}
+                                <span className="rounded bg-muted text-muted-foreground opacity-100 size-5 flex items-center justify-center">
+                                    F
+                                </span>
+                            </kbd>
+                        </p>
+                        <span className={`${value !== '' ? 'hidden' : 'block'} absolute left-3 top-1/2 -translate-y-1/2 text-[#AFAFAF]`}><Search strokeWidth={1} size={18} /></span>
+                        <Input
+                            className={`w-full h-[42px] text-[14px] pr-10 ${value !== '' ? 'pl-3' : 'pl-8'}`}
+                            placeholder="Search by skill, job title or name"
+                            value={value}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    {/* Panel */}
+                    {open && (
+                        <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-lg border bg-white p-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="font-medium">Suggestions</span>
+                                <button
+                                    onClick={() => setOpen(false)}
+                                    className="text-lg leading-none cursor-pointer absolute top-3 right-3"
+                                >
+                                    <X strokeWidth={1} />
+                                </button>
+                            </div>
+                            <p className='text-sm'>{value ? `Result for "${value}"` : 'Start typing...'}</p>
+                            <ul className=" list-inside space-y-1 text-sm mt-2">
+                                {['React Developer', 'Product Designer', 'Backend Developer'].map(item =>
+                                    <li
+                                        key={item}
+                                        className=' hover:bg-gray-50 p-2  cursor-pointer rounded-sm'
+                                        onClick={() => {
+                                            setValue(item);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        {item}
+                                    </li>
+                                )}
+                            </ul>
+                        </div>
+                    )}
                 </div>
 
                 {/* Filter button */}
@@ -71,36 +102,6 @@ export default function TalentSearchFilter() {
                     Filter <Funnel />
                 </Button>
             </div>
-
-            {/* Panel */}
-            {open && (
-                <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-lg border bg-white p-4">
-                    <div className="flex justify-between items-center mb-2">
-                        <span className="font-medium">Suggestions</span>
-                        <button
-                            onClick={() => setOpen(false)}
-                            className="text-lg leading-none cursor-pointer absolute top-3 right-3"
-                        >
-                            <X strokeWidth={1} />
-                        </button>
-                    </div>
-                    <p className='text-sm'>{value ? `Result for "${value}"` : 'Start typing...'}</p>
-                    <ul className=" list-inside space-y-1 text-sm mt-2">
-                        {['React Developer', 'Product Designer', 'Backend Developer'].map(item =>
-                            <li
-                                key={item}
-                                className=' bg-gray-50 p-2  cursor-pointer rounded-sm'
-                                onClick={() => {
-                                    setValue(item);
-                                    setOpen(false);
-                                }}
-                            >
-                                {item}
-                            </li>
-                        )}
-                    </ul>
-                </div>
-            )}
         </div>
     );
 }
