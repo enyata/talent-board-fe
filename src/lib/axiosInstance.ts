@@ -1,39 +1,43 @@
-import { useAuthStore } from "@/store/authStore";
+"use client";
+
 import axios from "axios";
 import { env } from "./env";
+import { useAuthStore } from "@/store/authStore";
 
-axios.defaults.withCredentials = true
+axios.defaults.withCredentials = true;
 
 const API = axios.create({
   baseURL: env("apiUrl"),
   withCredentials: true,
+  timeout: 30_000, // Axios own timeout (fallback)
 });
-
-// Request interceptor
 API.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().accessToken;
-  const refreshToken = useAuthStore.getState().refreshToken;
-  console.log('token at API', token)
-  console.log('refreshtoken at API', refreshToken)
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  if (refreshToken) {
-    config.headers["x-refresh-token"] = refreshToken;
-  }
+  const { accessToken, refreshToken } = useAuthStore.getState();
+  if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
+  if (refreshToken) config.headers["x-refresh-token"] = refreshToken;
   return config;
 });
 
-// Response interceptor
+/* Handle refreshed token */
+
+
 API.interceptors.response.use(
-  (response) => {
-    const newToken = response.headers["x-access-token"];
-    if (newToken) {
-      useAuthStore.getState().setAccessToken(newToken);
-    }
-    return response;
+  (res) => {
+    const newToken = res.headers["x-access-token"];
+    if (newToken) useAuthStore.getState().setAccessToken(newToken);
+    return res;
   },
-  (error) => {
+  async (error) => {
+    /* Axios timeout triggers `code === "ECONNABORTED"`  */
+    if (error.code === "ECONNABORTED") {
+      window.location.href = "/";
+      return;
+    }
+    if (error.response?.status === 504) {
+      window.location.href = "/";
+      return;
+    }
+
     return Promise.reject(error);
   }
 );

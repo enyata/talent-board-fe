@@ -5,6 +5,9 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Funnel, Search, X } from 'lucide-react';
 
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { Checkbox } from './ui/checkbox';
+
 export default function TalentSearchFilter() {
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState('');
@@ -43,7 +46,7 @@ export default function TalentSearchFilter() {
         <div className="relative">
             <div className="flex items-center gap-2">
                 {/* Input with shortcut hint */}
-                <div ref={wrapperRef}>
+                <div ref={wrapperRef} className='w-full'>
                     <div className="relative w-full">
                         <p className="text-muted-foreground absolute right-2 top-1/2 -translate-y-1/2">
                             <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 px-1.5 font-mono text-[10px] font-medium">
@@ -57,7 +60,7 @@ export default function TalentSearchFilter() {
                         </p>
                         <span className={`${value !== '' ? 'hidden' : 'block'} absolute left-3 top-1/2 -translate-y-1/2 text-[#AFAFAF]`}><Search strokeWidth={1} size={18} /></span>
                         <Input
-                            className={`w-full h-[42px] text-[14px] pr-10 ${value !== '' ? 'pl-3' : 'pl-8'}`}
+                            className={`w-full rounded-sm h-[42px] text-[14px] pr-10 ${value !== '' ? 'pl-3' : 'pl-8'}`}
                             placeholder="Search by skill, job title or name"
                             value={value}
                             onChange={handleChange}
@@ -65,14 +68,14 @@ export default function TalentSearchFilter() {
                     </div>
                     {/* Panel */}
                     {open && (
-                        <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-lg border bg-white p-4">
+                        <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-sm border bg-white p-4">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="font-medium">Suggestions</span>
                                 <button
                                     onClick={() => setOpen(false)}
                                     className="text-lg leading-none cursor-pointer absolute top-3 right-3"
                                 >
-                                    <X strokeWidth={1} />
+                                    <X strokeWidth={2} size={14} />
                                 </button>
                             </div>
                             <p className='text-sm'>{value ? `Result for "${value}"` : 'Start typing...'}</p>
@@ -95,12 +98,27 @@ export default function TalentSearchFilter() {
                 </div>
 
                 {/* Filter button */}
-                <Button
-                    variant="outline"
-                    className="flex items-center gap-2 text-[#09090B] text-[14px] h-[42px]"
-                >
-                    Filter <Funnel />
-                </Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button
+                            variant="outline"
+                            className="flex items-center gap-2 text-[#09090B] text-[14px] h-[42px]"
+                        >
+                            Filter <Funnel size={14} />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className='rounded-[8px] shadow-none p-6 md:ml-11 min-w-[164px]'>
+                        <p className='flex items-center gap-2 text-[#09090B] font-medium'>Filter by <Funnel size={16} /></p>
+                        <div className='flex flex-col gap-2 text-[#696969]'>
+                            <DropdownMenuItem>
+                                <div className='flex items-center gap-2 justify-between'>
+                                    <Checkbox className='size-5 border-[#CACACA]'/>
+                                    <label className='text-[14px]'>Location</label>
+                                </div>
+                            </DropdownMenuItem>
+                        </div>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </div>
     );
