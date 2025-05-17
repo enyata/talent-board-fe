@@ -5,7 +5,7 @@ import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Funnel, Search, X } from 'lucide-react';
 
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from './ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Checkbox } from './ui/checkbox';
 
 export default function TalentSearchFilter() {
@@ -107,15 +107,15 @@ export default function TalentSearchFilter() {
                             Filter <Funnel size={14} />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className='rounded-[8px] shadow-none p-6 md:ml-11 min-w-[164px]'>
+                    <DropdownMenuContent className='rounded-[8px] flex flex-col gap-[24px] shadow-none p-6 md:ml-20 min-w-[164px]'>
                         <p className='flex items-center gap-2 text-[#09090B] font-medium'>Filter by <Funnel size={16} /></p>
                         <div className='flex flex-col gap-2 text-[#696969]'>
-                            <DropdownMenuItem>
-                                <div className='flex items-center gap-2 justify-between'>
-                                    <Checkbox className='size-5 border-[#CACACA]'/>
-                                    <label className='text-[14px]'>Location</label>
+                            {['Skills', 'Experience', 'Location'].map(item =>
+                                <div key={item} className='flex items-center gap-[10px] '>
+                                    <Checkbox className='size-5 border-[#CACACA]' />
+                                    <label className='font-medium'>{item}</label>
                                 </div>
-                            </DropdownMenuItem>
+                            )}
                         </div>
                     </DropdownMenuContent>
                 </DropdownMenu>

@@ -12,7 +12,7 @@ const TalentsPage = () => {
           <BreadcrumbItem>
             <BreadcrumbLink href="/dashboard" className='flex items-center gap-1'>
               <Image
-                src={'assets/icons/home.svg'}
+                src={'/assets/icons/home.svg'}
                 alt="home"
                 height={16}
                 width={16}

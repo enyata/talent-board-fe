@@ -6,11 +6,12 @@ import { Bookmark, BookmarkCheck, ChevronUp, MapPinned, SquareArrowOutUpRightIco
 
 interface TalentboardProps {
     width?: string;
+    height?: string;
     bookmarked?: boolean;
 }
-const TalentCard = ({ width = 'max-w-[418px]', bookmarked = false }: TalentboardProps) => {
+const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', bookmarked = false }: TalentboardProps) => {
     return (
-        <Card className={`${width} w-full md:h-[291px] p-[20px] shadow-none`}>
+        <Card className={`${width} ${height} w-full p-[20px] shadow-none`}>
             <div>
                 <div className='flex justify-between items-center'>
                     <div className='flex gap-2 items-center'>

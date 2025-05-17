@@ -27,19 +27,18 @@ API.interceptors.response.use(
     if (newToken) useAuthStore.getState().setAccessToken(newToken);
     return res;
   },
-  async (error) => {
-    /* Axios timeout triggers `code === "ECONNABORTED"`  */
-    if (error.code === "ECONNABORTED") {
-      window.location.href = "/";
-      return;
-    }
-    if (error.response?.status === 504) {
-      window.location.href = "/";
-      return;
-    }
+  // async (error) => {
+  //   if (error.code === "ECONNABORTED") {
+  //     window.location.href = "/";
+  //     return;
+  //   }
+  //   if (error.response?.status === 504) {
+  //     window.location.href = "/";
+  //     return;
+  //   }
 
-    return Promise.reject(error);
-  }
+  //   return Promise.reject(error);
+  // }
 );
 
 export default API;

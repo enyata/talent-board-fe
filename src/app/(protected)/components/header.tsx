@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigg
 import { POST } from '@/lib/requests';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useTransition } from 'react';
 import { toast } from 'react-toastify';
@@ -40,7 +41,7 @@ const ProtectedHeader = () => {
 
     return (
         <div className="flex items-center justify-between w-full p-6 fixed top-0 z-50 bg-white border-b">
-            <h1 className="font-semibold text-[24px]">Talentboard</h1>
+            <Link href={'/dashboard'} className="font-semibold text-[24px]">Talentboard</Link>
 
             <DropdownMenu >
                 <DropdownMenuTrigger asChild>

@@ -24,7 +24,7 @@ const RecentBookmarkedTalent = () => {
     return (
         <div className='w-full mt-[24px] gap-3 grid md:grid-cols-2 grid-cols-1'>
             {Array.from({ length: 4 }).map((_, index) => (
-                <TalentCard bookmarked={true} width='max-w-[453px]' key={index} />
+                <TalentCard bookmarked={true} height='md:h-[307px]' width='max-w-[453px]' key={index} />
             ))}
         </div>
     )
