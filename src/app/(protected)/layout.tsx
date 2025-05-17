@@ -5,24 +5,35 @@ import { getUser } from '@/api/user';
 import { AuthHydrator } from '@/components/authHydrator';
 import ProtectedFragment from './components/protected-fragment';
 import { cookies } from "next/headers";
+import { RequestTimeoutError } from '@/lib/withTimeout';
+import Timeout from '../time-out';
 
 
 const ProtectedLayout = async ({ children }: { children: React.ReactNode }) => {
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get("refresh_token");
-    const user = await getUser();
     console.log('refresh token at layout of protected', refreshToken)
-    if (!user) {
-        console.log('no user at protected')
-        redirect('/login');
+
+    let userData;
+    try {
+        userData = await getUser();
+    } catch (err) {
+        if (err instanceof RequestTimeoutError) {
+            return (<Timeout />)
+        }
+        console.error("User fetch failed:", err);
+        redirect("/login");
     }
-    if (user.data.user.profile_completed === false) {
+    if (!userData) {
+        redirect("/login");
+    }
+    if (userData.data.user.profile_completed === false) {
         redirect('/onboard');
     }
 
     return (
         <ProtectedFragment>
-            <AuthHydrator user={user.data.user} refreshToken={refreshToken?.value}>
+            <AuthHydrator user={userData.data.user} refreshToken={refreshToken?.value}>
                 <ProtectedHeader />
                 <div className='mx-auto w-full md:max-w-[951px] mt-[120px] pb-[64px]'>
                     {children}

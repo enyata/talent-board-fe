@@ -9,7 +9,7 @@ const SuccessComponent = () => {
     const { watch } = useFormContext()
     const firstName = watch('data.first_name');
     return (
-        <div className='w-full max-w-[428px] px-[24px] py-[32px] relative flex flex-col justify-center items-center text-center'>
+        <div className='w-full max-w-[428px] px-[24px] py-[32px] relative flex flex-col justify-center items-center text-center rounded-[12px] shadow-sm'>
             <p className='text-3xl font-semibold'>Welcome onboard! <span className='text-primary capitalize'>{firstName}</span></p>
             <p className='text-[14px] mt-2'>Continue to your dashboard</p>
             <ConfettiComponent className='mt-[36px]' />

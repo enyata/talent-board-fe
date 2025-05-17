@@ -2,10 +2,11 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ButtonWithLoader } from '@/components/ui/button-with-loader';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { POST } from '@/lib/requests';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useTransition } from 'react';
 import { toast } from 'react-toastify';
@@ -40,7 +41,7 @@ const ProtectedHeader = () => {
 
     return (
         <div className="flex items-center justify-between w-full p-6 fixed top-0 z-50 bg-white border-b">
-            <h1 className="font-semibold text-[24px]">Talentboard</h1>
+            <Link href={'/dashboard'} className="font-semibold text-[24px]">Talentboard</Link>
 
             <DropdownMenu >
                 <DropdownMenuTrigger asChild>
@@ -66,24 +67,22 @@ const ProtectedHeader = () => {
                     </div>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end" className="w-full max-w-[88px] md:max-w-[200px] mt-5 shadow-none">
+                <DropdownMenuContent align="end" className="w-full max-w-[88px] md:max-w-[200px] mt-5 shadow-none rounded-b-sm">
                     {isMobile && (
                         <div className="px-3 py-2 text-sm font-medium">
                             {user?.first_name} {user?.last_name}
                         </div>
                     )}
                     <DropdownMenuGroup>
-                        <DropdownMenuItem asChild={true}>
-                            <ButtonWithLoader
-                                disabled={isPending}
-                                isLoading={isPending}
-                                variant='outline'
-                                className='w-full mt-[24px] cursor-pointer'
-                                onClick={handleLogout}
-                            >
-                                Logout
-                            </ButtonWithLoader>
-                        </DropdownMenuItem>
+                        <ButtonWithLoader
+                            disabled={isPending}
+                            isLoading={isPending}
+                            variant='outline'
+                            className='w-full mt-[24px] cursor-pointer'
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </ButtonWithLoader>
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>

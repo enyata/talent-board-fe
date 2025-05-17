@@ -28,7 +28,7 @@ const RecommendedTalentCarousel = () => {
             <CarouselContent className='-ml-1 gap-2 mt-0'>
                 {Array.from({ length: 5 }).map((_, index) => (
                     <CarouselItem key={index} className='pl-1 min-w-[250px] max-w-[423px] flex-shrink-0'>
-                        <TalentCard width='max-w-[423px]' />
+                        <TalentCard height='md:h-[307px]' width='max-w-[423px]' />
                     </CarouselItem>
                 ))}
             </CarouselContent>
