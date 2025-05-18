@@ -28,7 +28,7 @@ const ProtectedHeader = () => {
                     toast.error(res.message || "Something went wrong");
                     return;
                 }
-                toast.success('User logged out successfully')
+                toast.success('Logged out successfully')
                 router.replace('/login')
 
 
