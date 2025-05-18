@@ -3,15 +3,14 @@ import React from "react";
 import {
   Bookmark,
   ChevronUp,
-  //   Download,
   Mail,
   MapPinned,
   SquareArrowOutUpRight,
   ChevronLeft,
   CircleArrowDown,
-  Linkedin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const TalentPage = async ({
   params,
@@ -19,24 +18,25 @@ const TalentPage = async ({
   params: Promise<{ slug: string }>;
 }) => {
   const { slug } = await params;
+  //check whether a user with the slug exists if not return not found page
   console.log(slug);
   return (
-    <div className="max-w=[951px] flex flex-col gap-9">
-      <div className="flex items-center gap-2 text-[#09090B] text-[14px]">
+    <div className="max-w-[951px] w-full flex flex-col gap-9 px-4 md:px-0">
+      <Link href={'/talents'} className="flex items-center gap-2 text-[#09090B] text-[14px]">
         <ChevronLeft size={14} strokeWidth={2.5} className="text-[#71717A]" />
         Back to results
-      </div>
+      </Link>
 
       <div className="border border-[#E4E7EC] rounded-xl">
         {/* div wrapper for name and uppoer part of profile */}
-        <div className="flex justify-between border-b border-[#E4E7EC] p-4 items-center">
+        <div className="flex flex-col md:flex-row justify-between border-b border-[#E4E7EC] p-4 md:items-center">
           <div className="flex gap-6 items-center">
-            <div className="rounded-lg overflow-hidden relative w-[109px] h-[140px]">
+            <div className="rounded-lg overflow-hidden relative max-w-[109px] w-full h-[140px]">
               <Image
                 src={"/assets/images/talentimage.png"}
                 alt="talent-image"
-                width={100}
-                height={100}
+                width={109}
+                height={140}
                 className="w-full h-full object-cover"
               />
               <span className="absolute bottom-1 w-[101px] flex items-center justify-center h-5 left-1/2 -translate-x-1/2 rounded-full bg-[#FFFFFFCC]">
@@ -61,7 +61,7 @@ const TalentPage = async ({
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 mt-2 md:mt-0">
             <Button
               variant={"outline"}
               className="h-[28px] border-[0.5px] w-[96px] gap-1 text-[#5F5F5F] rounded-[3px] text-[12px] flex">
@@ -81,8 +81,8 @@ const TalentPage = async ({
         </div>
 
         {/* div wrapper for bio, skills, experience and resume */}
-        <div className="flex">
-          <div className="w-[521px] p-4 text-[#5F5F5F] border-r border-[#E4E7EC] flex flex-col gap-8">
+        <div className="flex flex-col md:flex-row">
+          <div className="max-w-[521px] w-full p-4 text-[#5F5F5F] md:border-r border-[#E4E7EC] flex flex-col gap-8">
             <div className="flex flex-col gap-2">
               <h2 className="text-[12px] font-semibold">Bio:</h2>
               <p className="text-[13px] font-normal">
@@ -108,7 +108,7 @@ const TalentPage = async ({
                 ].map((skill, index) => (
                   <Button
                     key={index}
-                    className="bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] p-[6px] text-[12px]">
+                    className="bg-[#F5F5F5] text-[#5F5F5F] h-[24px] border-[#696969] border-[1px] rounded-[3px] p-[6px] text-[12px]">
                     {skill}
                   </Button>
                 ))}
@@ -123,7 +123,7 @@ const TalentPage = async ({
             <div className="flex flex-col gap-2">
               <h2 className="text-[12px] font-semibold">Resume:</h2>
 
-              <div className="flex gap-4 items-center justify-between w-[361px]">
+              <div className="flex gap-4 items-center justify-between max-w-[361px] w-full">
                 <div className="flex gap-2 items-center">
                   <Image
                     src={"/assets/images/pdfholder.png"}
@@ -153,35 +153,34 @@ const TalentPage = async ({
             </div>
           </div>
 
-          <div className="w-[430px] p-4">
+          <div className="max-w-[430px] w-full p-4">
             <div className="p-4 text-[#5F5F5F] flex flex-col gap-2 rounded-xl border border-[#E4E7EC]">
               <p className="text-[12px] font-semibold">Contact Information:</p>
 
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <Button
                   variant={"outline"}
-                  className="text-[12px] font-medium gap-1 w-[114px] h-[28px] rounded-[3px]">
+                  className="text-[12px] font-medium gap-1 max-w-[114px] h-[28px] rounded-[3px]">
                   <SquareArrowOutUpRight strokeWidth={2.25} />
                   Visit Portfolio
                 </Button>
 
                 <Button
                   variant={"outline"}
-                  className="text-[12px] font-medium gap-1 w-[119px] h-[28px] rounded-[3px]">
-                  {/* <Image
+                  className="text-[12px] font-medium gap-1 max-w-[119px] h-[28px] rounded-[3px]">
+                  <Image
                     src={"/assets/icons/linkedin-01.svg"}
                     alt="icon for linkedin"
                     width={16}
                     height={16}
                     className="w-[16px] h-[16px]"
-                  /> */}
-                  <Linkedin size={14} strokeWidth={2.25} />
+                  />
                   Go to Linkedin
                 </Button>
 
                 <Button
                   variant={"outline"}
-                  className="text-[12px] font-medium gap-1 w-[117px] h-[28px] rounded-[3px]">
+                  className="text-[12px] font-medium gap-1 max-w-[117px] h-[28px] rounded-[3px]">
                   <Mail strokeWidth={2.25} />
                   Send an email
                 </Button>
