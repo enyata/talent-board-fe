@@ -1,3 +1,4 @@
+
 import TalentSearchFilter from '@/components/talent-search-filter'
 import TalentCard from '@/components/talentCard'
 import React from 'react'
