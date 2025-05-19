@@ -48,7 +48,7 @@ export default function TalentSearchFilter() {
                 {/* Input with shortcut hint */}
                 <div ref={wrapperRef} className='w-full'>
                     <div className="relative w-full">
-                        <p className="text-muted-foreground absolute right-2 top-1/2 -translate-y-1/2">
+                        <p className=" hidden md:block text-muted-foreground absolute right-2 top-1/2 -translate-y-1/2">
                             <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 px-1.5 font-mono text-[10px] font-medium">
                                 <span className="text-xs rounded bg-muted text-muted-foreground opacity-100 size-5 flex items-center justify-center">
                                     ⌘

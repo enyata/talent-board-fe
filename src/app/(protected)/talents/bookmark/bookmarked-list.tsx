@@ -11,9 +11,11 @@ import React from 'react'
 
 const BookmarkedList = () => {
   return (
-    <div className='md:mt-[36px] mt-[24px]'>
-      <TalentSearchFilter />
-      <Card className='shadow-none outline-px mt-[24px] gap-0 bg-[#fafafa] px-4 text-[#101828] md:min-h-[608px]'>
+    <div className='md:mt-5 mt-2'>
+      <div className='sticky top-[88px] py-4 z-10 bg-white'>
+        <TalentSearchFilter />
+      </div>
+      <Card className='shadow-none outline-px mt-2 gap-0 bg-[#fafafa] px-4 text-[#101828] md:min-h-[608px]'>
         {/* EMPTY BOOKMARK UI */}
         <div className='my-auto mx-auto flex flex-col items-center justify-center text-[#101828]'>
           <Image
