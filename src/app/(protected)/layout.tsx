@@ -12,6 +12,7 @@ import Timeout from '../time-out';
 const ProtectedLayout = async ({ children }: { children: React.ReactNode }) => {
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get("refresh_token");
+    const accessToken = cookieStore.get("access_token");
     console.log('refresh token at layout of protected', refreshToken)
 
     let userData;
@@ -33,7 +34,7 @@ const ProtectedLayout = async ({ children }: { children: React.ReactNode }) => {
 
     return (
         <ProtectedFragment>
-            <AuthHydrator user={userData.data.user} refreshToken={refreshToken?.value}>
+            <AuthHydrator user={userData.data.user} accessToken={accessToken?.value} refreshToken={refreshToken?.value}>
                 <ProtectedHeader />
                 <div className='mx-auto w-full md:max-w-[951px] mt-[120px] pb-[64px]'>
                     {children}

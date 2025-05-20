@@ -6,7 +6,6 @@ import { getTimeOfDay } from '@/lib/dateAndTimeUtils'
 import { useAuthStore } from '@/store/authStore'
 import { ClockFading } from 'lucide-react'
 import Image from 'next/image'
-import React from 'react'
 
 const overviewCardDetails = [
     {
@@ -28,6 +27,7 @@ const overviewCardDetails = [
 
 const DashboardOverview = () => {
     const { user } = useAuthStore()
+
     return (
         <Card className='shadow-none outline-px md:mt-[36px] mt-[16px] bg-[#fafafa]'>
             <div className='px-[16px]'>

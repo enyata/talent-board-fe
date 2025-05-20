@@ -6,6 +6,7 @@ import RecruiterDashboard from './components/recruiterDashboard'
 
 const DashboardPage = () => {
     const { user } = useAuthStore()
+
     return (
         <div className='md:mt-[64px] w-full px-4'>
             <div className='flex justify-between'>
@@ -17,10 +18,12 @@ const DashboardPage = () => {
                     </Button>
                 </Link> */}
             </div>
-            {user?.role === 'talent' ?
-                <TalentDashboard /> :
-                <RecruiterDashboard />
-            }
+            <div>
+                {user?.role === 'talent' ?
+                    <TalentDashboard /> :
+                    <RecruiterDashboard />
+                }
+            </div>
         </div>
 
     )

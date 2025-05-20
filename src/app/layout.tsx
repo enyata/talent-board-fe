@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
+import QueryProviders from "@/components/providers/queryProvider";
 
 
 const neueHaas = localFont({
@@ -79,19 +80,20 @@ export default function RootLayout({
       <body
         className={` ${neueHaas.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-        {children}
+        <QueryProviders>
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          {children}
+        </QueryProviders>
       </body>
     </html>
   );
