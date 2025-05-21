@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { env } from '@/lib/env';
+import { Loader } from '@/components/ui/loader';
 
 export default function AuthCallbackPageComponent() {
   const searchParams = useSearchParams();
@@ -31,7 +32,7 @@ export default function AuthCallbackPageComponent() {
     }
   }, [searchParams, router]);
 
-  return null;
+  return <Loader className="text-primary shadow-none size-[40px]" />;
 }
 
 

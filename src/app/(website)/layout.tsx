@@ -1,17 +1,28 @@
 import { getUser } from '@/api/user';
 import Navbar from '@/components/navbar'
+import { RequestTimeoutError } from '@/lib/withTimeout';
 import { redirect } from 'next/navigation';
 import React from 'react';
+import Timeout from '../time-out';
 
 const WebsiteLayout = async ({ children }: { children: React.ReactNode }) => {
-    const user = await getUser();
-    if (user) {
-        redirect('/dashboard');
+    let userData;
+    try {
+        userData = await getUser();
+    } catch (err) {
+        if (err instanceof RequestTimeoutError) {
+            return(<Timeout/>)
+        }
+        console.error("User fetch failed:", err);
+        redirect("/login");
+    }
+    if (userData) {
+        redirect("/dashboard");
     }
     return (
         <div className='w-full'>
             <Navbar />
-            <div className='md:mt-[170px] mt-[40px]'>
+            <div className='md:mt-[140px] mt-[40px]'>
                 {children}
             </div>
         </div>

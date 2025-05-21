@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 export default function ConfettiComponent({ className }: { className?: string }) {
   useEffect(() => {
     confetti({
+      shapes: ['circle', 'star', 'square'],
       particleCount: 100,
       spread: 50,
       origin: { y: 0.6 },
@@ -22,7 +23,7 @@ export default function ConfettiComponent({ className }: { className?: string })
         width={136}
         height={136}
         initial={{ scale: 0 }}
-        animate={{ scale: 1}}
+        animate={{ scale: 1 }}
         transition={{ duration: 1, type: 'spring' }}
       >
         <defs>
