@@ -19,7 +19,7 @@ export function StateSelect({ countryCode, value, onChange, disabled, className 
 
   return (
     <div className="w-full">
-      <Label htmlFor="state" className="font-normal">State*</Label>
+      <Label htmlFor="state" className="font-normal">State</Label>
       <Select onValueChange={onChange} value={value} disabled={disabled || !countryCode}>
         <SelectTrigger id="state" className={cn('mt-2 w-full', className)}>
           <SelectValue placeholder={countryCode ? 'Select your state' : 'Select a country first'} />

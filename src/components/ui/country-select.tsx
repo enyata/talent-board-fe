@@ -17,7 +17,7 @@ export function CountrySelect({ value, onChange, className }: Props) {
 
   return (
     <div className="w-full">
-      <Label htmlFor="country" className="font-normal">Country*</Label>
+      <Label htmlFor="country" className="font-normal">Country</Label>
       <Select onValueChange={onChange} value={value}>
         <SelectTrigger id="country" className={cn('mt-2 w-full', className)}>
           <SelectValue placeholder="Select your country" />

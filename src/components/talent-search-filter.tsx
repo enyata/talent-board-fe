@@ -17,7 +17,13 @@ import { SKILLSET } from '@/constants';
 import { ButtonWithLoader } from './ui/button-with-loader';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function TalentSearchFilter() {
+interface TalentSearchFilterProps {
+    isLoading?: boolean;
+    queryStringValue?: string;
+    setQueryStringValue: (q: string) => void
+}
+
+export default function TalentSearchFilter({ isLoading, setQueryStringValue }: TalentSearchFilterProps) {
     const [open, setOpen] = React.useState(false);
     const [value, setValue] = React.useState('');
     const wrapperRef = React.useRef<HTMLDivElement>(null);
@@ -64,37 +70,47 @@ export default function TalentSearchFilter() {
 
     const { control, reset, watch } = useForm({
         defaultValues: {
+            q: strParam('q') || '',
+            limit: strParam('limit') || undefined,
             filter_options: arrParam('filter_options') || [] as string[],
-            experience_level: strParam('experience_level') || '',
+            experience: strParam('experience') || '',
             country: strParam('country') || '',
             state: strParam('state') || '',
             skills: arrParam('skills') || [] as string[]
         },
     });
-
+    const query = watch('q');
+    const limit = watch('limit');
     const filterOptions = watch('filter_options');
-    const experienceLevel = watch('experience_level');
+    const experienceLevel = watch('experience');
     const country = watch('country');
     const state = watch('state');
     const skills = watch('skills');
 
     const handleFilter = () => {
-        // Construct the query string
-        const queryString = new URLSearchParams({
+        const params: Record<string, string> = {
             filter_options: filterOptions.join(','),
-            experience_level: experienceLevel,
-            country,
-            state,
-            skills: skills.join(',')
-        }).toString();
-        // Update the URL with the new query string
-        window.history.replaceState({}, '', `?${queryString}`);
+        };
+        if (query) params.q = query;
+        if (limit !== undefined) params.limit = limit.toString();
+        if (filterOptions.includes('experience') && experienceLevel)
+            params.experience = experienceLevel;
+        if (filterOptions.includes('skills') && skills.length)
+            params.skills = skills.join(',');
+        if (filterOptions.includes('location')) {
+            if (country) params.country = country;
+            if (state) params.state = state;
+        }
+        const queryString = new URLSearchParams(params).toString();
+        setQueryStringValue(queryString);
+        router.replace(`?${queryString}`, { scroll: false });
+        // window.history.replaceState({}, '', `?${queryString}`);
     }
 
     const handleReset = () => {
         reset({
             filter_options: [],
-            experience_level: '',
+            experience: '',
             country: '',
             state: '',
             skills: []
@@ -129,9 +145,9 @@ export default function TalentSearchFilter() {
                             onChange={handleChange}
                         />
                     </div>
-                    {/* Panel */}
+                    {/* Search Suggestion Panel */}
                     {open && (
-                        <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-sm border bg-white p-5">
+                        <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-sm border shadow-lg bg-white p-5">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="font-medium">Suggestions</span>
                                 <button
@@ -159,7 +175,6 @@ export default function TalentSearchFilter() {
                         </div>
                     )}
                 </div>
-
                 {/* Filter button */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -179,7 +194,7 @@ export default function TalentSearchFilter() {
                             control={control}
                             render={({ field }) => (
                                 <div className="flex flex-col mt-[20px] md:flex-row gap-6 text-[#696969]">
-                                    {['Skills', 'Experience', 'Location'].map((item) => {
+                                    {['skills', 'experience', 'location'].map((item) => {
                                         const isChecked = field.value.includes(item);
 
                                         return (
@@ -194,7 +209,7 @@ export default function TalentSearchFilter() {
                                                     }}
                                                     className="size-5 border-[#CACACA] data-[state=checked]:bg-[#E5E4DE] data-[state=checked]:border-[#5F5F5F] data-[state=checked]:text-black"
                                                 />
-                                                <label className="font-medium">{item}</label>
+                                                <label className="font-medium capitalize">{item}</label>
                                             </div>
                                         );
                                     })}
@@ -209,7 +224,7 @@ export default function TalentSearchFilter() {
                                 <div id='experience-level' className='flex gap-[10px] mt-1  w-full justify-between'>
                                     <Controller
                                         control={control}
-                                        name="experience_level"
+                                        name="experience"
                                         render={({ field }) => (
                                             <div
                                                 id="experience-level"
@@ -234,8 +249,8 @@ export default function TalentSearchFilter() {
                             {/* LOCATION */}
                             <div>
                                 <DropdownMenuSeparator />
-                                <Label htmlFor='experience-level' className='font-normal text-[14px] mt-4'>Enter location to search for here</Label>
-                                <div className="mt-2 flex flex-col md:flex-row gap-[24px] justify-between">
+                                {/* <Label htmlFor='experience-level' className='font-normal text-[14px] mt-4'>Enter location to search for here</Label> */}
+                                <div className="mt-4 flex flex-col md:flex-row gap-[24px] justify-between">
                                     {/* Country */}
                                     <Controller
                                         control={control}
@@ -270,7 +285,6 @@ export default function TalentSearchFilter() {
                             <div>
                                 <DropdownMenuSeparator />
                                 <Label htmlFor='experience-level' className='font-normal text-[14px] mt-4'>Select skills that apply</Label>
-
                                 <Controller
                                     control={control}
                                     name="skills"
@@ -301,13 +315,14 @@ export default function TalentSearchFilter() {
                         </div>
                         <div className='flex justify-between mt-5'>
                             <Button
-                                disabled={filterOptions.length < 1}
+                                disabled={filterOptions.length < 1 || isLoading}
                                 onClick={handleReset} variant={'outline'}
                                 className='rounded-[7px]'>
                                 Reset
                             </Button>
                             <ButtonWithLoader
-                                disabled={filterOptions.length < 1}
+                                isLoading={isLoading}
+                                disabled={filterOptions.length < 1 || isLoading}
                                 variant='outline'
                                 className='rounded-[7px]'
                                 onClick={handleFilter}
