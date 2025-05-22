@@ -26,9 +26,9 @@ export default function RecruiterDashboardSkeleton() {
                     <Skeleton className="h-[20px] w-[160px]" />
                     <Skeleton className="h-[36px] w-[120px] rounded-md" />
                 </div>
-                <div className="flex gap-4 overflow-x-auto">
+                <div className="flex flex-col md:flex-row gap-4 overflow-x-auto w-full">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <Skeleton key={i} className="w-[280px] h-[180px] rounded-lg" />
+                        <Skeleton key={i} className="max-w-[423px] w-full h-[180px] rounded-lg" />
                     ))}
                 </div>
             </Card>
@@ -39,9 +39,9 @@ export default function RecruiterDashboardSkeleton() {
                     <Skeleton className="h-[20px] w-[180px]" />
                     <Skeleton className="h-[36px] w-[120px] rounded-md" />
                 </div>
-                <div className="flex gap-4 overflow-x-auto">
+                <div className="flex flex-col md:flex-row gap-4 overflow-x-auto">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <Skeleton key={i} className="w-[280px] h-[180px] rounded-lg" />
+                        <Skeleton key={i} className="w-full max-w-[371px] h-[180px] rounded-lg" />
                     ))}
                 </div>
             </Card>

@@ -16,6 +16,16 @@ interface TalentboardProps {
     width?: string
     height?: string
     bookmarked?: boolean
+
+    image_url?: string
+    first_name?: string
+    last_name?: string
+    title?: string
+    location?: string
+    description?: string
+    skills?: string[]
+    upvotes?: number
+    portfolio_url?: string
 }
 
 const TalentCard = ({
