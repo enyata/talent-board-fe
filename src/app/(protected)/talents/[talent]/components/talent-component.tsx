@@ -23,7 +23,7 @@ import TalentCardSkeleton from "./talent-skeleton";
 const TalentComponent = ({ talentID }: { talentID: string }) => {
     const { fetchTalentById } = useTalentApi()
     const { data, isLoading } = useQuery({
-        queryKey: ['talent',],
+        queryKey: ['talent'],
         queryFn: () => fetchTalentById(talentID),
     });
     console.log('data at single talent page', data)

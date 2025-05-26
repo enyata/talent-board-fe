@@ -1,9 +1,13 @@
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function SkeletonTalentCard({ width = 'w-full', height = 'h-auto' }) {
+interface TalentboardProps {
+    width?: string
+    height?: string
+}
+export default function SkeletonTalentCard({ width = 'w-full', height = 'h-auto' }: TalentboardProps) {
     return (
-        <Card className={`${width} ${height} p-[20px] shadow-none`}>
+        <Card className={`${width} ${height} w-full p-[20px] shadow-none`}>
             <div>
                 <div className="flex justify-between items-center">
                     <div className="flex gap-2 items-center">

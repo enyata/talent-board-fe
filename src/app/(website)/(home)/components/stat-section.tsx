@@ -98,17 +98,16 @@ const StatCard: React.FC<StatCardProps> = ({
       variants={cardVariants}
       className={`max-w-[394px] w-full h-[480px] p-[20px] ${reverse ? 'pt-[36px]' : 'pb-[36px]'} ${bg} flex ${reverse ? 'flex-col-reverse' : 'flex-col'} justify-between`}
     >
-      <Image src={img} alt="statImage" width={394} height={480} />
+      <Image src={img} alt="statImage" width={394} height={480} priority />
       <div className="flex items-center justify-between">
         <div
-          className={`flex flex-col ${
-            reverse ? 'text-black' : 'text-white'
-          } font-semibold`}
+          className={`flex flex-col ${reverse ? 'text-black' : 'text-white'
+            } font-semibold`}
         >
           <span className="text-[56px]">{stat}</span>
           <p className="text-[18px]">{desc}</p>
         </div>
-        <Image src={icon} alt="icon" width={108} height={108} />
+        <Image src={icon} alt="icon" width={108} height={108} priority />
       </div>
     </MotionCard>
   )

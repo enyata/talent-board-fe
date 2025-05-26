@@ -11,7 +11,7 @@ const Navbar = () => {
   return (
     <>
       <nav
-        className="fixed top-0 bg-white/90 left-0 right-0 z-50 px-6 py-4 text-foreground transition-all will-change-transform hidden md:block"
+        className="fixed top-0 bg-white/50  backdrop-blur-lg left-0 right-0 z-50 p-6 text-foreground transition-all will-change-transform hidden md:block"
       >
         <div className="max-w-[1198px] mx-auto flex items-center justify-between">
           <span className="font-semibold text-[24px] cursor-pointer">Talentboard</span>

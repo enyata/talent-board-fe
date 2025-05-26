@@ -14,7 +14,7 @@ const WebsiteLayout = async ({ children }: { children: React.ReactNode }) => {
             return(<Timeout/>)
         }
         console.error("User fetch failed:", err);
-        redirect("/login");
+        redirect("/");
     }
     if (userData) {
         redirect("/dashboard");

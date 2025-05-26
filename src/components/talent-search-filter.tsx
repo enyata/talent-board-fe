@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Funnel, Search, X } from 'lucide-react';
@@ -16,6 +16,8 @@ import { SkillButton } from './skill-button';
 import { SKILLSET } from '@/constants';
 import { ButtonWithLoader } from './ui/button-with-loader';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useDebounce } from '@/hooks/useDebounce';
+
 
 interface TalentSearchFilterProps {
     isLoading?: boolean;
@@ -24,38 +26,19 @@ interface TalentSearchFilterProps {
 }
 
 export default function TalentSearchFilter({ isLoading, setQueryStringValue }: TalentSearchFilterProps) {
-    const [open, setOpen] = React.useState(false);
-    const [value, setValue] = React.useState('');
+
     const wrapperRef = React.useRef<HTMLDivElement>(null);
 
-    // Handle input changes
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setValue(e.target.value);
-        if (!open) setOpen(true);
-    };
-
-    // Close when clicking outside
-    React.useEffect(() => {
-        const handleOutside = (e: MouseEvent) => {
-            if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-                setOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleOutside);
-        return () => document.removeEventListener('mousedown', handleOutside);
-    }, []);
-
-    // Toggle panel with CMD+F or CTRL+F
-    React.useEffect(() => {
-        const down = (e: KeyboardEvent) => {
-            if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
-                e.preventDefault();
-                setOpen((prev) => !prev);
-            }
-        };
-        document.addEventListener('keydown', down);
-        return () => document.removeEventListener('keydown', down);
-    }, []);
+    // Close search panel when clicking outside
+    // React.useEffect(() => {
+    //     const handleOutside = (e: MouseEvent) => {
+    //         if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+    //             setOpen(false);
+    //         }
+    //     };
+    //     document.addEventListener('mousedown', handleOutside);
+    //     return () => document.removeEventListener('mousedown', handleOutside);
+    // }, []);
 
     const params = useSearchParams();
     const router = useRouter();
@@ -68,10 +51,10 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
     const strParam = (key: string): string =>
         (params.get(key) || '').trim();
 
-    const { control, reset, watch } = useForm({
+    const { control, reset, watch, setValue, register } = useForm({
         defaultValues: {
             q: strParam('q') || '',
-            limit: strParam('limit') || undefined,
+            limit: strParam('limit') || 10,
             filter_options: arrParam('filter_options') || [] as string[],
             experience: strParam('experience') || '',
             country: strParam('country') || '',
@@ -87,7 +70,7 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
     const state = watch('state');
     const skills = watch('skills');
 
-    const handleFilter = () => {
+    const buildQueryString = useCallback(() => {
         const params: Record<string, string> = {
             filter_options: filterOptions.join(','),
         };
@@ -101,10 +84,37 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
             if (country) params.country = country;
             if (state) params.state = state;
         }
-        const queryString = new URLSearchParams(params).toString();
+        return new URLSearchParams(params).toString();
+    }, [filterOptions, query, limit, experienceLevel, skills, country, state])
+
+    const debouncedSearch = useDebounce(query, 3000);
+
+    // Update query string when search input changes
+    React.useEffect(() => {
+        if (debouncedSearch === undefined) return
+        const queryString = buildQueryString();
         setQueryStringValue(queryString);
         router.replace(`?${queryString}`, { scroll: false });
-        // window.history.replaceState({}, '', `?${queryString}`);
+    }, [buildQueryString, debouncedSearch, router, setQueryStringValue])
+
+    // Toggle panel with CMD+F or CTRL+F
+    React.useEffect(() => {
+        const queryString = buildQueryString();
+        const down = (e: KeyboardEvent) => {
+            if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault();
+                setQueryStringValue(queryString);
+                router.replace(`?${queryString}`, { scroll: false });
+            }
+        };
+        document.addEventListener('keydown', down);
+        return () => document.removeEventListener('keydown', down);
+    }, [buildQueryString, router, setQueryStringValue]);
+
+    const handleFilter = () => {
+        const queryString = buildQueryString();
+        setQueryStringValue(queryString);
+        router.replace(`?${queryString}`, { scroll: false });
     }
 
     const handleReset = () => {
@@ -119,6 +129,9 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
     }
 
     console.log('my search form', watch());
+
+
+
 
 
     return (
@@ -137,16 +150,15 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                 </span>
                             </kbd>
                         </p>
-                        <span className={`${value !== '' ? 'hidden' : 'block'} absolute left-3 top-1/2 -translate-y-1/2 text-[#AFAFAF]`}><Search strokeWidth={1} size={18} /></span>
+                        <span className={`${query !== '' ? 'hidden' : 'block'} absolute left-3 top-1/2 -translate-y-1/2 text-[#AFAFAF]`}><Search strokeWidth={1} size={18} /></span>
                         <Input
-                            className={`w-full rounded-sm h-[42px] text-[14px] pr-10 ${value !== '' ? 'pl-3' : 'pl-8'}`}
+                            className={`w-full rounded-sm h-[42px] text-[14px] pr-10 ${query !== '' ? 'pl-3' : 'pl-8'}`}
                             placeholder="Search by skill, job title or name"
-                            value={value}
-                            onChange={handleChange}
+                            {...register('q')}
                         />
                     </div>
                     {/* Search Suggestion Panel */}
-                    {open && (
+                    {/* {open && (
                         <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-sm border shadow-lg bg-white p-5">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="font-medium">Suggestions</span>
@@ -157,23 +169,33 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                     <X strokeWidth={2} size={14} />
                                 </button>
                             </div>
-                            <p className='text-sm'>{value ? `Result for "${value}"` : 'Start typing...'}</p>
+                            <p className='text-sm'>{query ? `Result for "${query}"` : 'Start typing...'}</p>
                             <ul className=" list-inside space-y-1 text-sm mt-2">
-                                {['React Developer', 'Product Designer', 'Backend Developer'].map(item =>
-                                    <li
-                                        key={item}
-                                        className=' hover:bg-gray-50 p-2  cursor-pointer rounded-sm'
-                                        onClick={() => {
-                                            setValue(item);
-                                            setOpen(false);
-                                        }}
-                                    >
-                                        {item}
-                                    </li>
+                                {isSuggestionLoading ? (
+                                    <div>
+                                        {
+                                            Array.from({ length: 3 }).map((_, i) => (
+                                                <Skeleton key={i} className='max-w-[50px] w-full h-[16px]' />
+                                            ))
+                                        }
+                                    </div>
+                                ) : (
+                                    suggestions?.map((item: string) => (
+                                        <li
+                                            key={item}
+                                            className="hover:bg-gray-50 p-2 cursor-pointer rounded-sm"
+                                            onClick={() => {
+                                                setValue('q', item);
+                                                setOpen(false);
+                                            }}
+                                        >
+                                            {item}
+                                        </li>
+                                    ))
                                 )}
                             </ul>
                         </div>
-                    )}
+                    )} */}
                 </div>
                 {/* Filter button */}
                 <DropdownMenu>
@@ -260,7 +282,7 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                                 value={field.value}
                                                 onChange={(val) => {
                                                     field.onChange(val);
-                                                    setValue('state'); // Reset state
+                                                    setValue('state', ''); // Reset state
                                                 }}
                                             />
                                         )}

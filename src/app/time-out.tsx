@@ -1,12 +1,20 @@
 'use client'
 import { ButtonWithLoader } from "@/components/ui/button-with-loader";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Timeout() {
     const [loading, setLoading] = useState(false);
 
+    const router = useRouter();
+    const handleRefresh = () => {
+        setLoading(true);
+        setTimeout(() => {
+            router.refresh();
+            setLoading(false);
+        }, 1000);
+    };
     return (
         <div className="relative flex flex-col items-center justify-center h-screen text-center px-4 -translate-y-8">
             <Image
@@ -20,16 +28,12 @@ export default function Timeout() {
             <p className="mb-6">
                 Your request took too long. Please&nbsp;try again in a moment.
             </p>
-            <Link
-                href="/"
-            >
                 <ButtonWithLoader
                     isLoading={loading}
-                    onClick={() => setLoading(true)}
+                    onClick={handleRefresh}
                 >
                     Retry
                 </ButtonWithLoader>
-            </Link>
         </div>
     );
 }
