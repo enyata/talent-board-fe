@@ -1,12 +1,10 @@
 'use client';
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 
 const ParamLayout = ({ children }: { children: React.ReactNode }) => {
     const params = useSearchParams();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const router = useRouter();
     const arrParam = (key: string): string[] =>
         (params.get(key) || '')
             .split(',')
@@ -18,6 +16,8 @@ const ParamLayout = ({ children }: { children: React.ReactNode }) => {
 
     const form = useForm({
         defaultValues: {
+            cursor: strParam('cursor') || '',
+            direction: strParam('direction') || '',
             q: strParam('q') || '',
             limit: strParam('limit') || 10,
             filter_options: arrParam('filter_options') || [] as string[],

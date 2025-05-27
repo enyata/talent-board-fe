@@ -7,7 +7,7 @@ import { Funnel, Search, X } from 'lucide-react';
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
 import { Checkbox } from './ui/checkbox';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { Label } from './ui/label';
 import { ChooseExperienceLevel } from './choose-experience-button';
 import { CountrySelect } from './ui/country-select';
@@ -15,8 +15,9 @@ import { StateSelect } from './ui/state-select';
 import { SkillButton } from './skill-button';
 import { SKILLSET } from '@/constants';
 import { ButtonWithLoader } from './ui/button-with-loader';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
+import { TalentFilterForm } from '@/types/filters';
 
 
 interface TalentSearchFilterProps {
@@ -39,29 +40,9 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
     //     document.addEventListener('mousedown', handleOutside);
     //     return () => document.removeEventListener('mousedown', handleOutside);
     // }, []);
-
-    const params = useSearchParams();
     const router = useRouter();
-    const arrParam = (key: string): string[] =>
-        (params.get(key) || '')
-            .split(',')
-            .map((v) => v.trim())
-            .filter(Boolean);
 
-    const strParam = (key: string): string =>
-        (params.get(key) || '').trim();
-
-    const { control, reset, watch, setValue, register } = useForm({
-        defaultValues: {
-            q: strParam('q') || '',
-            limit: strParam('limit') || 10,
-            filter_options: arrParam('filter_options') || [] as string[],
-            experience: strParam('experience') || '',
-            country: strParam('country') || '',
-            state: strParam('state') || '',
-            skills: arrParam('skills') || [] as string[]
-        },
-    });
+    const { control, reset, watch, setValue, register } = useFormContext<TalentFilterForm>();
     const query = watch('q');
     const limit = watch('limit');
     const filterOptions = watch('filter_options');
@@ -69,12 +50,16 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
     const country = watch('country');
     const state = watch('state');
     const skills = watch('skills');
+    const cursor = watch('cursor');
+    const direction = watch('direction');
 
     const buildQueryString = useCallback(() => {
         const params: Record<string, string> = {};
         if (filterOptions.length) params.filter_options = filterOptions.join(',');
         if (query) params.q = query;
         if (limit !== undefined) params.limit = limit.toString();
+        if (cursor) params.cursor = cursor;
+        if (direction) params.direction = direction;
         if (filterOptions.includes('experience') && experienceLevel)
             params.experience = experienceLevel;
         if (filterOptions.includes('skills') && skills.length)
@@ -84,7 +69,7 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
             if (state) params.state = state;
         }
         return new URLSearchParams(params).toString();
-    }, [filterOptions, query, limit, experienceLevel, skills, country, state])
+    }, [filterOptions, query, limit, experienceLevel, skills, country, state, cursor, direction])
 
     const debouncedSearch = useDebounce(query, 300);
 
@@ -94,7 +79,7 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
         const queryString = buildQueryString();
         setQueryStringValue(queryString);
         router.replace(`?${queryString}`, { scroll: false });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedSearch])
 
     // Toggle panel with CMD+F or CTRL+F

@@ -11,34 +11,28 @@ import {
     SquareArrowOutUpRightIcon
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { talentProp } from '@/types/user'
 
 interface TalentboardProps {
     width?: string
     height?: string
     bookmarked?: boolean
 
-    image_url?: string
-    first_name?: string
-    last_name?: string
-    title?: string
-    location?: string
-    description?: string
-    skills?: string[]
-    upvotes?: number
-    portfolio_url?: string
+    talent?: talentProp
 }
 
 const TalentCard = ({
     width = 'max-w-[418px]',
     height = 'md:h-[291px]',
-    bookmarked: initialBookmarked = false
+    bookmarked: initialBookmarked = false,
+    talent
 }: TalentboardProps) => {
     const router = useRouter()
     const [bookmarked, setBookmarked] = useState(initialBookmarked)
-    const [upvotes, setUpvotes] = useState(46)
+    const [upvotes, setUpvotes] = useState(talent?.upvotes)
 
     const handleCardClick = () => {
-        router.push('/talents/1')
+        router.push(`/talents/${talent?.id}`)
     }
 
     const stopPropagation = (e: React.MouseEvent) => {
@@ -52,12 +46,12 @@ const TalentCard = ({
 
     const handleUpvote = (e: React.MouseEvent) => {
         stopPropagation(e)
-        setUpvotes(prev => prev + 1)
+        setUpvotes(prev => (prev || 0) + 1)
     }
 
-    const handlePortfolioClick = (e: React.MouseEvent) => {
+    const handlePortfolioClick = (e: React.MouseEvent, portfolio: string = '') => {
         stopPropagation(e)
-        window.open('https://portfolio-link.com', '_blank')
+        window.open(portfolio, '_blank')
     }
 
     return (
@@ -69,12 +63,12 @@ const TalentCard = ({
                 <div className='flex justify-between items-center'>
                     <div className='flex gap-2 items-center'>
                         <Avatar className='size-[48px]'>
-                            <AvatarImage src='https://github.com/shadcn.png' />
+                            <AvatarImage src={talent?.avatar} />
                             <AvatarFallback>DP</AvatarFallback>
                         </Avatar>
                         <div>
-                            <p className='font-semibold text-[14px]'>Cameron Williamson</p>
-                            <p className='font-medium text-[#5F5F5F] text-[13px]'>Senior Frontend Developer</p>
+                            <p className='font-semibold text-[14px]'>{talent?.first_name} {talent?.last_name}</p>
+                            <p className='font-medium text-[#5F5F5F] text-[13px]'>{talent?.title}</p>
                         </div>
                     </div>
 
@@ -91,7 +85,7 @@ const TalentCard = ({
                     <span>
                         <MapPinned size={14} strokeWidth={3} />
                     </span>
-                    <p>Abuja</p>
+                    <p>{talent?.country}</p>
                 </div>
 
                 <p className='mt-[8px] font-semibold text-[13px] text-[#5F5F5F]'>
@@ -100,7 +94,7 @@ const TalentCard = ({
                 </p>
 
                 <div className='mt-[16px] flex gap-2 flex-wrap'>
-                    {['🔧 JavaScript', '⚡ Next.js', '📱 React Native'].map((skill, index) => (
+                    {talent?.skills?.map((skill, index) => (
                         <Button
                             key={index}
                             onClick={stopPropagation}
@@ -123,15 +117,17 @@ const TalentCard = ({
                     </span>
                 </div>
 
-                <div
-                    onClick={handlePortfolioClick}
-                    className='flex items-center font-semibold cursor-pointer'
-                >
-                    Portfolio{' '}
-                    <span className='ml-2'>
-                        <SquareArrowOutUpRightIcon size={12} strokeWidth={3} />
-                    </span>
-                </div>
+                {talent?.portfolio_url &&
+                    <div
+                        onClick={(e) => handlePortfolioClick(e, talent?.portfolio_url)}
+                        className='flex items-center font-semibold cursor-pointer'
+                    >
+                        Portfolio{' '}
+                        <span className='ml-2'>
+                            <SquareArrowOutUpRightIcon size={12} strokeWidth={3} />
+                        </span>
+                    </div>
+                }
             </div>
         </Card>
     )

@@ -23,8 +23,8 @@ const RecruiterDashboard = () => {
   return (
     <div className='w-full'>
       <Prompt />
-      <RecommendedTalent />
-      <BookmarkedTalent />
+      <RecommendedTalent talents={data?.recommended_talents} />
+      <BookmarkedTalent talents={data?.saved_talents} />
       <Notifications />
     </div>
   )
