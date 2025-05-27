@@ -18,7 +18,7 @@ export default function GlobalError({
     return (
         <html>
             <body className="relative flex flex-col items-center justify-center h-screen text-center px-4">
-                <div className="flex justify-center items-center">
+                <div className="flex flec-col gap-2 justify-center items-center">
                     <h2 className="font-medium text-3xl">Something went wrong!</h2>
                     <p>{error.message}</p>
                     <ButtonWithLoader isLoading={loading} onClick={handleReset}>Try again</ButtonWithLoader>

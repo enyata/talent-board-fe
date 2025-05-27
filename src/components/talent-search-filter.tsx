@@ -71,9 +71,8 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
     const skills = watch('skills');
 
     const buildQueryString = useCallback(() => {
-        const params: Record<string, string> = {
-            filter_options: filterOptions.join(','),
-        };
+        const params: Record<string, string> = {};
+        if (filterOptions.length) params.filter_options = filterOptions.join(',');
         if (query) params.q = query;
         if (limit !== undefined) params.limit = limit.toString();
         if (filterOptions.includes('experience') && experienceLevel)
@@ -87,7 +86,7 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
         return new URLSearchParams(params).toString();
     }, [filterOptions, query, limit, experienceLevel, skills, country, state])
 
-    const debouncedSearch = useDebounce(query, 3000);
+    const debouncedSearch = useDebounce(query, 300);
 
     // Update query string when search input changes
     React.useEffect(() => {
@@ -95,7 +94,8 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
         const queryString = buildQueryString();
         setQueryStringValue(queryString);
         router.replace(`?${queryString}`, { scroll: false });
-    }, [buildQueryString, debouncedSearch, router, setQueryStringValue])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedSearch])
 
     // Toggle panel with CMD+F or CTRL+F
     React.useEffect(() => {
@@ -129,9 +129,6 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
     }
 
     console.log('my search form', watch());
-
-
-
 
 
     return (
