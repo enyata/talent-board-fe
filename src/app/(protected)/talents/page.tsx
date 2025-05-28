@@ -2,7 +2,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
-import TalentList from './talent-list'
+import TalentList from './component/talent-list'
 
 const TalentsPage = () => {
   return (

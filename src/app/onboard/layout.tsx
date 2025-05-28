@@ -27,7 +27,7 @@ const OnboardingLayout = async ({ children }: { children: React.ReactNode }) => 
         redirect("/dashboard");
     }
     return (
-        <AuthHydrator user={userData.data.user} refreshToken={refreshToken?.value}>
+        <AuthHydrator user={userData?.data?.user} refreshToken={refreshToken?.value}>
             <OnboardingNestedLayout>
                 {children}
             </OnboardingNestedLayout>

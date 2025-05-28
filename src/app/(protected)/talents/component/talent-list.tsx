@@ -6,9 +6,9 @@ import TalentCard from '@/components/talentCard'
 import { useTalentApi } from '@/hooks/useTalents';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import ParamLayout from './paramLayout';
 import PaginationFrame from '@/components/pagination-frame';
 import { talentProp } from '@/types/user';
+import ParamLayout from './paramLayout';
 
 const TalentList = () => {
     const { fetchAllTalents } = useTalentApi()

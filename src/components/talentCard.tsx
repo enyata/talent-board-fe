@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useTransition } from 'react'
 import { Card } from './ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
@@ -12,6 +12,9 @@ import {
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { talentProp } from '@/types/user'
+import { useAuthStore } from '@/store/authStore'
+import { toast } from 'react-toastify'
+import { useTalentApi } from '@/hooks/useTalents'
 
 interface TalentboardProps {
     width?: string
@@ -21,18 +24,27 @@ interface TalentboardProps {
     talent?: talentProp
 }
 
-const TalentCard = ({
-    width = 'max-w-[418px]',
-    height = 'md:h-[291px]',
-    bookmarked: initialBookmarked = false,
-    talent
-}: TalentboardProps) => {
+const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', bookmarked: initialBookmarked = false, talent }: TalentboardProps) => {
     const router = useRouter()
+    const [isPending, startTransition] = useTransition();
     const [bookmarked, setBookmarked] = useState(initialBookmarked)
     const [upvotes, setUpvotes] = useState(talent?.upvotes)
+    const [isUpvoted, setIsUpvoted] = useState(false)
+    const { user } = useAuthStore()
+    const { upvoteTalent, saveTalent } = useTalentApi()
 
     const handleCardClick = () => {
-        router.push(`/talents/${talent?.id}`)
+        if (!user) {
+            router.push('/login')
+            return
+        }
+        if (user && user?.role === 'talent') {
+            toast.info('You need a recruiter account to view this talent profile.')
+            return
+        }
+        if (user && user?.role === 'recruiter') {
+            router.push(`/talents/${talent?.id}`)
+        }
     }
 
     const stopPropagation = (e: React.MouseEvent) => {
@@ -41,16 +53,51 @@ const TalentCard = ({
 
     const handleBookmark = (e: React.MouseEvent) => {
         stopPropagation(e)
+        if (!user || user?.role === 'talent') {
+            return
+        }
         setBookmarked(prev => !prev)
+        startTransition(() => {
+            saveTalent(talent?.id || '')
+                .then(() => {
+                    toast.success(`Talent ${!bookmarked ? 'bookmarked' : 'removed from bookmarks'} successfully!`)
+                })
+                .catch((error) => {
+                    console.error('Error saving talent:', error)
+                    toast.error(`Failed to ${!bookmarked ? 'bookmark' : 'remove bookmark'} talent.`)
+                })
+        })
     }
 
     const handleUpvote = (e: React.MouseEvent) => {
         stopPropagation(e)
-        setUpvotes(prev => (prev || 0) + 1)
+        if (!user || user?.role === 'talent') {
+            return
+        }
+        if (isUpvoted) {
+            toast.info('You have already upvoted this talent.')
+            return
+        }
+        setIsUpvoted(true)
+        setUpvotes((prev) => (prev || 0) + 1)
+        startTransition(() => {
+            upvoteTalent(talent?.id || '')
+                .then(() => {
+                    toast.success('Talent upvoted successfully!')
+                })
+                .catch((error) => {
+                    console.error('Error upvoting talent:', error)
+                    toast.error('Failed to upvote talent.')
+                })
+        })
+
     }
 
     const handlePortfolioClick = (e: React.MouseEvent, portfolio: string = '') => {
         stopPropagation(e)
+        if (!user || user?.role === 'talent') {
+            return
+        }
         window.open(portfolio, '_blank')
     }
 
@@ -73,6 +120,7 @@ const TalentCard = ({
                     </div>
 
                     <Button
+                        disabled={isPending}
                         onClick={handleBookmark}
                         variant='outline'
                         className='w-[75px] h-[28px] text-[#5F5F5F] rounded-[2px]'
@@ -107,15 +155,16 @@ const TalentCard = ({
             </div>
 
             <div className='border-t-[2px] pt-[8px] border-[#E3E3E3] flex justify-between text-[#5F5F5F] text-[12px]'>
-                <div
+                <button
+                    disabled={isPending}
                     onClick={handleUpvote}
-                    className='flex items-center font-semibold cursor-pointer'
+                    className='flex items-center font-semibold cursor-pointer border-none'
                 >
                     {upvotes}{' '}
                     <span className='ml-1'>
                         <ChevronUp size={12} strokeWidth={3} />
                     </span>
-                </div>
+                </button>
 
                 {talent?.portfolio_url &&
                     <div

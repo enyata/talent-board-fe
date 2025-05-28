@@ -24,16 +24,17 @@ export default function Timeout() {
                 width={200}
                 className=""
             />
-            <h1 className="text-3xl font-medium">Server Unavailable</h1>
-            <p className="mb-6">
+            <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Server Unavailable</h1>
+            <p className="mb-6 text-muted-foreground max-w-md">
                 Your request took too long. Please&nbsp;try again in a moment.
             </p>
-                <ButtonWithLoader
-                    isLoading={loading}
-                    onClick={handleRefresh}
-                >
-                    Retry
-                </ButtonWithLoader>
+            <ButtonWithLoader
+                isLoading={loading}
+                onClick={handleRefresh}
+                className="h-[42px]"
+            >
+                Retry
+            </ButtonWithLoader>
         </div>
     );
 }

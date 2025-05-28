@@ -4,14 +4,18 @@ import { RequestTimeoutError } from '@/lib/withTimeout';
 import { redirect } from 'next/navigation';
 import React from 'react';
 import Timeout from '../time-out';
+import { cookies } from 'next/headers';
+import { AuthHydrator } from '@/components/authHydrator';
 
 const WebsiteLayout = async ({ children }: { children: React.ReactNode }) => {
+    const cookieStore = await cookies();
+    const refreshToken = cookieStore.get("refresh_token");
     let userData;
     try {
         userData = await getUser();
     } catch (err) {
         if (err instanceof RequestTimeoutError) {
-            return(<Timeout/>)
+            return (<Timeout />)
         }
         console.error("User fetch failed:", err);
         redirect("/");
@@ -20,12 +24,14 @@ const WebsiteLayout = async ({ children }: { children: React.ReactNode }) => {
         redirect("/dashboard");
     }
     return (
-        <div className='w-full'>
-            <Navbar />
-            <div className='md:mt-[140px] mt-[40px]'>
-                {children}
+        <AuthHydrator user={userData?.data?.user} refreshToken={refreshToken?.value}>
+            <div className='w-full'>
+                <Navbar />
+                <div className='md:mt-[140px] mt-[40px]'>
+                    {children}
+                </div>
             </div>
-        </div>
+        </AuthHydrator>
     )
 }
 

@@ -10,7 +10,8 @@ import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import ParamLayout from '../paramLayout'
+import ParamLayout from '../component/paramLayout'
+import { talentProp } from '@/types/user'
 
 const BookmarkedList = () => {
   const { fetchSavedTalents } = useTalentApi()
@@ -49,12 +50,16 @@ const BookmarkedList = () => {
                     Your Bookmarked Talents
                   </p>
                   <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {Array.from({ length: 7 }).map((_, index) => (
+                    {data?.results.map((talent: talentProp, index: number) => (
                       <div
                         key={index}
                         className={index === 0 ? 'md:col-span-2' : ''}
                       >
-                        <TalentCard height={`${index === 0 ? 'md:h-[291px]' : 'md:h-[307px]'}`} width={`${index === 0 ? 'max-w-[919px]' : 'max-w-[453px]'}`} />
+                        <TalentCard
+                          height={`${index === 0 ? 'md:h-[291px]' : 'md:h-[307px]'}`}
+                          width={`${index === 0 ? 'max-w-[919px]' : 'max-w-[453px]'}`}
+                          talent={talent}
+                        />
                       </div>
                     ))}
                   </div>

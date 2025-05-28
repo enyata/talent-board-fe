@@ -27,7 +27,7 @@ const RecommendedTalentCarousel = ({ talents }: { talents: talentProp[] }) => {
     return (
         <Carousel className="w-full  mt-[24px]">
             <CarouselContent className='-ml-1 gap-2 mt-0'>
-                {talents.slice(0, 5).map((talent, index) => (
+                {talents?.slice(0, 5).map((talent, index) => (
                     <CarouselItem key={index} className='pl-1 min-w-[250px] max-w-[423px] flex-shrink-0'>
                         <TalentCard height='md:h-[307px]' width='max-w-[423px]' talent={talent} />
                     </CarouselItem>
