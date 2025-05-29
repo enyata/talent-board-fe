@@ -1,31 +1,31 @@
 'use client'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getTimeOfDay } from '@/lib/dateAndTimeUtils'
 import { useAuthStore } from '@/store/authStore'
-import { ClockFading } from 'lucide-react'
+import { TalentDashboardData } from '@/types/dashboard'
 import Image from 'next/image'
 
-const overviewCardDetails = [
-    {
-        title: 'Total Upvotes',
-        number: 250,
-        icon: '/assets/icons/loyalty-card.svg'
-    },
-    {
-        title: 'Profile Views',
-        number: 30,
-        icon: '/assets/icons/user-story.svg'
-    },
-    {
-        title: 'Recruiter Saves',
-        number: 30,
-        icon: '/assets/icons/bookmark.svg'
-    }
-];
 
-const DashboardOverview = () => {
+const DashboardOverview = ({ data }: { data: TalentDashboardData | undefined }) => {
+    const {profile_views, recruiter_saves, total_upvotes} = data || {}
+    const overviewCardDetails = [
+        {
+            title: 'Total Upvotes',
+            number: total_upvotes,
+            icon: '/assets/icons/loyalty-card.svg'
+        },
+        {
+            title: 'Profile Views',
+            number: profile_views,
+            icon: '/assets/icons/user-story.svg'
+        },
+        {
+            title: 'Recruiter Saves',
+            number: recruiter_saves,
+            icon: '/assets/icons/bookmark.svg'
+        }
+    ];
     const { user } = useAuthStore()
 
     return (
@@ -42,10 +42,6 @@ const DashboardOverview = () => {
                             <span className='text-[14px] font-medium text-[#475467]'><span className='capitalize'>{getTimeOfDay()}</span> is here! Ready to wrap up your day. 🌇</span>
                         </div>
                     </div>
-                    <Button variant={'outline'} className={`h-[34px] bg-[#F9F2E5] text-[#C99B00] border-[1px] border-[#C99B00] mt-2 md:mt-0`}>
-                        <span><ClockFading /></span>
-                        <span className=''>Pending Approval</span>
-                    </Button>
                 </div>
                 <div className='mt-4 flex flex-col md:flex-row justify-between items-center gap-4'>
                     {overviewCardDetails.map((card, index) =>

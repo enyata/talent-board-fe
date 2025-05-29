@@ -7,7 +7,6 @@ const TalentPage = async ({
   params: Promise<{ talent: string }>;
 }) => {
   const { talent } = await params;
-  console.log('resolvedParams at talent page', talent)
   return (
     <>
       <TalentComponent talentID={talent} />

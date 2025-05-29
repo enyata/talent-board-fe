@@ -15,21 +15,26 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useTalentApi } from "@/hooks/useTalents";
 import { notFound } from "next/navigation";
-import { SKILLSET } from "@/constants";
 import TalentCardSkeleton from "./talent-skeleton";
+import { talentProp } from "@/types/user";
+import { getSkillLabelByValue } from "@/lib/skills_sort";
+import skillsLibrary from "../../../../../../public/skills_library.json";
 
 
 const TalentComponent = ({ talentID }: { talentID: string }) => {
     console.log('talentID at single talent page', talentID)
     const { fetchTalentById } = useTalentApi()
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError } = useQuery<talentProp>({
         queryKey: ['talent'],
-        queryFn: async() => await fetchTalentById(talentID),
+        queryFn: async () => await fetchTalentById(talentID),
     });
     console.log('data at single talent page', data)
 
     if (isError) {
         notFound();
+    }
+    const handleLinkClick = (external_link: string = '') => {
+        window.open(external_link, '_blank')
     }
     return (
         <div className="max-w-[951px] w-full flex flex-col gap-9 px-4 md:px-0">
@@ -47,7 +52,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                         <div className="flex gap-6 items-center">
                             <div className="rounded-lg overflow-hidden relative max-w-[109px] w-full h-[140px]">
                                 <Image
-                                    src={"/assets/images/talentimage.png"}
+                                    src={data?.avatar || "/assets/images/placeholder-img.svg"}
                                     alt="talent-image"
                                     width={109}
                                     height={140}
@@ -60,7 +65,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
 
                             <div className="flex flex-col gap-2">
                                 <div>
-                                    <p className="font-semibold text-[14px]">Cameron Williamson</p>
+                                    <p className="font-semibold text-[14px] capitalize">{data?.first_name} {data?.last_name}</p>
                                     <p className="font-normal text-[#5F5F5F] text-[13px]">
                                         Senior Frontend Developer
                                     </p>
@@ -70,7 +75,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                     <span>
                                         <MapPinned size={14} strokeWidth={2} />
                                     </span>
-                                    <p>San Francisco CA</p>
+                                    <p>{data?.state} {data?.country}</p>
                                 </div>
                             </div>
                         </div>
@@ -81,7 +86,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                 className="h-[28px] border-[0.5px] w-[96px] gap-1 text-[#5F5F5F] rounded-[3px] text-[12px] flex">
                                 <ChevronUp size={14} strokeWidth={2.5} />
                                 <p className="font-normal">
-                                    Upvote <span className="font-bold">45</span>
+                                    Upvote <span className="font-bold">{data?.upvotes}</span>
                                 </p>
                             </Button>
 
@@ -109,11 +114,11 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                             <div className="flex flex-col gap-2">
                                 <h2 className="text-[12px] font-semibold">Skills:</h2>
                                 <div className="flex gap-2 flex-wrap">
-                                    {SKILLSET.slice(0, 9).map((skill, index) => (
+                                    {data?.skills && data?.skills.map((skill, index) => (
                                         <Button
                                             key={index}
                                             className="bg-[#F5F5F5] text-[#5F5F5F] h-[24px] border-[#696969] border-[1px] rounded-[3px] p-[6px] text-[12px]">
-                                            {skill}
+                                            {getSkillLabelByValue(skill, skillsLibrary)}
                                         </Button>
                                     ))}
                                 </div>
@@ -138,8 +143,8 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                         />
 
                                         <div>
-                                            <p className="text-[11px] text-[#9E9E9E]">
-                                                David Adurotimi&apos;s resume
+                                            <p className="text-[11px] text-[#9E9E9E] capitalize">
+                                                {data?.first_name} {data?.last_name}&apos;s resume
                                             </p>
                                             <p className="text-[11px] font-medium text-[#5F5F5F]">
                                                 108.3kb
@@ -162,25 +167,30 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                 <p className="text-[12px] font-semibold">Contact Information:</p>
 
                                 <div className="flex flex-wrap gap-2">
-                                    <Button
-                                        variant={"outline"}
-                                        className="text-[12px] font-medium gap-1 max-w-[114px] h-[28px] rounded-[3px]">
-                                        <SquareArrowOutUpRight strokeWidth={2.25} />
-                                        Visit Portfolio
-                                    </Button>
-
-                                    <Button
-                                        variant={"outline"}
-                                        className="text-[12px] font-medium gap-1 max-w-[119px] h-[28px] rounded-[3px]">
-                                        <Image
-                                            src={"/assets/icons/linkedin-01.svg"}
-                                            alt="icon for linkedin"
-                                            width={16}
-                                            height={16}
-                                            className="w-[16px] h-[16px]"
-                                        />
-                                        Go to Linkedin
-                                    </Button>
+                                    {data?.portfolio_url &&
+                                        <Button
+                                            onClick={() => handleLinkClick(data?.portfolio_url)}
+                                            variant={"outline"}
+                                            className="text-[12px] font-medium gap-1 max-w-[114px] h-[28px] rounded-[3px]">
+                                            <SquareArrowOutUpRight strokeWidth={2.25} />
+                                            Visit Portfolio
+                                        </Button>
+                                    }
+                                    {data?.linkedin_profile &&
+                                        <Button
+                                            onClick={() => handleLinkClick(data?.linkedin_profile)}
+                                            variant={"outline"}
+                                            className="text-[12px] font-medium gap-1 max-w-[119px] h-[28px] rounded-[3px]">
+                                            <Image
+                                                src={"/assets/icons/linkedin-01.svg"}
+                                                alt="icon for linkedin"
+                                                width={16}
+                                                height={16}
+                                                className="w-[16px] h-[16px]"
+                                            />
+                                            Go to Linkedin
+                                        </Button>
+                                    }
 
                                     <Button
                                         variant={"outline"}

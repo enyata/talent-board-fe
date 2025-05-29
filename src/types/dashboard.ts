@@ -7,7 +7,7 @@ export interface Sender {
     location: string;      
 }
 
-export interface Notification {
+export interface NotificationData {
     id: string;
     type: NotificationType;
     message: string;
@@ -23,7 +23,7 @@ export interface TalentDashboardData {
     profile_views: number;
     search_appearances: number;
     recruiter_saves: number;
-    notifications: Notification[];
+    notifications: NotificationData[];
 }
 
 export type ExperienceLevel = 'entry' | 'intermediate' | 'expert';

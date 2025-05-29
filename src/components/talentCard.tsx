@@ -107,9 +107,9 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', bookmark
     return (
         <Card
             onClick={handleCardClick}
-            className={`${width} ${height} w-full p-[20px] shadow-none cursor-pointer hover:bg-[#fafafa]`}
+            className={`${width} ${height} flex flex-col justify-between w-full p-[20px] shadow-none cursor-pointer hover:bg-[#fafafa]`}
         >
-            <div>
+            <div >
                 <div className='flex justify-between items-center'>
                     <div className='flex gap-2 items-center'>
                         <Avatar className='size-[48px]'>
@@ -139,13 +139,13 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', bookmark
                     <p>{getCountryNameByCode(talent?.country || '')}</p>
                 </div>
 
-                <p className='mt-[8px] font-semibold text-[13px] text-[#5F5F5F]'>
+                <p className='mt-[8px] font-semibold text-[13px] text-[#5F5F5F] text-ellipsis'>
                     Passionate frontend developer with expertise in building responsive and accessible web applications.
                     Focused on user experience and performance optimization.
                 </p>
 
                 <div className='mt-[16px] flex gap-2 flex-wrap'>
-                    {talent?.skills?.map((skill, index) => (
+                    {talent?.skills?.slice(0, 3).map((skill, index) => (
                         <Button
                             key={index}
                             onClick={stopPropagation}
