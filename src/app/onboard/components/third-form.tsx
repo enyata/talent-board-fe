@@ -10,21 +10,27 @@ import { FileUploadFrame } from './file-upload-frame'
 import FormLayout from './formLayout'
 import { PATCH } from '@/lib/requests'
 import { formSteps, OnboardFormSchema } from '@/types/form';
+import { flattenAndSortSkills } from '@/lib/skills_sort';
+import skillsLibrary from '../../../../public/skills_library.json';
+import rolesLibrary from "../../../../public/roles_library.json"
 
-const OPTIONS = [
-    { label: 'nextjs', value: 'Nextjs' },
-    { label: 'Vite', value: 'vite' },
-    { label: 'Nuxt', value: 'nuxt' },
-    { label: 'Vue', value: 'vue,', disable: true },
-];
-const ROLESOPTIONS = [
-    { label: 'product designer', value: 'product-designer' },
-    { label: 'ux designer', value: 'ux-designer' },
-    { label: 'ui designer', value: 'ui-designer' },
-    { label: 'software engineer', value: 'software-engineer' },
-    { label: 'data analyst', value: 'data-analyst' },
-    { label: 'data scientist', value: 'data-scientist' },
-]
+// const OPTIONS = [
+//     { label: 'nextjs', value: 'Nextjs' },
+//     { label: 'Vite', value: 'vite' },
+//     { label: 'Nuxt', value: 'nuxt' },
+//     { label: 'Vue', value: 'vue,', disable: true },
+// ];
+// const ROLESOPTIONS = [
+//     { label: 'product designer', value: 'product-designer' },
+//     { label: 'ux designer', value: 'ux-designer' },
+//     { label: 'ui designer', value: 'ui-designer' },
+//     { label: 'software engineer', value: 'software-engineer' },
+//     { label: 'data analyst', value: 'data-analyst' },
+//     { label: 'data scientist', value: 'data-scientist' },
+// ]
+
+const OPTIONS = flattenAndSortSkills(skillsLibrary);
+const ROLESOPTIONS = rolesLibrary.sort((a, b) => a.label.localeCompare(b.label));
 
 const ExperienceForm = () => {
     const { register, watch, setValue, control, formState: { isValid, dirtyFields, errors } } = useFormContext<OnboardFormSchema>();

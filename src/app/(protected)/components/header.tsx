@@ -51,7 +51,7 @@ const ProtectedHeader = () => {
                     <div className="flex items-center gap-2 cursor-pointer">
                         <Avatar className="size-[38.8px] border border-[#34A9FF]">
                             <AvatarImage src={user?.avatar} />
-                            <AvatarFallback>DP</AvatarFallback>
+                            <AvatarFallback>{user ? user.first_name.trim().charAt(0).toUpperCase() : ''}</AvatarFallback>
                         </Avatar>
                         {!isMobile && (
                             <>

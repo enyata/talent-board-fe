@@ -15,6 +15,9 @@ import { talentProp } from '@/types/user'
 import { useAuthStore } from '@/store/authStore'
 import { toast } from 'react-toastify'
 import { useTalentApi } from '@/hooks/useTalents'
+import skillsLibrary from '../../public/skills_library.json'
+import { getSkillLabelByValue } from '@/lib/skills_sort'
+import { getCountryNameByCode } from '@/lib/countryfromIsocode'
 
 interface TalentboardProps {
     width?: string
@@ -111,7 +114,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', bookmark
                     <div className='flex gap-2 items-center'>
                         <Avatar className='size-[48px]'>
                             <AvatarImage src={talent?.avatar} />
-                            <AvatarFallback>DP</AvatarFallback>
+                            <AvatarFallback>{talent ? (talent.first_name ? talent.first_name.trim().charAt(0).toUpperCase() : '') : ''}</AvatarFallback>
                         </Avatar>
                         <div>
                             <p className='font-semibold text-[14px]'>{talent?.first_name} {talent?.last_name}</p>
@@ -133,7 +136,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', bookmark
                     <span>
                         <MapPinned size={14} strokeWidth={3} />
                     </span>
-                    <p>{talent?.country}</p>
+                    <p>{getCountryNameByCode(talent?.country || '')}</p>
                 </div>
 
                 <p className='mt-[8px] font-semibold text-[13px] text-[#5F5F5F]'>
@@ -148,7 +151,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', bookmark
                             onClick={stopPropagation}
                             className='bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] p-[6px] text-[12px]'
                         >
-                            {skill}
+                            {getSkillLabelByValue(skill, skillsLibrary)}
                         </Button>
                     ))}
                 </div>

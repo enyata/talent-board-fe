@@ -5,17 +5,15 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useFormContext, Controller } from 'react-hook-form'
 import FormLayout from './formLayout'
-import { Country, State } from 'country-state-city';
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { formSteps, OnboardFormSchema } from '@/types/form'
+import { CountrySelect } from '@/components/ui/country-select'
+import { StateSelect } from '@/components/ui/state-select'
 
 const PersonalInfoForm = () => {
     const { register, control, setValue, watch, formState: { isValid, errors, touchedFields, dirtyFields }, } = useFormContext<OnboardFormSchema>();
     const role = watch("data.role");
     const step = watch('config.currentForm');
     const selectedCountryCode = watch('data.country');
-    const countries = Country.getAllCountries();
-    const states = selectedCountryCode ? State.getStatesOfCountry(selectedCountryCode) : [];
 
     let fields = formSteps[step];
     if (role !== "recruiter") {
@@ -31,7 +29,7 @@ const PersonalInfoForm = () => {
             return dirty && !error;
         });
 
-        console.log('your form data errors', errors)
+    console.log('your form data errors', errors)
 
     return (
         <FormLayout>
@@ -64,62 +62,47 @@ const PersonalInfoForm = () => {
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-[24px] justify-between">
-                    {/* Country Select */}
-                    <div className="w-full">
-                        <Label htmlFor="country" className="font-normal">Country*</Label>
+                    {/* Country */}
+                    <div className='w-full'>
                         <Controller
                             control={control}
                             name="data.country"
                             render={({ field }) => (
-                                <Select
-                                    onValueChange={(value) => {
-                                        field.onChange(value);
-                                        setValue('data.state', ''); // reset state
-                                    }}
+                                <CountrySelect
                                     value={field.value}
-
-                                >
-                                    <SelectTrigger className="w-full mt-2" id="country">
-                                        <SelectValue placeholder="Select your country" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {countries.map((country) => (
-                                            <SelectItem className='flex gap-1 items-center' key={country.isoCode} value={country.isoCode}>
-                                                <span>{country.flag}</span>
-                                                <span>   {country.name}</span>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                    onChange={(val) => {
+                                        field.onChange(val);
+                                        setValue('data.state', ''); // Reset state
+                                    }}
+                                />
                             )}
                         />
+                        {touchedFields?.data?.country && errors?.data && "country" in errors.data && (
+                            <p className="text-sm text-red-500 mt-1">
+                                {(errors.data.country as { message?: string })?.message}
+                            </p>
+                        )}
                     </div>
 
-                    {/* State Select */}
-                    <div className="w-full">
-                        <Label htmlFor="state" className="font-normal">State*</Label>
+                    {/* State */}
+                    <div className='w-full'>
                         <Controller
                             control={control}
                             name="data.state"
                             render={({ field }) => (
-                                <Select
-                                    onValueChange={field.onChange}
+                                <StateSelect
+                                    countryCode={selectedCountryCode}
                                     value={field.value}
+                                    onChange={field.onChange}
                                     disabled={!selectedCountryCode}
-                                >
-                                    <SelectTrigger className=" w-full mt-2" id="state">
-                                        <SelectValue placeholder={selectedCountryCode ? "Select your state" : "Select a country first"} />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {states.map((state) => (
-                                            <SelectItem key={state.isoCode} value={state.name}>
-                                                {state.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                />
                             )}
                         />
+                        {touchedFields?.data?.state && errors?.data && "state" in errors.data && (
+                            <p className="text-sm text-red-500 mt-1">
+                                {(errors.data.state as { message?: string })?.message}
+                            </p>
+                        )}
                     </div>
                 </div>
 

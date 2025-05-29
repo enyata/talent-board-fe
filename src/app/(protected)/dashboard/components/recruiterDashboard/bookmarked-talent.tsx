@@ -18,7 +18,7 @@ const BookmarkedTalent = ({ talents }: { talents: talentProp[] }) => {
                     </Button>
                 </Link>
             </div>
-            {talents.length > 0 ?
+            {talents?.length > 0 ?
                 <RecentBookmarkedTalent talents={talents} />
                 :
                 <div className='my-auto mx-auto flex flex-col items-center justify-center text-[#101828]'>
@@ -40,7 +40,7 @@ const BookmarkedTalent = ({ talents }: { talents: talentProp[] }) => {
 const RecentBookmarkedTalent = ({ talents }: { talents: talentProp[] }) => {
     return (
         <div className='w-full mt-[24px] gap-3 grid md:grid-cols-2 grid-cols-1'>
-            {talents.slice(0, 4).map((talent, index) => (
+            {talents?.slice(0, 4).map((talent, index) => (
                 <TalentCard talent={talent} bookmarked={true} height='md:h-[307px]' width='max-w-[453px]' key={index} />
             ))}
         </div>

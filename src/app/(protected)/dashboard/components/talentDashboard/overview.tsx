@@ -35,7 +35,7 @@ const DashboardOverview = () => {
                     <div className='flex items-center gap-2'>
                         <Avatar className='size-[64px] border-[2px] border-[#E0E0E0]'>
                             <AvatarImage src={user?.avatar} />
-                            <AvatarFallback>DP</AvatarFallback>
+                            <AvatarFallback>{user ? user.first_name.trim().charAt(0).toUpperCase() : ''}</AvatarFallback>
                         </Avatar>
                         <div className='text-[#3A374B] flex flex-col'>
                             <span className='font-bold text-[20px]'>{user?.first_name} {user?.last_name}</span>

@@ -13,7 +13,7 @@ export default function Timeout() {
         setTimeout(() => {
             router.refresh();
             setLoading(false);
-        }, 1000);
+        }, 20000);
     };
     return (
         <div className="relative flex flex-col items-center justify-center h-screen text-center px-4 -translate-y-8">
