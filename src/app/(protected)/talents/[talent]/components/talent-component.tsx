@@ -19,13 +19,15 @@ import TalentCardSkeleton from "./talent-skeleton";
 import { talentProp } from "@/types/user";
 import { getSkillLabelByValue } from "@/lib/skills_sort";
 import skillsLibrary from "../../../../../../public/skills_library.json";
+import { env } from "@/lib/env";
+import { getCountryNameByCode } from "@/lib/countryfromIsocode";
 
 
 const TalentComponent = ({ talentID }: { talentID: string }) => {
     console.log('talentID at single talent page', talentID)
     const { fetchTalentById } = useTalentApi()
     const { data, isLoading, isError } = useQuery<talentProp>({
-        queryKey: ['talent'],
+        queryKey: [`talent ${talentID}`],
         queryFn: async () => await fetchTalentById(talentID),
     });
     console.log('data at single talent page', data)
@@ -36,6 +38,16 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
     const handleLinkClick = (external_link: string = '') => {
         window.open(external_link, '_blank')
     }
+
+    const handleDownloadResume = (resumePath: string) => {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = `${env('apiUrl')}/${resumePath}`;
+        downloadLink.download = `${data?.first_name}-${data?.last_name}-resume.pdf`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
+
     return (
         <div className="max-w-[951px] w-full flex flex-col gap-9 px-4 md:px-0">
             <Link href={'/talents'} className="flex items-center gap-2 text-[#09090B] text-[14px]">
@@ -75,7 +87,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                     <span>
                                         <MapPinned size={14} strokeWidth={2} />
                                     </span>
-                                    <p>{data?.state} {data?.country}</p>
+                                    <p>{data?.state} {getCountryNameByCode(data?.country || '')}</p>
                                 </div>
                             </div>
                         </div>
@@ -126,7 +138,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
 
                             <div className="flex flex-col gap-2">
                                 <h2 className="text-[12px] font-semibold">Experience:</h2>
-                                <p className="text-[13px] font-normal">10 years</p>
+                                <p className="text-[13px] font-normal capitalize">{data?.experience_level}</p>
                             </div>
 
                             <div className="flex flex-col gap-2">
@@ -153,11 +165,13 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                     </div>
 
                                     <Button
+                                        onClick={() => handleDownloadResume(data?.resume_path || '')}
                                         variant={"outline"}
                                         className="text-[12px] font-medium gap-1 w-[94px] h-[28px] rounded-[3px]">
                                         <CircleArrowDown />
                                         Download
                                     </Button>
+
                                 </div>
                             </div>
                         </div>

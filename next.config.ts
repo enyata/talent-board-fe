@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         hostname: 'media.licdn.com',
         pathname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '**',
+      },
     ],
   },
 };
