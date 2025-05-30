@@ -51,7 +51,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     <div className="relative md:h-screen">
       <Link
         href="/"
-        className="absolute md:top-[32px] top-[24px] md:left-[32px] left-[24px] text-[24px] font-semibold z-10"
+        className="absolute md:top-[32px] top-[24px] md:left-[32px] left-[24px] text-[24px] font-semibold z-10 cursor-pointer"
       >
         Talentboard
       </Link>

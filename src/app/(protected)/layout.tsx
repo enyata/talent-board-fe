@@ -34,7 +34,7 @@ const ProtectedLayout = async ({ children }: { children: React.ReactNode }) => {
 
     return (
         <ProtectedFragment>
-            <AuthHydrator user={userData.data.user} accessToken={accessToken?.value} refreshToken={refreshToken?.value}>
+            <AuthHydrator user={userData?.data?.user} accessToken={accessToken?.value} refreshToken={refreshToken?.value}>
                 <ProtectedHeader />
                 <div className='mx-auto w-full md:max-w-[951px] mt-[120px] pb-[64px]'>
                     {children}

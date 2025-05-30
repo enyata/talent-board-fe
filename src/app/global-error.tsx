@@ -18,10 +18,10 @@ export default function GlobalError({
     return (
         <html>
             <body className="relative flex flex-col items-center justify-center h-screen text-center px-4">
-                <div className="flex justify-center items-center">
-                    <h2 className="font-medium text-3xl">Something went wrong!</h2>
-                    <p>{error.message}</p>
-                    <ButtonWithLoader isLoading={loading} onClick={handleReset}>Try again</ButtonWithLoader>
+                <div className="flex flex-col gap-2 justify-center items-center">
+                    <h2 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">Something went wrong!</h2>
+                    <p className="text-muted-foreground max-w-md">{error.message}</p>
+                    <ButtonWithLoader className="h-[42px]" isLoading={loading} onClick={handleReset}>Try again</ButtonWithLoader>
                 </div>
             </body>
         </html>

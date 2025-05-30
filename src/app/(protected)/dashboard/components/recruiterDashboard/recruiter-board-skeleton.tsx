@@ -1,3 +1,4 @@
+import SkeletonTalentCard from "@/components/skeleton-talent-card";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -26,9 +27,9 @@ export default function RecruiterDashboardSkeleton() {
                     <Skeleton className="h-[20px] w-[160px]" />
                     <Skeleton className="h-[36px] w-[120px] rounded-md" />
                 </div>
-                <div className="flex gap-4 overflow-x-auto">
+                <div className="flex flex-col md:flex-row gap-4 overflow-x-auto w-full">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <Skeleton key={i} className="w-[280px] h-[180px] rounded-lg" />
+                        <SkeletonTalentCard key={i} width="max-w-[423px]" />
                     ))}
                 </div>
             </Card>
@@ -39,9 +40,9 @@ export default function RecruiterDashboardSkeleton() {
                     <Skeleton className="h-[20px] w-[180px]" />
                     <Skeleton className="h-[36px] w-[120px] rounded-md" />
                 </div>
-                <div className="flex gap-4 overflow-x-auto">
+                <div className="flex flex-col md:flex-row gap-4 overflow-x-auto">
                     {Array.from({ length: 3 }).map((_, i) => (
-                        <Skeleton key={i} className="w-[280px] h-[180px] rounded-lg" />
+                        <SkeletonTalentCard key={i} width="max-w-[371px]" />
                     ))}
                 </div>
             </Card>
@@ -49,10 +50,7 @@ export default function RecruiterDashboardSkeleton() {
             {/* Talent Cards Grid */}
             <div className="w-full mt-[24px] gap-4 grid md:grid-cols-2 grid-cols-1">
                 {Array.from({ length: 4 }).map((_, i) => (
-                    <Skeleton
-                        key={i}
-                        className="h-[307px] max-w-[453px] w-full rounded-lg"
-                    />
+                    <SkeletonTalentCard key={i} width="max-w-[453px]" />
                 ))}
             </div>
 

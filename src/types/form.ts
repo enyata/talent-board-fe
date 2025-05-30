@@ -59,3 +59,4 @@ export const formSteps: Record<number, (keyof OnboardFormSchema["data"])[]> = {
   2: ["state", "work_email", "linkedin"],// exluded "first_name","last_name", "state", "country", "portfolio"
   3: ["hiring_for", "company_industry", "roles_looking_for", "experience_level", "skills", "resume"],
 };
+

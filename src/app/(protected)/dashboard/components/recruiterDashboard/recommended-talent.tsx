@@ -2,11 +2,12 @@ import TalentCard from '@/components/talentCard'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { talentProp } from '@/types/user'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 
-const RecommendedTalent = () => {
+const RecommendedTalent = ({ talents }: { talents: talentProp[] }) => {
     return (
         <Card className='shadow-none outline-px md:mt-[36px] gap-0 mt-[24px] bg-[#fafafa] px-4 text-[#101828]'>
             <div className='flex  gap-6 items-baseline justify-between'>
@@ -17,18 +18,18 @@ const RecommendedTalent = () => {
                     </Button>
                 </Link>
             </div>
-            <RecommendedTalentCarousel />
+            <RecommendedTalentCarousel talents={talents} />
         </Card>
     )
 }
 
-const RecommendedTalentCarousel = () => {
+const RecommendedTalentCarousel = ({ talents }: { talents: talentProp[] }) => {
     return (
         <Carousel className="w-full  mt-[24px]">
             <CarouselContent className='-ml-1 gap-2 mt-0'>
-                {Array.from({ length: 5 }).map((_, index) => (
+                {talents?.slice(0, 5).map((talent, index) => (
                     <CarouselItem key={index} className='pl-1 min-w-[250px] max-w-[423px] flex-shrink-0'>
-                        <TalentCard height='md:h-[307px]' width='max-w-[423px]' />
+                        <TalentCard height='md:h-[307px]' width='max-w-[423px]' talent={talent} />
                     </CarouselItem>
                 ))}
             </CarouselContent>
