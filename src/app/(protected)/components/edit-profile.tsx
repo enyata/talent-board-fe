@@ -6,11 +6,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { UploadAvatar } from '@/components/ui/picture-upload'
 import { Textarea } from '@/components/ui/textarea'
+import { PATCH } from '@/lib/requests'
 import { useAuthStore } from '@/store/authStore'
 import { ProfileSchema, profileSchema } from '@/types/profile-edit'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React from 'react'
+import React, { useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void }) => {
     const user = useAuthStore.getState().user;
@@ -28,9 +30,45 @@ const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
         }
     )
     const photo = watch("display_photo");
-
+    const bio = watch("bio");
+    const Firstname = watch("first_name");
+    const Lastname = watch('last_name')
+    const checkBio = () => {
+        if (user?.role === 'recruiter') {
+            return true
+        }
+        if (user?.role === 'talent' && bio !== '') {
+            return true
+        }
+        return false
+    }
+    const form = new FormData();
+    form.append('first_name', Firstname)
+    form.append('last_name', Lastname)
+    form.append('avatar', photo)
+    if (user?.role === 'talent') {
+        form.append('bio', bio ?? '')
+    }
+    const [isPending, startTransition] = useTransition();
     const handleProfileEdit = async () => {
-        setOpenDialog(false)
+        startTransition(async () => {
+            try {
+                const res = await PATCH(
+                    `/api/v1/users/me`, form
+                );
+                if (res.status !== "success") {
+                    toast.error(res.message || "Something went wrong");
+                    return;
+                }
+                toast.success('Profile edited successfully')
+                setOpenDialog(false)
+
+            } catch (error) {
+                console.error("Error from form submission:", error);
+                toast.error("Something went wrong. Please try again.");
+            }
+        });
+
     }
     return (
         <DialogContent className='w-[448px]'>
@@ -93,18 +131,20 @@ const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
                         )}
                     </div>
                 </div>
-                <div className='w-full mt-6'>
-                    <Label htmlFor='bio' className='font-normal'>Bio</Label>
-                    <Textarea
-                        id='bio'
-                        className='h-[100px] mt-2'
-                        placeholder='I am a full time developer who likes to eat a lot'
-                        {...register('bio')}
-                    />
-                    {errors.bio && (
-                        <p className='text-red-500 text-[12px] mt-1'>{errors.bio.message}</p>
-                    )}
-                </div>
+                {user?.role === 'talent' &&
+                    <div className='w-full mt-6'>
+                        <Label htmlFor='bio' className='font-normal'>Bio</Label>
+                        <Textarea
+                            id='bio'
+                            className='h-[100px] mt-2'
+                            placeholder='I am a full time developer who likes to eat a lot'
+                            {...register('bio')}
+                        />
+                        {errors.bio && (
+                            <p className='text-red-500 text-[12px] mt-1'>{errors.bio.message}</p>
+                        )}
+                    </div>
+                }
             </div>
             <div className=' flex justify-between items-center gap-[4px]'>
                 <Button
@@ -115,7 +155,8 @@ const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
                     Cancel
                 </Button>
                 <ButtonWithLoader
-                    disabled={!isDirty || !isValid}
+                    isLoading={isPending}
+                    disabled={!isDirty || !isValid || isPending || !checkBio}
                     className='rounded-[6px] h-[48px] w-full flex-1'
                     onClick={handleProfileEdit}
                 >

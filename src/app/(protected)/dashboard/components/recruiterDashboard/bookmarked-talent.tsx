@@ -3,7 +3,6 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { talentProp } from '@/types/user'
 import { ArrowRight } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
@@ -22,12 +21,6 @@ const BookmarkedTalent = ({ talents }: { talents: talentProp[] }) => {
                 <RecentBookmarkedTalent talents={talents} />
                 :
                 <div className='my-auto mx-auto flex flex-col items-center justify-center text-[#101828]'>
-                    <Image
-                        src={'/assets/icons/empty-bookmark.svg'}
-                        alt='empty-bookmark'
-                        height={164}
-                        width={164}
-                    />
                     <p className='mt-4 font-semibold'>
                         No bookmarks yet
                     </p>
@@ -41,7 +34,7 @@ const RecentBookmarkedTalent = ({ talents }: { talents: talentProp[] }) => {
     return (
         <div className='w-full mt-[24px] gap-3 grid md:grid-cols-2 grid-cols-1'>
             {talents?.slice(0, 4).map((talent, index) => (
-                <TalentCard talent={talent} bookmarked={true} height='md:h-[307px]' width='max-w-[453px]' key={index} />
+                <TalentCard talent={talent} height='md:h-[307px]' width='max-w-[453px]' key={index} />
             ))}
         </div>
     )

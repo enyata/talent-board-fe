@@ -13,6 +13,6 @@ export const profileSchema = z.object({
         }),
     first_name: z.string().min(1, "First name is required"),
     last_name: z.string().min(1, "Last name is required"),
-    bio: z.string().min(1, "Bio is required").max(250, "Bio must be less than 250 characters"),
+    bio: z.string().min(1, "Bio is required").max(250, "Bio must be less than 250 characters").optional().or(z.literal("")),
 });
 export type ProfileSchema = z.infer<typeof profileSchema>;

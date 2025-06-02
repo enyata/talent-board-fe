@@ -18,7 +18,15 @@ const RecommendedTalent = ({ talents }: { talents: talentProp[] }) => {
                     </Button>
                 </Link>
             </div>
-            <RecommendedTalentCarousel talents={talents} />
+            {talents?.length > 0 ?
+                <RecommendedTalentCarousel talents={talents} /> :
+                <div className='my-auto mx-auto flex flex-col items-center justify-center text-[#101828]'>
+                    <p className='mt-4 font-semibold'>
+                        No Recommended Talent yet
+                    </p>
+                    <p className='w-full max-w-[295px] mt-[10px] text-[13px] text-center'>Keep searching talents to get recommendation</p>
+                </div>
+            }
         </Card>
     )
 }
