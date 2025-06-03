@@ -22,7 +22,12 @@ export const onboardFormSchema = z
         .url("Enter a valid portfolio URL")
         .optional()
         .or(z.literal("")),
-
+      job_title: z.string()
+        .optional()
+        .or(z.literal("")),
+      bio: z.string()
+        .optional()
+        .or(z.literal("")),
       linkedin: z.string()
         .url("Enter a valid LinkedIn URL")
         .or(z.literal("")),
@@ -56,7 +61,7 @@ export type OnboardFormSchema = z.infer<typeof onboardFormSchema>;
 
 export const formSteps: Record<number, (keyof OnboardFormSchema["data"])[]> = {
   1: ["role"],
-  2: ["state", "work_email", "linkedin"],// exluded "first_name","last_name", "state", "country", "portfolio"
+  2: ["state", "work_email", "linkedin", "bio", "job_title"],// exluded "first_name","last_name", "state", "country", "portfolio"
   3: ["hiring_for", "company_industry", "roles_looking_for", "experience_level", "skills", "resume"],
 };
 

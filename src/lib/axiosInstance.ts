@@ -9,16 +9,16 @@ axios.defaults.withCredentials = true;
 const API = axios.create({
   baseURL: env("apiUrl"),
   withCredentials: true,
-  timeout: 30_000, // Axios own timeout (fallback)
+  timeout: 30_000,
 });
 API.interceptors.request.use((config) => {
   const { accessToken, refreshToken } = useAuthStore.getState();
+  console.log("Access Token at interceptor:", accessToken);
+  console.log("Refresh Token at interceptor:", refreshToken);
   if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
   if (refreshToken) config.headers["x-refresh-token"] = refreshToken;
   return config;
 });
-
-/* Handle refreshed token */
 
 
 API.interceptors.response.use(

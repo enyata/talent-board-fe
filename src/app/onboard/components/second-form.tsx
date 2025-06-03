@@ -8,6 +8,7 @@ import FormLayout from './formLayout'
 import { formSteps, OnboardFormSchema } from '@/types/form'
 import { CountrySelect } from '@/components/ui/country-select'
 import { StateSelect } from '@/components/ui/state-select'
+import { Textarea } from '@/components/ui/textarea'
 
 const PersonalInfoForm = () => {
     const { register, control, setValue, watch, formState: { isValid, errors, touchedFields, dirtyFields }, } = useFormContext<OnboardFormSchema>();
@@ -18,6 +19,12 @@ const PersonalInfoForm = () => {
     let fields = formSteps[step];
     if (role !== "recruiter") {
         fields = fields.filter((field) => field !== "work_email");
+    }
+    if (role !== "talent") {
+        fields = fields.filter((field) => field !== "bio");
+    }
+    if (role !== "talent") {
+        fields = fields.filter((field) => field !== "job_title");
     }
     const onNext = () => {
         setValue('config.currentForm', step + 1)
@@ -125,6 +132,39 @@ const PersonalInfoForm = () => {
                 )}
                 {role === 'talent' && (
                     <div className='w-full'>
+                        <Label htmlFor='job_title' className='font-normal'>Professional Title*</Label>
+                        <Input
+                            id='job_title'
+                            className='h-[42px] mt-2'
+                            placeholder='e.g. Software Engineer, Product Manager'
+                            {...register('data.job_title')}
+                        />
+                        {touchedFields?.data?.job_title && errors?.data && "job_title" in errors.data && (
+                            <p className="text-sm text-red-500 mt-1">
+                                {(errors.data.job_title as { message?: string })?.message}
+                            </p>
+                        )}
+                    </div>
+                )}
+
+                {role === 'talent' && (
+                    <div className='w-full'>
+                        <Label htmlFor='bio' className='font-normal'>Bio*</Label>
+                        <Textarea
+                            id='bio'
+                            className='h-[60px] mt-2'
+                            placeholder='Tell us a little about yourself.'
+                            {...register('data.bio')}
+                        />
+                        {touchedFields?.data?.bio && errors?.data && "bio" in errors.data && (
+                            <p className="text-sm text-red-500 mt-1">
+                                {(errors.data.bio as { message?: string })?.message}
+                            </p>
+                        )}
+                    </div>
+                )}
+                {role === 'talent' && (
+                    <div className='w-full'>
                         <Label htmlFor='portfolio' className='font-normal'>Portfolio Link</Label>
                         <Input
                             id='portfolio'
@@ -139,6 +179,7 @@ const PersonalInfoForm = () => {
                         )}
                     </div>
                 )}
+
                 <div className='w-full'>
                     <Label htmlFor='linkedin' className='font-normal'>Linkedin Profile*</Label>
                     <Input

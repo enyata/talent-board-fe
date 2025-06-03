@@ -26,6 +26,8 @@ const OnboardingNestedLayout = ({ children }: { children: React.ReactNode }) => 
                 last_name: last_name || '',
                 state: '',
                 country: '',
+                job_title: '',
+                bio: '',
                 portfolio: '',
                 work_email: '',
                 linkedin: '',

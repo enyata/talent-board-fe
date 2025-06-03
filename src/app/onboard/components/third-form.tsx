@@ -13,21 +13,8 @@ import { formSteps, OnboardFormSchema } from '@/types/form';
 import { flattenAndSortSkills } from '@/lib/skills_sort';
 import skillsLibrary from '../../../../public/skills_library.json';
 import rolesLibrary from "../../../../public/roles_library.json"
+import { useAuthStore } from '@/store/authStore';
 
-// const OPTIONS = [
-//     { label: 'nextjs', value: 'Nextjs' },
-//     { label: 'Vite', value: 'vite' },
-//     { label: 'Nuxt', value: 'nuxt' },
-//     { label: 'Vue', value: 'vue,', disable: true },
-// ];
-// const ROLESOPTIONS = [
-//     { label: 'product designer', value: 'product-designer' },
-//     { label: 'ux designer', value: 'ux-designer' },
-//     { label: 'ui designer', value: 'ui-designer' },
-//     { label: 'software engineer', value: 'software-engineer' },
-//     { label: 'data analyst', value: 'data-analyst' },
-//     { label: 'data scientist', value: 'data-scientist' },
-// ]
 
 const OPTIONS = flattenAndSortSkills(skillsLibrary);
 const ROLESOPTIONS = rolesLibrary.sort((a, b) => a.label.localeCompare(b.label));
@@ -62,6 +49,12 @@ const ExperienceForm = () => {
     if (role === 'talent' && watch('data.portfolio') !== '') {
         form.append('portfolio_url', watch('data.portfolio') ?? '');
     }
+    if (role === 'talent' && watch('data.job_title') !== '') {
+        form.append('job_title', watch('data.job_title') ?? '');
+    }
+    if (role === 'talent' && watch('data.bio') !== '') {
+        form.append('bio', watch('data.bio') ?? '');
+    }
     if (role === 'recruiter') {
         form.append('work_email', watch('data.work_email') || '');
     }
@@ -90,8 +83,11 @@ const ExperienceForm = () => {
     }
 
     const [isPending, startTransition] = useTransition();
+    const user = useAuthStore.getState();
 
     const handleSubmit = () => {
+        console.log('access token at submit', user.accessToken);
+        console.log('refresh token at submit', user.refreshToken);
         startTransition(async () => {
             try {
                 const res = await PATCH(
