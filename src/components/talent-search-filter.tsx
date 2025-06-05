@@ -13,11 +13,12 @@ import { ChooseExperienceLevel } from './choose-experience-button';
 import { CountrySelect } from './ui/country-select';
 import { StateSelect } from './ui/state-select';
 import { SkillButton } from './skill-button';
-import { SKILLSET } from '@/constants';
 import { ButtonWithLoader } from './ui/button-with-loader';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
 import { TalentFilterForm } from '@/types/filters';
+import { flattenAndSortSkills } from '@/lib/skills_sort';
+import skillsLibrary from '../../public/skills_library.json';
 
 
 interface TalentSearchFilterProps {
@@ -27,6 +28,7 @@ interface TalentSearchFilterProps {
 }
 
 export default function TalentSearchFilter({ isLoading, setQueryStringValue }: TalentSearchFilterProps) {
+    const SKILLSET = flattenAndSortSkills(skillsLibrary);
 
     const wrapperRef = React.useRef<HTMLDivElement>(null);
 
@@ -82,7 +84,6 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedSearch])
 
-    // Toggle panel with CMD+F or CTRL+F
     React.useEffect(() => {
         const queryString = buildQueryString();
         const down = (e: KeyboardEvent) => {
@@ -286,26 +287,26 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                 </div>
                             </div>
                             {/* SKILL */}
-                            <div>
+                            <div className=''>
                                 <DropdownMenuSeparator />
                                 <Label htmlFor='experience-level' className='font-normal text-[14px] mt-4'>Select skills that apply</Label>
                                 <Controller
                                     control={control}
                                     name="skills"
                                     render={({ field }) => (
-                                        <div className="flex flex-wrap gap-4 mt-1">
-                                            {SKILLSET.slice(0, 8).map((skill, i) => {
-                                                const selected = field?.value?.includes(skill);
+                                        <div className="flex flex-wrap gap-4 mt-1 max-h-[200px] overflow-y-scroll p-2">
+                                            {SKILLSET.map((skill, i) => {
+                                                const selected = field?.value?.includes(skill.value);
 
                                                 return (
                                                     <SkillButton
                                                         key={i}
-                                                        skill={skill}
+                                                        skill={skill.label}
                                                         selected={selected}
-                                                        onToggle={(s, isSel) => {
-                                                            const newArr = isSel
-                                                                ? [...field.value, s] // add
-                                                                : field.value.filter((sk) => sk !== s); // remove
+                                                        onToggle={() => {
+                                                            const newArr = selected
+                                                                ? field.value.filter((v) => v !== skill.value) // remove
+                                                                : [...(field.value ?? []), skill.value]; // add
                                                             field.onChange(newArr);
                                                         }}
                                                     />
@@ -331,7 +332,8 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                 className='rounded-[7px]'
                                 onClick={handleFilter}
                             >
-                                Show result {watch('filter_options').length !== 0 ? `(${watch('filter_options').length})` : ''}
+                                Show result
+                                 {/* {watch('filter_options').length !== 0 ? `(${watch('filter_options').length})` : ''} */}
                             </ButtonWithLoader>
                         </div>
                     </DropdownMenuContent>

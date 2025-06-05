@@ -32,7 +32,7 @@ const talents = [
 
 const Notifications = () => {
     return (
-        <Card className='shadow-none outline-px bg-[#fafafa] w-full mt-4 text-[#101828]'>
+        <Card className='shadow-none outline-px bg-[#fafafa] w-full mt-4 text-[#101828] max-h-[500px] overflow-scroll'>
             <div className='px-[16px] '>
                 <div className='flex justify-between items-center'>
                     <div className=''>

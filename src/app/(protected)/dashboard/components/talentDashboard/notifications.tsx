@@ -14,7 +14,7 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
     const notifications = data?.notifications ?? []
     console.log('notifications', notifications)
     return (
-        <Card className='shadow-none outline-px bg-[#fafafa] w-full mt-4'>
+        <Card className='shadow-none outline-px bg-[#fafafa] w-full mt-4 max-h-[500px] overflow-scroll'>
             <div className='px-[16px] '>
                 <div className='flex justify-between items-center'>
                     <div className='text-[#475467] text-[14px]'>
