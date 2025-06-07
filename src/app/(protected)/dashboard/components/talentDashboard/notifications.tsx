@@ -63,8 +63,8 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                                                         <AvatarFallback>{user?.first_name.trim().charAt(0).toUpperCase()}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
-                                                        <p className='font-semibold text-[14px]'>{user?.first_name} {user?.last_name}</p>
-                                                        <p className='font-medium text-[#5F5F5F] text-[13px]'>Senior Frontend Developer</p>
+                                                        <p className='font-semibold text-[14px] text-[#5F5F5F]'>{user?.first_name} {user?.last_name}</p>
+                                                        <p className='font-medium text-[#5F5F5F] text-[13px]'>{user?.job_title}</p>
                                                     </div>
                                                 </div>
                                                 <Button variant={'outline'} className=' mt-2 md:mt-0 h-[32px] max-w-[110px] md:max-w-full text-[#5F5F5F] rounded-[3px] text-[12px] flex gap-2'>
@@ -77,11 +77,11 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                                                 <span><MapPinned size={14} strokeWidth={3} /></span>
                                                 <p>Abuja</p>
                                             </div>
-                                            <p className='mt-[8px] text-[13px] text-[#5F5F5F]'>Passionate frontend developer with expertise in building responsive and accessible web applications.
-                                                Focused on user experience and performance optimization.
+                                            <p className='mt-[8px] text-[13px] text-[#5F5F5F]'>
+                                                {user?.bio || 'No bio available'}
                                             </p>
                                             <div className='mt-[16px] flex gap-2 flex-wrap'>
-                                                {['🔧 JavaScript', '⚡ Next.js', '📱 React Native'].map((skill, index) =>
+                                                {user?.skills && user?.skills.map((skill, index) =>
                                                     <Button key={index} className='bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] p-[6px] text-[12px]'>
                                                         {skill}
                                                     </Button>
