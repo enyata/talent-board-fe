@@ -148,7 +148,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                         <ChevronUp size={14} strokeWidth={2.5} />
                                 }
                                 <p className="font-normal">
-                                    Upvote <span className="font-bold">{upvotes}</span>
+                                    {isUpvoted ? 'Downvote' : 'Upvote'} <span className="font-bold">{upvotes}</span>
                                 </p>
                             </Button>
 
