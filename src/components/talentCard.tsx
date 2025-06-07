@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useTransition } from 'react'
+import React, { useState } from 'react'
 import { Card } from './ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Button } from './ui/button'
@@ -15,10 +15,10 @@ import { useRouter } from 'next/navigation'
 import { talentProp } from '@/types/user'
 import { useAuthStore } from '@/store/authStore'
 import { toast } from 'react-toastify'
-import { useTalentApi } from '@/hooks/useTalents'
 import skillsLibrary from '../../public/skills_library.json'
 import { getSkillLabelByValue } from '@/lib/skills_sort'
 import { getCountryNameByCode } from '@/lib/countryfromIsocode'
+import { useSaveTalentMutation, useUpvoteTalentMutation } from '@/hooks/mutations/talent'
 
 interface TalentboardProps {
     width?: string
@@ -30,12 +30,15 @@ interface TalentboardProps {
 
 const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }: TalentboardProps) => {
     const router = useRouter()
-    const [isPending, startTransition] = useTransition();
     const [bookmarked, setBookmarked] = useState(talent?.is_saved || false)
     const [isUpvoted, setIsUpvoted] = useState(talent?.is_upvoted || false)
     const [upvotes, setUpvotes] = useState(talent?.upvotes)
     const { user } = useAuthStore()
-    const { upvoteTalent, saveTalent } = useTalentApi()
+
+    const talentId = talent?.id || '';
+
+    const { mutate: upvoteATalent, isPending: isUpvoting } = useUpvoteTalentMutation();
+    const { mutate: saveATalent, isPending: isSaving } = useSaveTalentMutation()
 
     const handleCardClick = () => {
         if (!user) {
@@ -67,16 +70,14 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
         }
         if (user && user?.role === 'recruiter') {
             setBookmarked(prev => !prev)
-            startTransition(() => {
-                saveTalent(talent?.id || '')
-                    .then(() => {
-                        toast.success(`Talent ${!bookmarked ? 'bookmarked' : 'removed from bookmarks'} successfully!`)
-                    })
-                    .catch((error) => {
-                        console.error('Error saving talent:', error)
-                        toast.error(`Failed to ${!bookmarked ? 'bookmark' : 'remove bookmark'} talent.`)
-                    })
-            })
+            saveATalent(talentId, {
+                onSuccess: () => {
+                    toast.success(`Talent ${!bookmarked ? 'bookmarked' : 'removed from bookmarks'} successfully!`)
+                },
+                onError: () => {
+                    toast.error(`Failed to ${!bookmarked ? 'bookmark' : 'remove bookmark'} talent.`)
+                },
+            });
         }
     }
 
@@ -98,16 +99,14 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
                 setUpvotes((prev) => (prev || 0) - 1)
             }
             setIsUpvoted(prev => !prev)
-            startTransition(() => {
-                upvoteTalent(talent?.id || '')
-                    .then(() => {
-                        toast.success(`Talent ${!isUpvoted ? 'upvoted' : 'downvoted'} successfully!`)
-                    })
-                    .catch((error) => {
-                        console.error('Error upvoting talent:', error)
-                        toast.error(`Failed to ${!isUpvoted ? 'upvote' : 'downvote'} talent.`)
-                    })
-            })
+            upvoteATalent(talentId, {
+                onSuccess: () => {
+                    toast.success(`Talent ${!isUpvoted ? 'upvoted' : 'downvoted'} successfully!`);
+                },
+                onError: () => {
+                    toast.error(`Failed to ${!isUpvoted ? 'upvote' : 'downvote'} talent.`);
+                },
+            });
         }
 
     }
@@ -144,7 +143,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
                     </div>
 
                     <Button
-                        disabled={isPending}
+                        disabled={isSaving || isUpvoting}
                         onClick={handleBookmark}
                         variant='outline'
                         className='w-[75px] h-[28px] text-[#5F5F5F] rounded-[2px]'
@@ -157,7 +156,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
                     <span>
                         <MapPinned size={14} strokeWidth={3} />
                     </span>
-                    <p>{getCountryNameByCode(talent?.country || '')}</p>
+                    <p>{talent?.state} {getCountryNameByCode(talent?.country || '')}</p>
                 </div>
 
                 <p className='mt-[8px] font-semibold text-[13px] text-[#5F5F5F] text-ellipsis'>
@@ -179,9 +178,9 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
 
             <div className='border-t-[2px] pt-[8px] border-[#E3E3E3] flex justify-between text-[#5F5F5F] text-[12px]'>
                 <button
-                    disabled={isPending}
+                    disabled={isUpvoting || isSaving}
                     onClick={handleUpvote}
-                    className='flex items-center font-semibold cursor-pointer border-none'
+                    className='flex items-center font-semibold cursor-pointer border-none disabled:pointer-events-none disabled:opacity-50'
                 >
                     {upvotes}{' '}
                     <span className='ml-1'>

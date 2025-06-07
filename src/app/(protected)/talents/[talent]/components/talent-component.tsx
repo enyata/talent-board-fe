@@ -27,7 +27,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
     console.log('talentID at single talent page', talentID)
     const { fetchTalentById } = useTalentApi()
     const { data, isLoading, isError } = useQuery<talentProp>({
-        queryKey: [`talent ${talentID}`],
+        queryKey: [`talent`, talentID],
         queryFn: async () => await fetchTalentById(talentID),
     });
     console.log('data at single talent page', data)
