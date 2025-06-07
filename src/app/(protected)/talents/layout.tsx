@@ -1,11 +1,15 @@
 'use client';
 
 import { useAuthStore } from "@/store/authStore";
-import { unauthorized } from "next/navigation";
+import { unauthorized, useRouter } from "next/navigation";
 
 const TalentLayout = ({ children }: { children: React.ReactNode }) => {
-    const userRole = useAuthStore.getState().user?.role;
-    if (userRole !== 'recruiter') {
+    const user = useAuthStore.getState().user
+    const router = useRouter()
+    if (!user) {
+        router.push('/login')
+    }
+    if (user?.role !== 'recruiter') {
         return unauthorized()
     }
     return (

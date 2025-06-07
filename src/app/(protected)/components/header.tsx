@@ -8,7 +8,7 @@ import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { toast } from 'react-toastify';
 import { useMediaQuery } from 'usehooks-ts';
 import EditProfile from './edit-profile';
@@ -16,6 +16,12 @@ import EditProfile from './edit-profile';
 const ProtectedHeader = () => {
     const user = useAuthStore.getState().user;
     const isMobile = useMediaQuery('(max-width: 768px)');
+    const [hasMounted, setHasMounted] = useState(false);
+
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
+
     const router = useRouter()
 
     const [isPending, startTransition] = useTransition();
@@ -53,7 +59,7 @@ const ProtectedHeader = () => {
                             <AvatarImage src={user?.avatar} />
                             <AvatarFallback>{user ? user.first_name.trim().charAt(0).toUpperCase() : ''}</AvatarFallback>
                         </Avatar>
-                        {!isMobile && (
+                        {hasMounted && !isMobile && (
                             <>
                                 <span className="text-sm">
                                     {user?.first_name} {user?.last_name}

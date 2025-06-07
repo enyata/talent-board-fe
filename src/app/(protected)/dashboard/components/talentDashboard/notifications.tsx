@@ -39,7 +39,7 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                         </Card>
                     ) :
                         (notifications).map((item: NotificationData) =>
-                            <Card key={item.id} className='relative bg-red w-full text-[#727272] gap-0 text-[14px] p-[16px] bg-white shadow-none'>
+                            <Card key={item.id} className='relative w-full text-[#727272] gap-0 text-[14px] p-[16px] bg-white shadow-none'>
                                 <div className='flex gap-2'>
                                     <div className=' flex gap-2 items-center'>
                                         <span className='bg-[#4976F4] size-[10px] rounded-full'></span>

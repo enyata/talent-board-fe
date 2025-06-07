@@ -10,7 +10,7 @@ import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import ParamLayout from '../component/paramLayout'
+import ParamLayout from '@/components/providers/paramLayout'
 import { talentProp } from '@/types/user'
 
 const BookmarkedList = () => {

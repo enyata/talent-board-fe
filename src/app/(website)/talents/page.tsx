@@ -6,11 +6,11 @@ import TalentList from './component/talent-list'
 
 const TalentsPage = () => {
   return (
-    <div className='px-4 md:px-0'>
+    <div className='px-4 md:px-0  mx-auto w-full md:max-w-[951px] mt-5 md:mt-[64px] md:pb-[64px] pb-5'>
       <Breadcrumb >
         <BreadcrumbList className='text-[14px]'>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/dashboard" className='flex items-center gap-1'>
+            <BreadcrumbLink href="/" className='flex items-center gap-1'>
               <Image
                 src={'/assets/icons/home.svg'}
                 alt="home"

@@ -31,17 +31,6 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
     const SKILLSET = flattenAndSortSkills(skillsLibrary);
 
     const wrapperRef = React.useRef<HTMLDivElement>(null);
-
-    // Close search panel when clicking outside
-    // React.useEffect(() => {
-    //     const handleOutside = (e: MouseEvent) => {
-    //         if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-    //             setOpen(false);
-    //         }
-    //     };
-    //     document.addEventListener('mousedown', handleOutside);
-    //     return () => document.removeEventListener('mousedown', handleOutside);
-    // }, []);
     const router = useRouter();
 
     const { control, reset, watch, setValue, register } = useFormContext<TalentFilterForm>();
@@ -140,45 +129,6 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                             {...register('q')}
                         />
                     </div>
-                    {/* Search Suggestion Panel */}
-                    {/* {open && (
-                        <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-sm border shadow-lg bg-white p-5">
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="font-medium">Suggestions</span>
-                                <button
-                                    onClick={() => setOpen(false)}
-                                    className="text-lg leading-none cursor-pointer absolute top-3 right-3"
-                                >
-                                    <X strokeWidth={2} size={14} />
-                                </button>
-                            </div>
-                            <p className='text-sm'>{query ? `Result for "${query}"` : 'Start typing...'}</p>
-                            <ul className=" list-inside space-y-1 text-sm mt-2">
-                                {isSuggestionLoading ? (
-                                    <div>
-                                        {
-                                            Array.from({ length: 3 }).map((_, i) => (
-                                                <Skeleton key={i} className='max-w-[50px] w-full h-[16px]' />
-                                            ))
-                                        }
-                                    </div>
-                                ) : (
-                                    suggestions?.map((item: string) => (
-                                        <li
-                                            key={item}
-                                            className="hover:bg-gray-50 p-2 cursor-pointer rounded-sm"
-                                            onClick={() => {
-                                                setValue('q', item);
-                                                setOpen(false);
-                                            }}
-                                        >
-                                            {item}
-                                        </li>
-                                    ))
-                                )}
-                            </ul>
-                        </div>
-                    )} */}
                 </div>
                 {/* Filter button */}
                 <DropdownMenu>
@@ -333,7 +283,7 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                 onClick={handleFilter}
                             >
                                 Show result
-                                 {/* {watch('filter_options').length !== 0 ? `(${watch('filter_options').length})` : ''} */}
+                                {/* {watch('filter_options').length !== 0 ? `(${watch('filter_options').length})` : ''} */}
                             </ButtonWithLoader>
                         </div>
                     </DropdownMenuContent>
