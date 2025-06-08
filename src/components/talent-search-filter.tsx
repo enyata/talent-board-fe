@@ -13,11 +13,12 @@ import { ChooseExperienceLevel } from './choose-experience-button';
 import { CountrySelect } from './ui/country-select';
 import { StateSelect } from './ui/state-select';
 import { SkillButton } from './skill-button';
-import { SKILLSET } from '@/constants';
 import { ButtonWithLoader } from './ui/button-with-loader';
 import { useRouter } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
 import { TalentFilterForm } from '@/types/filters';
+import { flattenAndSortSkills } from '@/lib/skills_sort';
+import skillsLibrary from '../../public/skills_library.json';
 
 
 interface TalentSearchFilterProps {
@@ -27,19 +28,9 @@ interface TalentSearchFilterProps {
 }
 
 export default function TalentSearchFilter({ isLoading, setQueryStringValue }: TalentSearchFilterProps) {
+    const SKILLSET = flattenAndSortSkills(skillsLibrary);
 
     const wrapperRef = React.useRef<HTMLDivElement>(null);
-
-    // Close search panel when clicking outside
-    // React.useEffect(() => {
-    //     const handleOutside = (e: MouseEvent) => {
-    //         if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-    //             setOpen(false);
-    //         }
-    //     };
-    //     document.addEventListener('mousedown', handleOutside);
-    //     return () => document.removeEventListener('mousedown', handleOutside);
-    // }, []);
     const router = useRouter();
 
     const { control, reset, watch, setValue, register } = useFormContext<TalentFilterForm>();
@@ -82,7 +73,6 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [debouncedSearch])
 
-    // Toggle panel with CMD+F or CTRL+F
     React.useEffect(() => {
         const queryString = buildQueryString();
         const down = (e: KeyboardEvent) => {
@@ -139,45 +129,6 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                             {...register('q')}
                         />
                     </div>
-                    {/* Search Suggestion Panel */}
-                    {/* {open && (
-                        <div className="absolute left-0 top-full z-10 mt-2 w-full max-w-[859px] max-h-[500px] overflow-auto rounded-sm border shadow-lg bg-white p-5">
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="font-medium">Suggestions</span>
-                                <button
-                                    onClick={() => setOpen(false)}
-                                    className="text-lg leading-none cursor-pointer absolute top-3 right-3"
-                                >
-                                    <X strokeWidth={2} size={14} />
-                                </button>
-                            </div>
-                            <p className='text-sm'>{query ? `Result for "${query}"` : 'Start typing...'}</p>
-                            <ul className=" list-inside space-y-1 text-sm mt-2">
-                                {isSuggestionLoading ? (
-                                    <div>
-                                        {
-                                            Array.from({ length: 3 }).map((_, i) => (
-                                                <Skeleton key={i} className='max-w-[50px] w-full h-[16px]' />
-                                            ))
-                                        }
-                                    </div>
-                                ) : (
-                                    suggestions?.map((item: string) => (
-                                        <li
-                                            key={item}
-                                            className="hover:bg-gray-50 p-2 cursor-pointer rounded-sm"
-                                            onClick={() => {
-                                                setValue('q', item);
-                                                setOpen(false);
-                                            }}
-                                        >
-                                            {item}
-                                        </li>
-                                    ))
-                                )}
-                            </ul>
-                        </div>
-                    )} */}
                 </div>
                 {/* Filter button */}
                 <DropdownMenu>
@@ -286,26 +237,26 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                 </div>
                             </div>
                             {/* SKILL */}
-                            <div>
+                            <div className=''>
                                 <DropdownMenuSeparator />
                                 <Label htmlFor='experience-level' className='font-normal text-[14px] mt-4'>Select skills that apply</Label>
                                 <Controller
                                     control={control}
                                     name="skills"
                                     render={({ field }) => (
-                                        <div className="flex flex-wrap gap-4 mt-1">
-                                            {SKILLSET.slice(0, 8).map((skill, i) => {
-                                                const selected = field?.value?.includes(skill);
+                                        <div className="flex flex-wrap gap-4 mt-1 max-h-[200px] overflow-y-scroll p-2">
+                                            {SKILLSET.map((skill, i) => {
+                                                const selected = field?.value?.includes(skill.value);
 
                                                 return (
                                                     <SkillButton
                                                         key={i}
-                                                        skill={skill}
+                                                        skill={skill.label}
                                                         selected={selected}
-                                                        onToggle={(s, isSel) => {
-                                                            const newArr = isSel
-                                                                ? [...field.value, s] // add
-                                                                : field.value.filter((sk) => sk !== s); // remove
+                                                        onToggle={() => {
+                                                            const newArr = selected
+                                                                ? field.value.filter((v) => v !== skill.value) // remove
+                                                                : [...(field.value ?? []), skill.value]; // add
                                                             field.onChange(newArr);
                                                         }}
                                                     />
@@ -331,7 +282,8 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                 className='rounded-[7px]'
                                 onClick={handleFilter}
                             >
-                                Show result {watch('filter_options').length !== 0 ? `(${watch('filter_options').length})` : ''}
+                                Show result
+                                {/* {watch('filter_options').length !== 0 ? `(${watch('filter_options').length})` : ''} */}
                             </ButtonWithLoader>
                         </div>
                     </DropdownMenuContent>

@@ -25,7 +25,7 @@ const RecruiterDashboard = () => {
       <Prompt />
       <RecommendedTalent talents={data?.recommended_talents} />
       <BookmarkedTalent talents={data?.saved_talents} />
-      <Notifications />
+      <Notifications data={data} />
     </div>
   )
 }

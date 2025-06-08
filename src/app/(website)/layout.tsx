@@ -9,6 +9,7 @@ import { AuthHydrator } from '@/components/authHydrator';
 
 const WebsiteLayout = async ({ children }: { children: React.ReactNode }) => {
     const cookieStore = await cookies();
+    const accessToken = cookieStore.get("access_token");
     const refreshToken = cookieStore.get("refresh_token");
     let userData;
     try {
@@ -20,14 +21,14 @@ const WebsiteLayout = async ({ children }: { children: React.ReactNode }) => {
         console.error("User fetch failed:", err);
         redirect("/");
     }
-    if (userData) {
-        redirect("/dashboard");
-    }
+    // if (userData) {
+    //     redirect("/dashboard");
+    // }
     return (
-        <AuthHydrator user={userData?.data?.user} refreshToken={refreshToken?.value}>
+        <AuthHydrator user={userData?.data?.user} accessToken={accessToken?.value} refreshToken={refreshToken?.value}>
             <div className='w-full'>
                 <Navbar />
-                <div className='md:mt-[140px] mt-[40px]'>
+                <div>
                     {children}
                 </div>
             </div>

@@ -1,6 +1,6 @@
 'use client'
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Bookmark,
     ChevronUp,
@@ -9,6 +9,8 @@ import {
     SquareArrowOutUpRight,
     ChevronLeft,
     CircleArrowDown,
+    BookmarkCheck,
+    ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -21,22 +23,64 @@ import { getSkillLabelByValue } from "@/lib/skills_sort";
 import skillsLibrary from "../../../../../../public/skills_library.json";
 import { env } from "@/lib/env";
 import { getCountryNameByCode } from "@/lib/countryfromIsocode";
+import { useSaveTalentMutation, useUpvoteTalentMutation } from "@/hooks/mutations/talent";
+import { toast } from "react-toastify";
 
 
 const TalentComponent = ({ talentID }: { talentID: string }) => {
-    console.log('talentID at single talent page', talentID)
     const { fetchTalentById } = useTalentApi()
     const { data, isLoading, isError } = useQuery<talentProp>({
-        queryKey: [`talent ${talentID}`],
+        queryKey: [`talent`, talentID],
         queryFn: async () => await fetchTalentById(talentID),
     });
     console.log('data at single talent page', data)
+
+    const [bookmarked, setBookmarked] = useState(false);
+    const [isUpvoted, setIsUpvoted] = useState(false);
+    const [upvotes, setUpvotes] = useState<number | undefined>(undefined);
+    useEffect(() => {
+        if (data) {
+            setBookmarked(data.is_saved ?? false);
+            setIsUpvoted(data.is_upvoted ?? false);
+            setUpvotes(data.upvotes ?? 0);
+        }
+    }, [data]);
+
+    const { mutate: upvoteATalent, isPending: isUpvoting } = useUpvoteTalentMutation();
+    const { mutate: saveATalent, isPending: isSaving } = useSaveTalentMutation()
 
     if (isError) {
         notFound();
     }
     const handleLinkClick = (external_link: string = '') => {
         window.open(external_link, '_blank')
+    }
+    const handleUpvote = () => {
+        if (!isUpvoted) {
+            setUpvotes((prev) => (prev || 0) + 1)
+        } else {
+            setUpvotes((prev) => (prev || 0) - 1)
+        }
+        setIsUpvoted(prev => !prev)
+        upvoteATalent(talentID, {
+            onSuccess: () => {
+                toast.success(`Talent ${!isUpvoted ? 'upvoted' : 'downvoted'} successfully!`);
+            },
+            onError: () => {
+                toast.error(`Failed to ${!isUpvoted ? 'upvote' : 'downvote'} talent.`);
+            },
+        });
+    }
+    const handleBookmark = () => {
+        setBookmarked(prev => !prev)
+        saveATalent(talentID, {
+            onSuccess: () => {
+                toast.success(`Talent ${!bookmarked ? 'bookmarked' : 'removed from bookmarks'} successfully!`)
+            },
+            onError: () => {
+                toast.error(`Failed to ${!bookmarked ? 'bookmark' : 'remove bookmark'} talent.`)
+            },
+        });
     }
 
     const handleDownloadResume = (resumePath: string) => {
@@ -79,7 +123,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                 <div>
                                     <p className="font-semibold text-[14px] capitalize">{data?.first_name} {data?.last_name}</p>
                                     <p className="font-normal text-[#5F5F5F] text-[13px]">
-                                        Senior Frontend Developer
+                                        {data?.job_title}
                                     </p>
                                 </div>
 
@@ -94,18 +138,29 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
 
                         <div className="flex gap-2 mt-2 md:mt-0">
                             <Button
+                                disabled={isUpvoting || isSaving}
+                                onClick={handleUpvote}
                                 variant={"outline"}
                                 className="h-[28px] border-[0.5px] w-[96px] gap-1 text-[#5F5F5F] rounded-[3px] text-[12px] flex">
-                                <ChevronUp size={14} strokeWidth={2.5} />
+                                {
+                                    isUpvoted ?
+                                        <ChevronDown size={14} strokeWidth={2.5} /> :
+                                        <ChevronUp size={14} strokeWidth={2.5} />
+                                }
                                 <p className="font-normal">
-                                    Upvote <span className="font-bold">{data?.upvotes}</span>
+                                    {isUpvoted ? 'Downvote' : 'Upvote'} <span className="font-bold">{upvotes}</span>
                                 </p>
                             </Button>
 
                             <Button
+                                disabled={isUpvoting || isSaving}
+                                onClick={handleBookmark}
                                 variant={"outline"}
                                 className="h-[28px] w-[60px] border-[0.5px] rounded-[3px] text-[12px] text-[#5F5F5F] font-medium gap-1">
-                                <Bookmark size={14} strokeWidth={2.5} />
+                                {bookmarked ?
+                                    <BookmarkCheck size={14} strokeWidth={2.5} /> :
+                                    <Bookmark size={14} strokeWidth={2.5} />
+                                }
                                 <span>Save</span>
                             </Button>
                         </div>
@@ -117,9 +172,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                             <div className="flex flex-col gap-2">
                                 <h2 className="text-[12px] font-semibold">Bio:</h2>
                                 <p className="text-[13px] font-normal">
-                                    Passionate frontend developer with expertise in building
-                                    responsive and accessible web applications. Focused on user
-                                    experience and performance optimization.
+                                    {data?.bio || 'No bio available.'}
                                 </p>
                             </div>
 
@@ -207,6 +260,9 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                                     }
 
                                     <Button
+                                        onClick={() => {
+                                            window.location.href = `mailto:${data?.email || ''}`;
+                                        }}
                                         variant={"outline"}
                                         className="text-[12px] font-medium gap-1 max-w-[117px] h-[28px] rounded-[3px]">
                                         <Mail strokeWidth={2.25} />

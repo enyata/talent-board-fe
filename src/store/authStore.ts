@@ -9,6 +9,9 @@ export type User = {
     role: string | null;
     provider: string;
     profile_completed: boolean;
+    bio?: string;
+    job_title?: string;
+    skills?: string[];
 };
 
 interface AuthState {

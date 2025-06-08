@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import PaginationFrame from '@/components/pagination-frame';
 import { talentProp } from '@/types/user';
-import ParamLayout from './paramLayout';
+import ParamLayout from '@/components/providers/paramLayout';
 
 const TalentList = () => {
     const { fetchAllTalents } = useTalentApi()
@@ -25,7 +25,7 @@ const TalentList = () => {
     return (
         <ParamLayout>
             <div className='mt-5'>
-                <div className='sticky top-[88px] py-4 z-10 bg-white'>
+                <div className='sticky md:top-[90px] top-[68px] py-4 z-10 bg-white'>
                     <TalentSearchFilter
                         queryStringValue={queryStringValue}
                         setQueryStringValue={setQueryStringValue}

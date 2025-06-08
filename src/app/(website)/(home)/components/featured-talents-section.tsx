@@ -3,9 +3,12 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
+import { talentProp } from "@/types/user";
 
 
-const FeaturedTalentsSection = () => {
+const FeaturedTalentsSection = ({ talents }: { talents: talentProp[] }) => {
+    console.log('feature talents list', talents)
+
     return (
         <section id='talents' className='mt-[80px] bg-[#F2F2F2]'>
             <div className='py-[80px] max-w-[1198px] w-full md:mx-auto px-4 md:px-0'>
@@ -32,8 +35,11 @@ const FeaturedTalentsSection = () => {
                         </Link>
                     </div>
                     <div className="mt-[24px] grid grid-cols-1 md:grid-cols-3 gap-[10px] place-items-center w-full">
-                        {['1', '2', '3', '4', '5', '6'].map((card, index) => (
-                            <TalentCard key={index} />
+                        {talents?.slice(0, 6).map((talent, index) => (
+                            <TalentCard
+                                key={index}
+                                talent={talent}
+                            />
                         ))}
                     </div>
 

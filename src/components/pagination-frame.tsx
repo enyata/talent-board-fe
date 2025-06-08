@@ -2,7 +2,6 @@
 import { Separator } from './ui/separator'
 import { useFormContext } from 'react-hook-form';
 import { TalentFilterForm } from '@/types/filters';
-import { useCallback } from 'react';
 import { Button } from './ui/button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -29,13 +28,23 @@ const PaginationFrame = ({ setQueryStringValue, nextCursor, previousCursor, hasN
     const cursor = watch('cursor');
     const direction = watch('direction');
 
-    const buildQueryString = useCallback(() => {
+    const buildQueryStringWithOverrides = ({
+        cursor: overrideCursor,
+        direction: overrideDirection,
+    }: {
+        cursor?: string;
+        direction?: string;
+    }) => {
         const params: Record<string, string> = {};
+
+        const effectiveCursor = overrideCursor ?? cursor;
+        const effectiveDirection = overrideDirection ?? direction;
+
         if (filterOptions.length) params.filter_options = filterOptions.join(',');
         if (query) params.q = query;
         if (limit !== undefined) params.limit = limit.toString();
-        if (cursor) params.cursor = cursor;
-        if (direction) params.direction = direction;
+        if (effectiveCursor) params.cursor = effectiveCursor;
+        if (effectiveDirection) params.direction = effectiveDirection;
         if (filterOptions.includes('experience') && experienceLevel)
             params.experience = experienceLevel;
         if (filterOptions.includes('skills') && skills.length)
@@ -44,15 +53,22 @@ const PaginationFrame = ({ setQueryStringValue, nextCursor, previousCursor, hasN
             if (country) params.country = country;
             if (state) params.state = state;
         }
-        return new URLSearchParams(params).toString();
-    }, [filterOptions, query, limit, experienceLevel, skills, country, state, cursor, direction])
 
-    const handlePagination = (selectedCursor: string, direction: 'next' | 'prev') => {
+        return new URLSearchParams(params).toString();
+    };
+
+
+    const handlePagination = async (selectedCursor: string, directionValue: 'next' | 'prev') => {
         setValue('cursor', selectedCursor, { shouldDirty: true });
-        setValue('direction', direction, { shouldDirty: true });
-        const queryString = buildQueryString();
+        setValue('direction', directionValue, { shouldDirty: true });
+        const queryString = buildQueryStringWithOverrides({
+          cursor: selectedCursor,
+          direction: directionValue,
+        });
+      
         setQueryStringValue(queryString);
-    }
+      };
+      
     return (
         <div className='mt-6 w-full'>
             <Separator className='h-[2px] bg' />

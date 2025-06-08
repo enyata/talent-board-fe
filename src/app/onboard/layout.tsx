@@ -10,6 +10,7 @@ import Timeout from '../time-out';
 
 const OnboardingLayout = async ({ children }: { children: React.ReactNode }) => {
     const cookieStore = await cookies();
+    const accessToken = cookieStore.get("access_token");
     const refreshToken = cookieStore.get("refresh_token");
 
     let userData;
@@ -17,7 +18,7 @@ const OnboardingLayout = async ({ children }: { children: React.ReactNode }) => 
         userData = await getUser();
     } catch (err) {
         if (err instanceof RequestTimeoutError) {
-            return(<Timeout/>)
+            return (<Timeout />)
         }
         redirect("/login");
     } if (!userData) {
@@ -27,7 +28,7 @@ const OnboardingLayout = async ({ children }: { children: React.ReactNode }) => 
         redirect("/dashboard");
     }
     return (
-        <AuthHydrator user={userData?.data?.user} refreshToken={refreshToken?.value}>
+        <AuthHydrator user={userData?.data?.user} accessToken={accessToken?.value} refreshToken={refreshToken?.value}>
             <OnboardingNestedLayout>
                 {children}
             </OnboardingNestedLayout>

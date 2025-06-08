@@ -14,7 +14,7 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
     const notifications = data?.notifications ?? []
     console.log('notifications', notifications)
     return (
-        <Card className='shadow-none outline-px bg-[#fafafa] w-full mt-4'>
+        <Card className='shadow-none outline-px bg-[#fafafa] w-full mt-4 max-h-[500px] overflow-scroll'>
             <div className='px-[16px] '>
                 <div className='flex justify-between items-center'>
                     <div className='text-[#475467] text-[14px]'>
@@ -39,7 +39,7 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                         </Card>
                     ) :
                         (notifications).map((item: NotificationData) =>
-                            <Card key={item.id} className='relative bg-red w-full text-[#727272] gap-0 text-[14px] p-[16px] bg-white shadow-none'>
+                            <Card key={item.id} className='relative w-full text-[#727272] gap-0 text-[14px] p-[16px] bg-white shadow-none'>
                                 <div className='flex gap-2'>
                                     <div className=' flex gap-2 items-center'>
                                         <span className='bg-[#4976F4] size-[10px] rounded-full'></span>
@@ -63,8 +63,8 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                                                         <AvatarFallback>{user?.first_name.trim().charAt(0).toUpperCase()}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
-                                                        <p className='font-semibold text-[14px]'>{user?.first_name} {user?.last_name}</p>
-                                                        <p className='font-medium text-[#5F5F5F] text-[13px]'>Senior Frontend Developer</p>
+                                                        <p className='font-semibold text-[14px] text-[#5F5F5F]'>{user?.first_name} {user?.last_name}</p>
+                                                        <p className='font-medium text-[#5F5F5F] text-[13px]'>{user?.job_title}</p>
                                                     </div>
                                                 </div>
                                                 <Button variant={'outline'} className=' mt-2 md:mt-0 h-[32px] max-w-[110px] md:max-w-full text-[#5F5F5F] rounded-[3px] text-[12px] flex gap-2'>
@@ -77,11 +77,11 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                                                 <span><MapPinned size={14} strokeWidth={3} /></span>
                                                 <p>Abuja</p>
                                             </div>
-                                            <p className='mt-[8px] text-[13px] text-[#5F5F5F]'>Passionate frontend developer with expertise in building responsive and accessible web applications.
-                                                Focused on user experience and performance optimization.
+                                            <p className='mt-[8px] text-[13px] text-[#5F5F5F]'>
+                                                {user?.bio || 'No bio available'}
                                             </p>
                                             <div className='mt-[16px] flex gap-2 flex-wrap'>
-                                                {['🔧 JavaScript', '⚡ Next.js', '📱 React Native'].map((skill, index) =>
+                                                {user?.skills && user?.skills.map((skill, index) =>
                                                     <Button key={index} className='bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] p-[6px] text-[12px]'>
                                                         {skill}
                                                     </Button>

@@ -1,35 +1,37 @@
-'use client'
-
 import { Button } from './ui/button'
 import Link from 'next/link'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { Menu } from 'lucide-react'
 import { DialogTitle } from './ui/dialog'
+import { getUser } from '@/api/user'
 
-const Navbar = () => {
-
+const Navbar = async () => {
+  const user = await getUser();
   return (
     <>
       <nav
         className="fixed top-0 bg-white/50  backdrop-blur-lg left-0 right-0 z-50 p-6 text-foreground transition-all will-change-transform hidden md:block"
       >
         <div className="max-w-[1198px] mx-auto flex items-center justify-between">
-          <span className="font-semibold text-[24px] cursor-pointer">Talentboard</span>
+          <Link href={'/'} className="font-semibold text-[24px] cursor-pointer">Talentboard</Link>
 
           <ul className="flex gap-[28px] font-medium">
             <Link href="/#about"><li>About</li></Link>
             <Link href="/#talents"><li>Browse Talents</li></Link>
             <Link href="/#how-it-works"><li>How it works</li></Link>
           </ul>
-
-          <div>
-            <Link href="/signup">
-              <Button variant="outline" className="w-[72px] h-[42px] cursor-pointer">Register</Button>
-            </Link>
-            <Link href="/login">
-              <Button className="bg-primary w-[91px] h-[42px] ml-2 cursor-pointer">Login</Button>
-            </Link>
-          </div>
+          {
+            user ?
+              <Link href={'/dashboard'} className='font-medium'>Go to dashboard</Link> :
+              <div>
+                <Link href="/signup">
+                  <Button variant="outline" className="w-[72px] h-[42px] cursor-pointer">Register</Button>
+                </Link>
+                <Link href="/login">
+                  <Button className="bg-primary w-[91px] h-[42px] ml-2 cursor-pointer">Login</Button>
+                </Link>
+              </div>
+          }
         </div>
       </nav>
 
