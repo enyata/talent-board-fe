@@ -3,15 +3,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { POST } from '@/lib/requests';
 import { useAuthStore } from '@/store/authStore';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState, useTransition } from 'react';
-import { toast } from 'react-toastify';
+import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'usehooks-ts';
 import EditProfile from './edit-profile';
+import LogoutModal from './logout-modal';
 
 const ProtectedHeader = () => {
     const user = useAuthStore.getState().user;
@@ -22,31 +20,8 @@ const ProtectedHeader = () => {
         setHasMounted(true);
     }, []);
 
-    const router = useRouter()
-
-    const [isPending, startTransition] = useTransition();
-    const handleLogout = () => {
-        startTransition(async () => {
-            try {
-                const res = await POST(
-                    `/api/v1/auth/logout`
-                );
-                if (res.status !== "success") {
-                    toast.error(res.message || "Something went wrong");
-                    return;
-                }
-                toast.success('Logged out successfully')
-                router.replace('/login')
-
-
-            } catch (error) {
-                console.error("Error from form submission:", error);
-                toast.error("Something went wrong. Please try again.");
-            }
-        });
-    };
-
     const [open, setOpen] = useState(false);
+    const [openDelete, setOpenDelete] = useState(false);
 
     return (
         <div className="flex items-center justify-between w-full p-6 fixed top-0 z-50 bg-white border-b">
@@ -79,8 +54,8 @@ const ProtectedHeader = () => {
                 <DropdownMenuContent align="end" className="w-[221.8px] mt-8 rounded-sm">
                     <DropdownMenuGroup className='text-[14px]'>
                         <Dialog open={open} onOpenChange={setOpen}>
-                            <DialogTrigger>
-                                <div className='flex gap-2 items-center hover:bg-[#FAFAFAFA] rounded-sm p-2 cursor-pointer'>
+                            <DialogTrigger className='w-full'>
+                                <div className='flex gap-2 items-center hover:bg-[#FAFAFAFA] rounded-sm p-2 cursor-pointer w-full'>
                                     <Image
                                         src={'/assets/icons/user-square.svg'}
                                         alt='profile'
@@ -92,16 +67,18 @@ const ProtectedHeader = () => {
                             </DialogTrigger>
                             <EditProfile setOpenDialog={setOpen} />
                         </Dialog>
-
-                        <div onClick={handleLogout} className={`flex gap-2 items-center hover:bg-[#FAFAFAFA] rounded-sm p-2 ${isPending ? 'cursor-progress' : 'cursor-pointer'}`}>
-                            <Image
-                                src={'/assets/icons/logout.svg'}
-                                alt='logout'
-                                height={16}
-                                width={16}
-                            />
-                            {isPending ? 'Logging out...' : 'Logout'}
-                        </div>
+                        <Dialog open={openDelete} onOpenChange={setOpenDelete}>
+                            <DialogTrigger className={`flex gap-2 items-center hover:bg-[#FAFAFAFA] rounded-sm p-2 cursor-pointer w-full`}>
+                                <Image
+                                    src={'/assets/icons/logout.svg'}
+                                    alt='logout'
+                                    height={16}
+                                    width={16}
+                                />
+                                Logout
+                            </DialogTrigger>
+                            <LogoutModal setOpenDialog={setOpenDelete} />
+                        </Dialog>
 
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
