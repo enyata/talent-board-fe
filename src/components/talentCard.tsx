@@ -168,7 +168,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
                         <Button
                             key={index}
                             onClick={stopPropagation}
-                            className='bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] p-[6px] text-[12px]'
+                            className='bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] border-[1px] border-[#696969] p-[6px] text-[12px]'
                         >
                             {getSkillLabelByValue(skill, skillsLibrary)}
                         </Button>
