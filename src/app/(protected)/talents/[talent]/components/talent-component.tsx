@@ -21,7 +21,6 @@ import TalentCardSkeleton from "./talent-skeleton";
 import { talentProp } from "@/types/user";
 import { getSkillLabelByValue } from "@/lib/skills_sort";
 import skillsLibrary from "../../../../../../public/skills_library.json";
-import { env } from "@/lib/env";
 import { getCountryNameByCode } from "@/lib/countryfromIsocode";
 import { useSaveTalentMutation, useUpvoteTalentMutation } from "@/hooks/mutations/talent";
 import { toast } from "react-toastify";
@@ -85,8 +84,8 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
 
     const handleDownloadResume = (resumePath: string) => {
         const downloadLink = document.createElement('a');
-        downloadLink.href = `${env('apiUrl')}/${resumePath}`;
-        downloadLink.download = `${data?.first_name}-${data?.last_name}-resume.pdf`;
+        downloadLink.href = `${resumePath}`;
+        downloadLink.download = `${data?.first_name}-resume.pdf`;
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
