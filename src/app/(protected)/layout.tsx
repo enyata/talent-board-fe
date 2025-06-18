@@ -13,7 +13,6 @@ const ProtectedLayout = async ({ children }: { children: React.ReactNode }) => {
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get("refresh_token");
     const accessToken = cookieStore.get("access_token");
-    console.log('refresh token at layout of protected', refreshToken)
 
     let userData;
     try {
@@ -22,7 +21,6 @@ const ProtectedLayout = async ({ children }: { children: React.ReactNode }) => {
         if (err instanceof RequestTimeoutError) {
             return (<Timeout />)
         }
-        console.error("User fetch failed:", err);
         redirect("/login");
     }
     if (!userData) {

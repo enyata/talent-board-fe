@@ -13,7 +13,6 @@ import { formSteps, OnboardFormSchema } from '@/types/form';
 import { flattenAndSortSkills } from '@/lib/skills_sort';
 import skillsLibrary from '../../../../public/skills_library.json';
 import rolesLibrary from "../../../../public/roles_library.json"
-import { useAuthStore } from '@/store/authStore';
 
 
 const OPTIONS = flattenAndSortSkills(skillsLibrary);
@@ -35,7 +34,6 @@ const ExperienceForm = () => {
             (field) => !["hiring_for", "company_industry", "roles_looking_for"].includes(field)
         );
     }
-    console.log('fields at form 3', fields)
 
     const isStepValid =
         fields.every((field) => {
@@ -83,11 +81,9 @@ const ExperienceForm = () => {
     }
 
     const [isPending, startTransition] = useTransition();
-    const user = useAuthStore.getState();
+
 
     const handleSubmit = () => {
-        console.log('access token at submit', user.accessToken);
-        console.log('refresh token at submit', user.refreshToken);
         startTransition(async () => {
             try {
                 const res = await PATCH(
@@ -100,7 +96,6 @@ const ExperienceForm = () => {
                 }
                 // toast.success("You have successfully updated your profile");
                 setValue('config.currentForm', 4);
-                console.log("Profile update response:", res);
             } catch (error) {
                 console.error("Error from form submission:", error);
                 toast.error("Something went wrong. Please try again.");

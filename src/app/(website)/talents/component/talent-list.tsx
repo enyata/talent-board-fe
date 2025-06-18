@@ -21,11 +21,10 @@ const TalentList = () => {
         queryKey: ['talents', queryStringValue],
         queryFn: () => fetchAllTalents(params),
     });
-    console.log('data at talent list', data)
     return (
         <ParamLayout>
             <div className='mt-5'>
-                <div className='sticky md:top-[90px] top-[68px] py-4 z-10 bg-white'>
+                <div className='sticky md:top-[82px] top-[68px] py-4 z-10 bg-white'>
                     <TalentSearchFilter
                         queryStringValue={queryStringValue}
                         setQueryStringValue={setQueryStringValue}

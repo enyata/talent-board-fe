@@ -13,8 +13,6 @@ const API = axios.create({
 });
 API.interceptors.request.use((config) => {
   const { accessToken, refreshToken } = useAuthStore.getState();
-  console.log("Access Token at interceptor:", accessToken);
-  console.log("Refresh Token at interceptor:", refreshToken);
   if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
   if (refreshToken) config.headers["x-refresh-token"] = refreshToken;
   return config;

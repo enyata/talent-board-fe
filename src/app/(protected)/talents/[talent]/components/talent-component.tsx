@@ -32,7 +32,6 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
         queryKey: [`talent`, talentID],
         queryFn: async () => await fetchTalentById(talentID),
     });
-    console.log('data at single talent page', data)
 
     const [bookmarked, setBookmarked] = useState(false);
     const [isUpvoted, setIsUpvoted] = useState(false);

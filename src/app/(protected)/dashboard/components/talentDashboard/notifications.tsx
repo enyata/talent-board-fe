@@ -2,6 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { getCountryNameByCode } from '@/lib/countryfromIsocode';
 import { timeAgo } from '@/lib/timeStampFormatter'
 import { useAuthStore } from '@/store/authStore';
 import { NotificationData, TalentDashboardData } from '@/types/dashboard'
@@ -56,32 +57,31 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                                     <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white opacity-100" />
                                     <Card className=' ml-auto max-w-[795px] w-full  p-[16px] rounded-[12px] shadow-none'>
                                         <div>
-                                            <div className='flex flex-col md:flex-row justify-between md:items-center'>
-                                                <div className='flex gap-2 items-center'>
+                                            <div className='flex flex-row gap-2 justify-between md:items-center'>
+                                                <div className='flex gap-2 items-center w-full'>
                                                     <Avatar className='size-[48px]'>
                                                         <AvatarImage src={user?.avatar} />
                                                         <AvatarFallback>{user?.first_name.trim().charAt(0).toUpperCase()}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
                                                         <p className='font-semibold text-[14px] text-[#5F5F5F]'>{user?.first_name} {user?.last_name}</p>
-                                                        <p className='font-medium text-[#5F5F5F] text-[13px]'>{user?.job_title}</p>
+                                                        <p className='font-medium text-[#5F5F5F] text-[13px]'>{user?.profile?.job_title}</p>
                                                     </div>
                                                 </div>
-                                                <Button variant={'outline'} className=' mt-2 md:mt-0 h-[32px] max-w-[110px] md:max-w-full text-[#5F5F5F] rounded-[3px] text-[12px] flex gap-2'>
+                                                <Button variant={'outline'} className=' mt-2 md:mt-0 h-[32px] w-full max-w-[110px] px-2 text-[#5F5F5F] rounded-[3px] text-[12px] flex gap-2'>
                                                     <span><ChevronUp size={14} strokeWidth={3} /></span>
                                                     <span>{data?.total_upvotes}</span>
-                                                    <span className='font-medium'></span>
                                                 </Button>
                                             </div>
                                             <div className='flex items-center gap-1 text-[#5F5F5F] font-medium text-[13px] mt-[24px]'>
                                                 <span><MapPinned size={14} strokeWidth={3} /></span>
-                                                <p>Abuja</p>
+                                                <p className='capitalize'>{user?.state} {getCountryNameByCode(user?.country || '')}</p>
                                             </div>
                                             <p className='mt-[8px] text-[13px] text-[#5F5F5F]'>
-                                                {user?.bio || 'No bio available'}
+                                                {user?.profile?.bio || 'No bio available'}
                                             </p>
                                             <div className='mt-[16px] flex gap-2 flex-wrap'>
-                                                {user?.skills && user?.skills.map((skill, index) =>
+                                                {user?.profile?.skills && user?.profile?.skills.map((skill, index) =>
                                                     <Button key={index} className='bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] p-[6px] text-[12px]'>
                                                         {skill}
                                                     </Button>

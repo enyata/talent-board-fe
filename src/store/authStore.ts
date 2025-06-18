@@ -1,5 +1,11 @@
 import { create } from 'zustand';
 
+
+type profile = {
+    bio?: string;
+    job_title?: string;
+    skills?: string[];
+}
 export type User = {
     id: string;
     first_name: string;
@@ -9,9 +15,9 @@ export type User = {
     role: string | null;
     provider: string;
     profile_completed: boolean;
-    bio?: string;
-    job_title?: string;
-    skills?: string[];
+    country?: string;
+    state?: string;
+    profile?: profile
 };
 
 interface AuthState {
