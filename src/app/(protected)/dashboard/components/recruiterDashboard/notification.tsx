@@ -14,7 +14,7 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                 <div className='flex justify-between items-center'>
                     <div className=''>
                         <p className='font-semibold'>New Notifications</p>
-                        <p className='text-[14px]'>You have {notifications.length} unread messages from recruiters</p>
+                        <p className='text-[14px]'>You have {notifications.length} unread messages</p>
                     </div>
                     <span className='rounded-lg size-[40px] flex items-center justify-center border-[1px] border-[#E4E4E4]'>
                         <Image

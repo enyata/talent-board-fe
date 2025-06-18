@@ -12,6 +12,7 @@ const TalentLayout = ({ children }: { children: React.ReactNode }) => {
     if (user?.role !== 'recruiter') {
         return unauthorized()
     }
+
     return (
         <div>
             {children}

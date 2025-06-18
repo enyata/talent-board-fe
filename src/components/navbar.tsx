@@ -50,12 +50,18 @@ const Navbar = async () => {
               <Link href="/#about">About</Link>
               <Link href="/#talents">Browse Talents</Link>
               <Link href="/#how-it-works">How it works</Link>
-              <Link href="/signup">
-                <Button variant="outline" className="w-full mt-6">Register</Button>
-              </Link>
-              <Link href="/login">
-                <Button className="w-full">Login</Button>
-              </Link>
+              {
+                user ?
+                  <Link href={'/dashboard'} className='font-medium'>Go to dashboard</Link> :
+                  <div className='w-full mt-6'>
+                    <Link href="/signup">
+                      <Button variant="outline" className="w-full">Register</Button>
+                    </Link>
+                    <Link href="/login" className='mt-6'>
+                      <Button className="w-full">Login</Button>
+                    </Link>
+                  </div>
+              }
             </nav>
           </SheetContent>
         </Sheet>

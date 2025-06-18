@@ -43,7 +43,6 @@ const OnboardingNestedLayout = ({ children }: { children: React.ReactNode }) => 
 
     const currentStep = form.watch('config.currentForm');
     const role = form.watch('data.role');
-    console.log('your form data', form.watch())
 
     return (
         <div className={`relative flex justify-center items-center w-full py-[100px] md:py-[140px] min-h-screen`}>

@@ -36,8 +36,6 @@ const PersonalInfoForm = () => {
             return dirty && !error;
         });
 
-    console.log('your form data errors', errors)
-
     return (
         <FormLayout>
             <p style={{ wordSpacing: '3px' }} className='text-[30px] font-bold leading-[38px] text-center'>

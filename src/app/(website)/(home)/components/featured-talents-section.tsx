@@ -7,7 +7,6 @@ import { talentProp } from "@/types/user";
 
 
 const FeaturedTalentsSection = ({ talents }: { talents: talentProp[] }) => {
-    console.log('feature talents list', talents)
 
     return (
         <section id='talents' className='mt-[80px] bg-[#F2F2F2]'>

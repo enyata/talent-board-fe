@@ -18,13 +18,11 @@ const BookmarkedList = () => {
   const [queryStringValue, setQueryStringValue] = useState<string>('')
   const params = Object.fromEntries(new URLSearchParams(queryStringValue));
   delete params.filter_options;
-  console.log('params at bookmark list', params)
 
   const { data, isLoading } = useQuery({
     queryKey: ['saved_talents', queryStringValue],
     queryFn: () => fetchSavedTalents(params),
   });
-  console.log('data at bookmark list', data)
   return (
     <ParamLayout>
       <div className='md:mt-5 mt-2'>
