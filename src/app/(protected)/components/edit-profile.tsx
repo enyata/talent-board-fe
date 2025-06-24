@@ -16,7 +16,7 @@ import { toast } from 'react-toastify'
 
 const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void }) => {
     const user = useAuthStore.getState().user;
-    const { first_name, last_name, avatar } = user || {};
+    const { first_name, last_name, avatar, profile } = user || {};
     const { register, watch, control, formState: { isDirty, isValid, errors } } = useForm<ProfileSchema>(
         {
             resolver: zodResolver(profileSchema),
@@ -25,7 +25,7 @@ const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
                 display_photo: avatar || '',
                 first_name: first_name || '',
                 last_name: last_name || '',
-                bio: ''
+                bio: profile?.bio || ''
             }
         }
     )
@@ -137,7 +137,7 @@ const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
                         <Textarea
                             id='bio'
                             className='h-[100px] mt-2'
-                            placeholder='I am a full time developer who likes to eat a lot'
+                            placeholder='I am a fullstack developer who likes to eat a lot'
                             {...register('bio')}
                         />
                         {errors.bio && (
