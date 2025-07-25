@@ -88,6 +88,7 @@ const MasonryAnimated: React.FC<MasonryAnimatedProps> = ({ onComplete }) => {
                                     height={133}
                                     width={107}
                                     className="transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-lg"
+                                    loading="lazy"
                                 />
                             </div>
                             {img2 && (
@@ -98,6 +99,7 @@ const MasonryAnimated: React.FC<MasonryAnimatedProps> = ({ onComplete }) => {
                                         height={133}
                                         width={107}
                                         className="transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-lg"
+                                        loading="lazy"
                                     />
                                 </div>
                             )}
@@ -123,6 +125,7 @@ const MasonryAnimated: React.FC<MasonryAnimatedProps> = ({ onComplete }) => {
                                 height={160}
                                 width={160}
                                 className="w-full h-auto object-cover transition-all duration-300 ease-in-out group-hover:scale-105 group-hover:shadow-lg"
+                                loading="lazy"
                             />
                         </motion.div>
                     ))}
