@@ -9,7 +9,7 @@ import React from 'react'
 const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
     const notifications = data?.notifications ?? []
     return (
-        <Card className='shadow-none outline-px bg-[#fafafa] w-full mt-4 text-[#101828] max-h-[500px] overflow-scroll'>
+        <Card className='shadow-none outline-px bg-[#fafafa] w-full mt-4 text-[#101828] max-h-[500px] overflow-scroll scrollbar-hide'>
             <div className='px-[16px] '>
                 <div className='flex justify-between items-center'>
                     <div className=''>

@@ -70,6 +70,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             alt="Auth image"
             width={500}
             height={500}
+            loading="lazy"
             className="object-cover w-full h-full"
           />
           <TestimonyCarousel />
