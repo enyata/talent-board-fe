@@ -1,10 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
   experimental: {
     authInterrupts: true,
   },
+  output: "export",  // this enable export for S3
   images: {
     remotePatterns: [
       {
@@ -22,3 +22,4 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
