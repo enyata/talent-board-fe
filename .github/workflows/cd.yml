@@ -38,4 +38,4 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.S3_BUCKET_REGION }}
           AWS_BUCKET_NAME: ${{ secrets.S3_BUCKET }}
           BUCKET_PATH: "/${{github.event.number}}"
-          DIST_LOCATION_CODE: ./dist
+          DIST_LOCATION_CODE: ./build
