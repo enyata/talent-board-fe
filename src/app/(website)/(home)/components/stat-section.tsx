@@ -103,7 +103,6 @@ const StatCard: React.FC<StatCardProps> = ({
         alt="statImage"
         width={394}
         height={480}
-        priority
         loading="lazy"
       />
       <div className="flex items-center justify-between">
