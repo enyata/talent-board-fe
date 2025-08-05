@@ -26,7 +26,7 @@ const WebsiteLayout = async ({ children }: { children: React.ReactNode }) => {
     // }
     return (
         <AuthHydrator user={userData?.data?.user} accessToken={accessToken?.value} refreshToken={refreshToken?.value}>
-            <div className='w-full'>
+            <div className='w-full '>
                 <Navbar />
                 <div>
                     {children}

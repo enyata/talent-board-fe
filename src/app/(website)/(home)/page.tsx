@@ -4,8 +4,8 @@ import HeroSection from "./components/hero-section";
 import Walkthrough from "./components/how-it-works-section";
 import SkillsSection from "./components/skills-section";
 import StatSection from "./components/stat-section";
-import WhyEnyata from "./components/why-enyata-section";
 import { fetchTopTalents } from "@/api/talent";
+import WhyEnyataSection from "./components/why-enyata";
 
 
 export default async function Home() {
@@ -18,7 +18,7 @@ export default async function Home() {
       <SkillsSection />
       <FeaturedTalentsSection talents={talents?.data} />
       <Walkthrough />
-      <WhyEnyata />
+      <WhyEnyataSection/>
       <Footer />
     </div>
   );
