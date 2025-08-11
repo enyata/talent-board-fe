@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 const Footer = () => {
@@ -22,8 +23,12 @@ const Footer = () => {
 
           <div>
             <p className='text-[14px] font-semibold text-black'>Legal</p>
-            <p className='mt-[18px]'>Terms and Conditions</p>
-            <p className='mt-[16px]'>Privacy Policy</p>
+            <div className='mt-[18px]'>
+              <Link href={'/terms-of-service'}>Terms and Conditions</Link>
+            </div>
+            <div className='mt-[16px]'>
+              <Link href={'/privacy-policy'}>Privacy Policy</Link>
+            </div>
           </div>
         </div>
 
@@ -31,11 +36,11 @@ const Footer = () => {
         <div className='flex flex-col md:flex-row justify-between mt-[64px] gap-4 md:gap-0 text-center md:text-left'>
           <span>&copy; {new Date().getFullYear()} Enyata Talent Board</span>
           <div className='flex justify-center md:justify-end gap-2'>
-            <span>Privacy Policy</span>
-            <span>Terms of Service</span>
+            <Link href={'/privacy-policy'}>Privacy Policy</Link>
+            <Link href={'/terms-of-service'}>Terms of Service</Link>
           </div>
         </div>
-        
+
       </div>
     </footer>
   )

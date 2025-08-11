@@ -6,7 +6,7 @@ import Image from 'next/image'
 
 const cardData = [
   {
-    img: '/assets/images/home-card-img1.svg',
+    img: '/assets/images/home-card-img1.avif',
     icon: '/assets/icons/home-card-icon1.svg',
     stat: '1OM+',
     desc: 'Skilled Tech Talents Remain Undiscovered',
@@ -14,7 +14,7 @@ const cardData = [
     reverse: false,
   },
   {
-    img: '/assets/images/home-card-img2.svg',
+    img: '/assets/images/home-card-img2.avif',
     icon: '/assets/icons/home-card-icon2.svg',
     stat: '1 in 8',
     desc: 'African Devs Land Global Opportunities',
@@ -22,7 +22,7 @@ const cardData = [
     reverse: true,
   },
   {
-    img: '/assets/images/home-card-img3.svg',
+    img: '/assets/images/home-card-img3.avif',
     icon: '/assets/icons/home-card-icon3.svg',
     stat: '70%',
     desc: 'Of Recruiters Struggle to Find Verified Talent',
