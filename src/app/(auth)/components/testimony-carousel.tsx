@@ -1,38 +1,13 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
+import { TESTIMONIES } from '@/constants/testimonial'
 import React from 'react'
 
-const testimonies = [
-    {
-        text: 'Enyata Talentboard has been great with keeping me busy with gigs.',
-        name: 'John Doe',
-        position: 'Software Engineer',
-    },
-    {
-        text: 'I love the way Enyata Talentboard connects me with clients.',
-        name: 'Jane Doe',
-        position: 'Product Designer',
-    },
-    {
-        text: 'The platform is easy to use and has a great community.',
-        name: 'Sam Smith',
-        position: 'Data Scientist',
-    },
-    {
-        text: 'I have learned so much from the resources available on Enyata Talentboard.',
-        name: 'Alice Johnson',
-        position: 'UX Researcher',
-    },
-    {
-        text: 'Enyata Talentboard has helped me grow my skills and network.',
-        name: 'Bob Brown',
-        position: 'Web Developer',
-    },
-]
+
 const TestimonyCarousel = () => {
     return (
         <Carousel className="w-full px-4 md:px-0 md:max-w-[608px] absolute md:bottom-[56px] translate-y-1/2 md:translate-y-0 bottom-1/2 left-1/2 -translate-x-1/2 text-white">
             <CarouselContent>
-                {testimonies.map((_, index) => (
+                {TESTIMONIES.map((_, index) => (
                     <CarouselItem key={index} className='flex items-end'>
                         <div className=" flex flex-col">
                             <span className="text-4xl font-medium">{_.text}</span>

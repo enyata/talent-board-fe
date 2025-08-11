@@ -66,13 +66,14 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
         <section className="w-full md:w-1/2 h-screen relative">
           <Image
-            src="/assets/images/auth-img.svg"
+            src="/assets/images/auth-img.avif"
             alt="Auth image"
             width={500}
             height={500}
             loading="lazy"
             className="object-cover w-full h-full"
           />
+          <div className="absolute inset-0 bg-black/20"></div>
           <TestimonyCarousel />
         </section>
       </div>
