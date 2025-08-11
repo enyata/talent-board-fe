@@ -2,7 +2,7 @@ import React from 'react'
 
 const HeroSection = () => {
     return (
-        <div className='md:py-[96px] py-[40px] flex items-center justify-center bg-[#F9FAFB]'>
+        <div className='md:py-[96px] px-4 py-[40px] flex items-center justify-center bg-[#F9FAFB]'>
             <div className='w-full max-w-[768px] text-center'>
                 <p className='font-semibold text-[#7557D3]'>
                     Current as of August 1st, 2025

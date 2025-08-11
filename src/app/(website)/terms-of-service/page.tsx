@@ -9,7 +9,7 @@ const TermsOfService = () => {
         <div className=''>
             <HeroSection />
             <ServiceSection />
-            <div className='md:pb-[96px] pb-[40px]'>
+            <div className='md:pb-[96px] pb-[40px] px-4'>
                 <CommunityComponent />
             </div>
             <Footer />

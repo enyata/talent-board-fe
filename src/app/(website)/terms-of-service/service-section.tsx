@@ -3,7 +3,7 @@ import React from 'react'
 
 const ServiceSection = () => {
     return (
-        <div className='md:py-[96px] py-[40px]'>
+        <div className='md:py-[96px] py-[40px] px-4'>
             <div className='max-w-[720px] w-full mx-auto'>
                 <div className='mt-[24px] md:mt-[48px] flex flex-col gap-[24px] md:gap-[48px]'>
                     {

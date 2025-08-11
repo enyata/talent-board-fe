@@ -3,7 +3,7 @@ import React from 'react'
 
 const PolicySection = () => {
     return (
-        <div className='md:py-[96px] py-[40px]'>
+        <div className='md:py-[96px] py-[40px] px-4'>
             <div className='max-w-[720px] w-full mx-auto'>
                 <div className='font-semibold md:text-[18px] flex flex-col gap-4'>
                     <p>Jurisdiction: Nigeria</p>

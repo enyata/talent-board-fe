@@ -9,7 +9,7 @@ const PrivacyPolicyPage = () => {
     <div className=''>
       <HeroSection />
       <PolicySection />
-      <div className='md:pb-[96px] pb-[40px]'>
+      <div className='md:pb-[96px] pb-[40px] px-4'>
         <CommunityComponent />
       </div>
       <Footer />

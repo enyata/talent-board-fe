@@ -45,7 +45,7 @@ const Navbar = async () => {
             </Button>
           </SheetTrigger>
           <SheetContent side="right" className="w-[260px] pt-6 px-6">
-            <DialogTitle className="text-lg font-semibold mb-4">Talentboard</DialogTitle>
+            <DialogTitle className="text-lg font-semibold">Talentboard</DialogTitle>
             <nav className="flex flex-col gap-5 text-[16px] font-medium">
               <Link href="/#about">About</Link>
               <Link href="/#talents">Browse Talents</Link>
@@ -53,7 +53,7 @@ const Navbar = async () => {
               {
                 user ?
                   <Link href={'/dashboard'} className='font-medium'>Go to dashboard</Link> :
-                  <div className='w-full mt-6'>
+                  <div className='w-full mt-6 flex flex-col '>
                     <Link href="/signup">
                       <Button variant="outline" className="w-full">Register</Button>
                     </Link>
@@ -68,7 +68,7 @@ const Navbar = async () => {
       </div>
 
       {/* Spacer */}
-      <div className="h-[80px]" />
+      <div className="md:h-[80px] h-[69px]" />
     </>
   )
 }
