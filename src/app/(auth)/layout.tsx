@@ -49,11 +49,22 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="relative md:h-screen">
-      <Link
+      {/* <Link
         href="/"
         className="absolute md:top-[32px] top-[24px] md:left-[32px] left-[24px] text-[24px] font-semibold z-10 cursor-pointer"
       >
         Talentboard
+      </Link> */}
+      <Link href={'/'} className='absolute md:top-[32px] top-[24px] md:left-[32px] left-[24px] z-10 flex items-center gap-[4px] md:gap-[10px]'>
+        <div className='relative size-[32px] md:size-[45px]'>
+          <Image
+            src="/assets/icons/brand-icon.svg"
+            alt="Talentboard Logo"
+            fill
+            className="object-contain"
+          />
+        </div>
+        <span className="font-semibold md:text-[24px]">Talentboard</span>
       </Link>
 
       <div
