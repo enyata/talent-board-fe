@@ -25,7 +25,17 @@ const ProtectedHeader = () => {
 
     return (
         <div className="flex items-center justify-between w-full p-6 fixed top-0 z-50 bg-white border-b">
-            <Link href={'/dashboard'} className="font-semibold text-[24px]">Talentboard</Link>
+            <Link href={'/dashboard'} className='flex items-center gap-[4px] md:gap-[10px]'>
+                <div className='relative size-[32px] md:size-[45px]'>
+                    <Image
+                        src="/assets/icons/brand-icon.svg"
+                        alt="Talentboard Logo"
+                        fill
+                        className="object-contain"
+                    />
+                </div>
+                <span className="font-semibold md:text-[24px]">Talentboard</span>
+            </Link>
 
             <DropdownMenu >
                 <DropdownMenuTrigger asChild>
