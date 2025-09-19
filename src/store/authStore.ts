@@ -22,8 +22,8 @@ export type User = {
 
 interface AuthState {
     user: User | null;
-    accessToken: string | undefined;
-    refreshToken: string | undefined;
+    accessToken: string | null;
+    refreshToken: string | null;
     loading: boolean;
     is_authenticated: boolean;
     resetAuth: () => void;
@@ -37,8 +37,8 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set) => ({
     user: null,
-    accessToken: undefined,
-    refreshToken: undefined,
+    accessToken: null,
+    refreshToken: null,
     loading: false,
     is_authenticated: false,
     resetAuth: () => set({ user: null, accessToken: undefined }),
