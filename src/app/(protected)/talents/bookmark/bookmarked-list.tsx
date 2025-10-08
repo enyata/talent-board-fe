@@ -61,8 +61,7 @@ const BookmarkedList = () => {
                       </div>
                     ))}
                   </div>
-                  {
-                    data?.results?.length > 10 &&
+                  
                     <PaginationFrame
                       queryStringValue={queryStringValue}
                       setQueryStringValue={setQueryStringValue}
@@ -73,7 +72,7 @@ const BookmarkedList = () => {
                       nextCursor={data?.nextCursor}
                       previousCursor={data?.previousCursor}
                     />
-                  }
+                  
                 </div>
                 :
                 <div className='my-auto mx-auto flex flex-col items-center justify-center text-[#101828]'>

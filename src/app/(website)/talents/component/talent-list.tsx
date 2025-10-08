@@ -50,8 +50,7 @@ const TalentList = () => {
                             ))}
                         </div>
                 }
-                {
-                    data?.results.length > 10 &&
+                
                     <PaginationFrame
                         queryStringValue={queryStringValue}
                         setQueryStringValue={setQueryStringValue}
@@ -62,7 +61,7 @@ const TalentList = () => {
                         nextCursor={data?.nextCursor}
                         previousCursor={data?.previousCursor}
                     />
-                }
+                
             </div>
 
         </ParamLayout>
