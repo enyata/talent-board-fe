@@ -19,6 +19,7 @@ import skillsLibrary from '../../public/skills_library.json'
 import { getSkillLabelByValue } from '@/lib/skills_sort'
 import { getCountryNameByCode } from '@/lib/countryfromIsocode'
 import { useSaveTalentMutation, useUpvoteTalentMutation } from '@/hooks/mutations/talent'
+import { useTruncateText } from '@/hooks/useTruncateText'
 
 interface TalentboardProps {
     width?: string
@@ -124,6 +125,12 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
         }
     }
 
+
+    const { displayText } = useTruncateText(
+        talent?.bio ?? "",
+        160
+    )
+
     return (
         <Card
             onClick={handleCardClick}
@@ -160,7 +167,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
                 </div>
 
                 <p className='mt-[8px] font-semibold text-[13px] text-[#5F5F5F] text-ellipsis'>
-                    {talent?.bio}
+                    {displayText}
                 </p>
 
                 <div className='mt-[16px] flex gap-2 flex-wrap'>

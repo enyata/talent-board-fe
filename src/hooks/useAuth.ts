@@ -20,7 +20,6 @@ export const useAuth = () => {
         return null;
       }
       const user = response.data.user;
-      console.log('response', response)
       setUser(user);
       set_isAuthenticated(true);
       return user;

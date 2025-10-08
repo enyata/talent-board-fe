@@ -25,9 +25,12 @@ export const onboardFormSchema = z
       job_title: z.string()
         .optional()
         .or(z.literal("")),
-      bio: z.string()
+      bio: z
+        .string()
+        .min(10, "Bio must be at least 10 characters long")
         .optional()
-        .or(z.literal("")),
+        .or(z.literal(""))
+      ,
       linkedin: z.string()
         .url("Enter a valid LinkedIn URL")
         .or(z.literal("")),
