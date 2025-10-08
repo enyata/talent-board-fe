@@ -28,6 +28,7 @@ export const onboardFormSchema = z
       bio: z
         .string()
         .min(10, "Bio must be at least 10 characters long")
+        .max(250, "Bio must be less than 250 characters")
         .optional()
         .or(z.literal(""))
       ,
