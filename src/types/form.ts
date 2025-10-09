@@ -27,10 +27,16 @@ export const onboardFormSchema = z
         .or(z.literal("")),
       bio: z
         .string()
-        .min(10, "Bio must be at least 10 characters long")
         .optional()
         .or(z.literal(""))
-      ,
+        .refine(
+          (val) => !val || val === "" || val.length >= 10,
+          { message: "Bio must be at least 10 characters" }
+        )
+        .refine(
+          (val) => !val || val.length <= 250,
+          { message: "Bio must be less than 250 characters" }
+        ),
       linkedin: z.string()
         .url("Enter a valid LinkedIn URL")
         .or(z.literal("")),
