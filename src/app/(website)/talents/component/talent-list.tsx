@@ -15,7 +15,6 @@ const TalentList = () => {
     const [queryStringValue, setQueryStringValue] = useState<string>('')
     const params = Object.fromEntries(new URLSearchParams(queryStringValue));
     delete params.filter_options;
-    console.log('params at talent list', params)
 
     const { data, isLoading } = useQuery({
         queryKey: ['talents', queryStringValue],

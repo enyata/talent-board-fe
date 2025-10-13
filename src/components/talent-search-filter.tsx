@@ -103,7 +103,6 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
         router.push(window.location.pathname);
     }
 
-    console.log('my search form', watch());
 
 
     return (

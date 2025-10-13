@@ -13,7 +13,6 @@ const TalentDashboard = () => {
         queryKey: ["dashboard"],
         queryFn: fetchTalentDashboard,
     });
-    console.log('data at talent dashboard', data)
     if (isLoading) {
         return (
             <TalentDashboardSkeleton />
