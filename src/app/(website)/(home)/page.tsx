@@ -10,7 +10,6 @@ import WhyEnyataSection from "./components/why-enyata";
 
 export default async function Home() {
   const talents = await fetchTopTalents();
-  console.log('top talent at page', talents)
   return (
     <div className='md:mt-[140px] mt-[40px]'>
       <HeroSection />

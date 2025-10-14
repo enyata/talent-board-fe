@@ -10,7 +10,6 @@ import { useAuthStore } from '@/store/authStore';
 
 const OnboardingNestedLayout = ({ children }: { children: React.ReactNode }) => {
     const user = useAuthStore.getState().user;
-    // console.log('user info here', user);
 
     const { first_name, last_name } = user || {};
     const form = useForm<OnboardFormSchema>({

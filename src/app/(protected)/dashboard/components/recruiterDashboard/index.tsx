@@ -14,7 +14,6 @@ const RecruiterDashboard = () => {
     queryKey: ["dashboard"],
     queryFn: fetchRecruiterDashboard,
   });
-  console.log('data at recruiter dashboard', data)
   if (isLoading) {
     return (
       <RecruiterDashboardSkeleton />

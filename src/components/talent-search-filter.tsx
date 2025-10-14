@@ -1,118 +1,150 @@
 'use client';
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Funnel, Search, X } from 'lucide-react';
-
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from './ui/dropdown-menu';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from './ui/dropdown-menu';
 import { Checkbox } from './ui/checkbox';
-import { Controller, useFormContext } from 'react-hook-form';
 import { Label } from './ui/label';
 import { ChooseExperienceLevel } from './choose-experience-button';
 import { CountrySelect } from './ui/country-select';
 import { StateSelect } from './ui/state-select';
 import { SkillButton } from './skill-button';
 import { ButtonWithLoader } from './ui/button-with-loader';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
-import { TalentFilterForm } from '@/types/filters';
 import { flattenAndSortSkills } from '@/lib/skills_sort';
 import skillsLibrary from '../../public/skills_library.json';
-
+import { useTalentStore } from '@/store/talentStore';
 
 interface TalentSearchFilterProps {
     isLoading?: boolean;
-    queryStringValue?: string;
-    setQueryStringValue: (q: string) => void
 }
 
-export default function TalentSearchFilter({ isLoading, setQueryStringValue }: TalentSearchFilterProps) {
+export default function TalentSearchFilter({ isLoading }: TalentSearchFilterProps) {
     const SKILLSET = flattenAndSortSkills(skillsLibrary);
-
-    const wrapperRef = React.useRef<HTMLDivElement>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
 
-    const { control, reset, watch, setValue, register } = useFormContext<TalentFilterForm>();
-    const query = watch('q');
-    const limit = watch('limit');
-    const filterOptions = watch('filter_options');
-    const experienceLevel = watch('experience');
-    const country = watch('country');
-    const state = watch('state');
-    const skills = watch('skills');
-    const cursor = watch('cursor');
-    const direction = watch('direction');
+    const {
+        q,
+        experience,
+        country,
+        state,
+        skills = [],
+        setFilter,
+        resetFilters,
+    } = useTalentStore();
+    const [localFilters, setLocalFilters] = useState({
+        experience,
+        country,
+        state,
+        skills,
+    });
+
+    const [filterOptions, setFilterOptions] = useState<string[]>([]);
+    const debouncedSearch = useDebounce(q, 500);
 
     const buildQueryString = useCallback(() => {
         const params: Record<string, string> = {};
-        if (filterOptions.length) params.filter_options = filterOptions.join(',');
-        if (query) params.q = query;
-        if (limit !== undefined) params.limit = limit.toString();
-        if (cursor) params.cursor = cursor;
-        if (direction) params.direction = direction;
-        if (filterOptions.includes('experience') && experienceLevel)
-            params.experience = experienceLevel;
-        if (filterOptions.includes('skills') && skills.length)
-            params.skills = skills.join(',');
-        if (filterOptions.includes('location')) {
-            if (country) params.country = country;
-            if (state) params.state = state;
-        }
+        if (debouncedSearch) params.q = debouncedSearch;
+        if (experience) params.experience = experience;
+        if (country) params.country = country;
+        if (state) params.state = state;
+        if (skills.length) params.skills = skills.join(',');
         return new URLSearchParams(params).toString();
-    }, [filterOptions, query, limit, experienceLevel, skills, country, state, cursor, direction])
+    }, [debouncedSearch, experience, country, state, skills]);
 
-    const debouncedSearch = useDebounce(query, 300);
-
-    // Update query string when search input changes
-    React.useEffect(() => {
-        if (debouncedSearch === undefined) return
+    useEffect(() => {
         const queryString = buildQueryString();
-        setQueryStringValue(queryString);
         router.replace(`?${queryString}`, { scroll: false });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [debouncedSearch])
+    }, [debouncedSearch, buildQueryString, router]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         const queryString = buildQueryString();
         const down = (e: KeyboardEvent) => {
             if (e.key === 'f' && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault();
-                setQueryStringValue(queryString);
                 router.replace(`?${queryString}`, { scroll: false });
             }
         };
         document.addEventListener('keydown', down);
         return () => document.removeEventListener('keydown', down);
-    }, [buildQueryString, router, setQueryStringValue]);
+    }, [buildQueryString, router]);
+
+
+    const searchParams = useSearchParams();
+    useEffect(() => {
+        const qParam = searchParams.get('q') || '';
+        const expParam = searchParams.get('experience') || '';
+        const countryParam = searchParams.get('country') || '';
+        const stateParam = searchParams.get('state') || '';
+        const skillsParam = searchParams.get('skills')?.split(',') || [];
+
+        if (qParam) setFilter('q', qParam);
+        if (expParam) setFilter('experience', expParam);
+        if (countryParam) setFilter('country', countryParam);
+        if (stateParam) setFilter('state', stateParam);
+        if (skillsParam.length > 0) setFilter('skills', skillsParam);
+    }, [searchParams, setFilter]);
+
+
 
     const handleFilter = () => {
-        const queryString = buildQueryString();
-        setQueryStringValue(queryString);
+        Object.entries(localFilters).forEach(([key, value]) => {
+            setFilter(key as keyof typeof localFilters, value);
+        });
+
+        const params: Record<string, string> = {};
+        if (q) params.q = q;
+        if (localFilters.experience) params.experience = localFilters.experience;
+        if (localFilters.country) params.country = localFilters.country;
+        if (localFilters.state) params.state = localFilters.state;
+        if (localFilters.skills?.length)
+            params.skills = localFilters.skills.join(',');
+
+        const queryString = new URLSearchParams(params).toString();
         router.replace(`?${queryString}`, { scroll: false });
-    }
+    };
+
 
     const handleReset = () => {
-        reset({
-            filter_options: [],
+        resetFilters();
+        setFilter('q', '');
+        setLocalFilters({
             experience: '',
             country: '',
             state: '',
-            skills: []
+            skills: [],
         });
         router.push(window.location.pathname);
-    }
+    };
 
-    console.log('my search form', watch());
+
+    useEffect(() => {
+        setLocalFilters({
+            experience,
+            country,
+            state,
+            skills,
+        });
+    }, [q, experience, country, state, skills]);
+
 
 
     return (
         <div className="relative">
             <div className="flex items-center gap-2">
-                {/* Input with shortcut hint */}
-                <div ref={wrapperRef} className='w-full'>
+                <div ref={wrapperRef} className="w-full">
                     <div className="relative w-full">
-                        <p className=" hidden md:block text-muted-foreground absolute right-2 top-1/2 -translate-y-1/2">
+                        <p className="hidden md:block text-muted-foreground absolute right-2 top-1/2 -translate-y-1/2">
                             <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 px-1.5 font-mono text-[10px] font-medium">
                                 <span className="text-xs rounded bg-muted text-muted-foreground opacity-100 size-5 flex items-center justify-center">
                                     ⌘
@@ -122,15 +154,23 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                                 </span>
                             </kbd>
                         </p>
-                        <span className={`${query !== '' ? 'hidden' : 'block'} absolute left-3 top-1/2 -translate-y-1/2 text-[#AFAFAF]`}><Search strokeWidth={1} size={18} /></span>
+                        <span
+                            className={`${q !== '' ? 'hidden' : 'block'
+                                } absolute left-3 top-1/2 -translate-y-1/2 text-[#AFAFAF]`}
+                        >
+                            <Search strokeWidth={1} size={18} />
+                        </span>
                         <Input
-                            className={`w-full rounded-sm h-[42px] text-[14px] pr-10 ${query !== '' ? 'pl-3' : 'pl-8'}`}
+                            className={`w-full rounded-sm h-[42px] text-[14px] pr-10 ${q !== '' ? 'pl-3' : 'pl-8'
+                                }`}
                             placeholder="Search by skill, job title or name"
-                            {...register('q')}
+                            value={q ?? ''}
+                            onChange={(e) => setFilter('q', e.target.value)}
                         />
                     </div>
                 </div>
-                {/* Filter button */}
+
+                {/* Filter dropdown */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
@@ -140,150 +180,138 @@ export default function TalentSearchFilter({ isLoading, setQueryStringValue }: T
                             Filter <Funnel size={14} />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align='end' className='rounded-[8px] gap-0 flex flex-col p-5 w-full max-w-[300px] md:max-w-[469px] shadow-lg'>
-                        <p className='flex items-center gap-2 text-[#09090B] font-medium'>Filter by <Funnel size={16} /></p>
-                        <DropdownMenuItem className='absolute text-[#09090B] top-3 right-3'> <X strokeWidth={2} size={16} /></DropdownMenuItem>
-                        <DropdownMenuSeparator className='mt-[16px]' />
-                        <Controller
-                            name="filter_options"
-                            control={control}
-                            render={({ field }) => (
-                                <div className="flex flex-col mt-[20px] md:flex-row gap-6 text-[#696969]">
-                                    {['skills', 'experience', 'location'].map((item) => {
-                                        const isChecked = field.value.includes(item);
 
+                    <DropdownMenuContent
+                        align="end"
+                        className="rounded-[8px] gap-0 flex flex-col p-5 w-full max-w-[300px] md:max-w-[469px] shadow-lg"
+                    >
+                        <p className="flex items-center gap-2 text-[#09090B] font-medium">
+                            Filter by <Funnel size={16} />
+                        </p>
+                        <DropdownMenuItem className="absolute text-[#09090B] top-3 right-3">
+                            <X strokeWidth={2} size={16} />
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator className="mt-[16px]" />
+
+                        {/* FILTER OPTIONS */}
+                        <div className="flex flex-col mt-[20px] md:flex-row gap-6 text-[#696969]">
+                            {['skills', 'experience', 'location'].map((item) => {
+                                const isChecked = filterOptions.includes(item);
+                                return (
+                                    <div key={item} className="flex items-center gap-[10px]">
+                                        <Checkbox
+                                            checked={isChecked}
+                                            onCheckedChange={(checked) => {
+                                                setFilterOptions((prev) =>
+                                                    checked
+                                                        ? [...prev, item]
+                                                        : prev.filter((v) => v !== item)
+                                                );
+                                            }}
+                                            className="size-5 border-[#CACACA] data-[state=checked]:bg-[#E5E4DE] data-[state=checked]:border-[#5F5F5F]"
+                                        />
+                                        <label className="font-medium capitalize">{item}</label>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        <DropdownMenuSeparator className="mt-[40px]" />
+
+                        {/* EXPERIENCE LEVEL */}
+                        {filterOptions.includes('experience') && (
+                            <div className="mt-4">
+                                <Label className="font-normal text-[14px]">
+                                    Select experience that apply
+                                </Label>
+                                <div className="flex gap-[10px] mt-1 justify-between">
+                                    {['entry', 'intermediate', 'expert'].map((lvl) => (
+                                        <ChooseExperienceLevel
+                                            key={lvl}
+                                            level={lvl}
+                                            selected={localFilters.experience === lvl}
+                                            onSelect={(val) => setLocalFilters((prev) => ({ ...prev, experience: val }))}
+                                            className="rounded-[3px]"
+                                            selectedBorderClass="border-[#696969]"
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* LOCATION */}
+                        {filterOptions.includes('location') && (
+                            <div className="mt-6 flex flex-col md:flex-row gap-[24px] justify-between">
+                                <CountrySelect
+                                    value={localFilters.country ?? ''}
+                                    onChange={(val) =>
+                                        setLocalFilters((prev) => ({ ...prev, country: val, state: '' }))
+                                    }
+                                />
+                                <StateSelect
+                                    countryCode={localFilters.country ?? ''}
+                                    value={localFilters.state ?? ''}
+                                    onChange={(val) => setLocalFilters((prev) => ({ ...prev, state: val }))}
+                                    disabled={!localFilters.country}
+
+                                />
+                            </div>
+                        )}
+
+                        {/* SKILLS */}
+                        {filterOptions.includes('skills') && (
+                            <div className="mt-4">
+                                <Label className="font-normal text-[14px]">
+                                    Select skills that apply
+                                </Label>
+                                <div className="flex flex-wrap gap-4 mt-1 max-h-[200px] overflow-y-scroll p-2">
+                                    {SKILLSET.map((skill, i) => {
+                                        // const selected = skills.includes(skill.value);
                                         return (
-                                            <div key={item} className="flex items-center gap-[10px]">
-                                                <Checkbox
-                                                    checked={isChecked}
-                                                    onCheckedChange={(checked) => {
-                                                        const newValue = checked
-                                                            ? [...field?.value, item] // add
-                                                            : field?.value?.filter((v: string) => v !== item); // remove
-                                                        field.onChange(newValue);
-                                                    }}
-                                                    className="size-5 border-[#CACACA] data-[state=checked]:bg-[#E5E4DE] data-[state=checked]:border-[#5F5F5F] data-[state=checked]:text-black"
-                                                />
-                                                <label className="font-medium capitalize">{item}</label>
-                                            </div>
+                                            <SkillButton
+                                                key={i}
+                                                skill={skill.label}
+                                                selected={localFilters.skills.includes(skill.value)}
+                                                onToggle={() => {
+                                                    const selected = localFilters.skills.includes(skill.value);
+                                                    const updated = selected
+                                                        ? localFilters.skills.filter((v) => v !== skill.value)
+                                                        : [...localFilters.skills, skill.value];
+                                                    setLocalFilters((prev) => ({ ...prev, skills: updated }));
+                                                }}
+                                            />
                                         );
                                     })}
                                 </div>
-                            )}
-                        />
-                        <DropdownMenuSeparator className='mt-[40px]' />
-                        {/* EXPERIENCE LEVEL */}
-                        <div className=' flex flex-col gap-5'>
-                            <div className='mt-4'>
-                                <Label htmlFor='experience-level' className='font-normal text-[14px]'>Select experience that apply</Label>
-                                <div id='experience-level' className='flex gap-[10px] mt-1  w-full justify-between'>
-                                    <Controller
-                                        control={control}
-                                        name="experience"
-                                        render={({ field }) => (
-                                            <div
-                                                id="experience-level"
-                                                className="flex flex-col md:flex-row gap-[10px] w-full justify-between"
-                                            >
-                                                {['entry', 'intermediate', 'expert'].map((lvl) => (
-                                                    <ChooseExperienceLevel
-                                                        key={lvl}
-                                                        level={lvl}
-                                                        selected={field.value === lvl}
-                                                        onSelect={field.onChange}
-                                                        className='rounded-[3px]'
-                                                        selectedBorderClass='border-[#696969]'
-
-                                                    />
-                                                ))}
-                                            </div>
-                                        )}
-                                    />
-                                </div>
                             </div>
-                            {/* LOCATION */}
-                            <div>
-                                <DropdownMenuSeparator />
-                                {/* <Label htmlFor='experience-level' className='font-normal text-[14px] mt-4'>Enter location to search for here</Label> */}
-                                <div className="mt-4 flex flex-col md:flex-row gap-[24px] justify-between">
-                                    {/* Country */}
-                                    <Controller
-                                        control={control}
-                                        name="country"
-                                        render={({ field }) => (
-                                            <CountrySelect
-                                                value={field.value}
-                                                onChange={(val) => {
-                                                    field.onChange(val);
-                                                    setValue('state', ''); // Reset state
-                                                }}
-                                            />
-                                        )}
-                                    />
+                        )}
 
-                                    {/* State */}
-                                    <Controller
-                                        control={control}
-                                        name="state"
-                                        render={({ field }) => (
-                                            <StateSelect
-                                                countryCode={country}
-                                                value={field.value}
-                                                onChange={field.onChange}
-                                                disabled={!country}
-                                            />
-                                        )}
-                                    />
-                                </div>
-                            </div>
-                            {/* SKILL */}
-                            <div className=''>
-                                <DropdownMenuSeparator />
-                                <Label htmlFor='experience-level' className='font-normal text-[14px] mt-4'>Select skills that apply</Label>
-                                <Controller
-                                    control={control}
-                                    name="skills"
-                                    render={({ field }) => (
-                                        <div className="flex flex-wrap gap-4 mt-1 max-h-[200px] overflow-y-scroll p-2">
-                                            {SKILLSET.map((skill, i) => {
-                                                const selected = field?.value?.includes(skill.value);
-
-                                                return (
-                                                    <SkillButton
-                                                        key={i}
-                                                        skill={skill.label}
-                                                        selected={selected}
-                                                        onToggle={() => {
-                                                            const newArr = selected
-                                                                ? field.value.filter((v) => v !== skill.value) // remove
-                                                                : [...(field.value ?? []), skill.value]; // add
-                                                            field.onChange(newArr);
-                                                        }}
-                                                    />
-                                                );
-                                            })}
-                                        </div>
-                                    )}
-                                />
-
-                            </div>
-                        </div>
-                        <div className='flex justify-between mt-5'>
+                        {/* ACTION BUTTONS */}
+                        <div className="flex justify-between mt-5">
                             <Button
-                                disabled={filterOptions.length < 1 || isLoading}
-                                onClick={handleReset} variant={'outline'}
-                                className='rounded-[7px]'>
+                                disabled={isLoading}
+                                onClick={handleReset}
+                                variant={'outline'}
+                                className="rounded-[7px]"
+                            >
                                 Reset
                             </Button>
                             <ButtonWithLoader
                                 isLoading={isLoading}
-                                disabled={filterOptions.length < 1 || isLoading}
-                                variant='outline'
-                                className='rounded-[7px]'
+                                disabled={
+                                    isLoading ||
+                                    (
+                                        !localFilters.experience &&
+                                        !localFilters.country &&
+                                        !localFilters.state &&
+                                        (!localFilters.skills || localFilters.skills.length === 0)
+                                    )
+                                }
+                                variant="outline"
+                                className="rounded-[7px]"
                                 onClick={handleFilter}
                             >
                                 Show result
-                                {/* {watch('filter_options').length !== 0 ? `(${watch('filter_options').length})` : ''} */}
                             </ButtonWithLoader>
                         </div>
                     </DropdownMenuContent>
