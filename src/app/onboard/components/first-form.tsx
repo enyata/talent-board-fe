@@ -33,10 +33,16 @@ const RoleForm = () => {
 }
 
 const ChooseRole = ({ image, title, desc }: { image: string; title: string; desc: string }) => {
-    const { watch, setValue } = useFormContext();
+    const { watch, reset } = useFormContext();
     const role = watch("data.role");
     const handleRoleChange = (newRole: string) => {
-        setValue('data.role', newRole)
+        reset({
+            config: { currentForm: 1 },
+            data: {
+                role: newRole
+            },
+        });
+
     };
     return (
         <div
