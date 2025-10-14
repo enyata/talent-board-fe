@@ -1,71 +1,124 @@
-
 'use client';
-import SkeletonTalentCard from '@/components/skeleton-talent-card';
-import TalentSearchFilter from '@/components/talent-search-filter'
-import TalentCard from '@/components/talentCard'
+
 import { useTalentApi } from '@/hooks/useTalents';
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import PaginationFrame from '@/components/pagination-frame';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useEffect, useMemo, useRef } from 'react';
+import TalentCard from '@/components/talentCard';
+import SkeletonTalentCard from '@/components/skeleton-talent-card';
+import TalentSearchFilter from '@/components/talent-search-filter';
 import { talentProp } from '@/types/user';
-import ParamLayout from '@/components/providers/paramLayout';
+import { useTalentStore } from '@/store/talentStore';
+import { PaginatedData, TalentParams } from '@/types/talentParam.type';
+import { cleanParams } from '@/lib/cleanParams';
 
-const TalentList = () => {
-    const { fetchAllTalents } = useTalentApi()
-    const [queryStringValue, setQueryStringValue] = useState<string>('')
-    const params = Object.fromEntries(new URLSearchParams(queryStringValue));
-    delete params.filter_options;
-    console.log('params at talent list', params)
+export default function TalentList() {
+    const { fetchAllTalents } = useTalentApi();
 
-    const { data, isLoading } = useQuery({
-        queryKey: ['talents', queryStringValue],
-        queryFn: () => fetchAllTalents(params),
-    });
+    const observerRef = useRef<HTMLDivElement>(null);
+
+    const store = useTalentStore();
+
+    const filters = useMemo(
+        () => ({
+            q: store.q,
+            limit: store.limit,
+            experience: store.experience,
+            country: store.country,
+            state: store.state,
+            skills: store.skills,
+            cursor: store.cursor,
+            direction: store.direction,
+        }),
+        [store.q, store.limit, store.experience, store.country, store.state, store.skills, store.cursor, store.direction]
+    );
+
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+        useInfiniteQuery<PaginatedData<talentProp> | null>({
+            queryKey: ['talents', filters],
+            queryFn: async ({ pageParam }) => {
+                const rawParams: TalentParams = {
+                    q: filters.q,
+                    limit: filters.limit,
+                    experience: filters.experience,
+                    country: filters.country,
+                    state: filters.state,
+                    skills: filters.skills,
+                    cursor: pageParam as string | undefined,
+                    direction: filters.direction,
+                };
+
+                const params = cleanParams(rawParams);
+                const res = await fetchAllTalents({ params });
+                return res;
+            },
+
+            getNextPageParam: (lastPage) => {
+                if (!lastPage?.hasNextPage) return undefined;
+                return lastPage.nextCursor ?? undefined;
+            },
+
+            initialPageParam: undefined,
+        });
+
+    useEffect(() => {
+        const el = observerRef.current;
+        if (!el) return;
+
+        let timeout: NodeJS.Timeout;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        if (hasNextPage && !isFetchingNextPage) {
+                            fetchNextPage();
+                        }
+                    }, 300);
+                }
+            },
+            { threshold: 1.0 }
+        );
+
+        observer.observe(el);
+        return () => {
+            clearTimeout(timeout);
+            observer.disconnect();
+        };
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+
+    const allTalents = data?.pages.flatMap((page) => page?.results ?? []) || [];
+
     return (
-        <ParamLayout>
             <div className='mt-5'>
                 <div className='sticky md:top-[82px] top-[68px] py-4 z-10 bg-white'>
-                    <TalentSearchFilter
-                        queryStringValue={queryStringValue}
-                        setQueryStringValue={setQueryStringValue}
-                        isLoading={isLoading}
-                    />
+                    <TalentSearchFilter isLoading={isLoading} />
                 </div>
-                {
-                    isLoading ?
-                        <div className="mt-2 grid md:grid-cols-2 grid-cols-1 gap-3">
-                            {Array.from({ length: 6 }).map((_, i) => (
-                                <SkeletonTalentCard key={i} />
-                            ))}
-                        </div>
-                        :
-                        <div className='mt-2 grid md:grid-cols-2 grid-cols-1 gap-3'>
-                            {data?.results.map((talent: talentProp, index: number) => (
-                                <TalentCard
-                                    key={index}
-                                    height='md:h-[307px]'
-                                    width='max-w-[469px]'
-                                    talent={talent}
-                                />
-                            ))}
-                        </div>
-                }
-                
-                    <PaginationFrame
-                        queryStringValue={queryStringValue}
-                        setQueryStringValue={setQueryStringValue}
-                        isLoading={isLoading}
-                        count={data?.count}
-                        hasNextPage={data?.hasNextPage}
-                        hasPreviousPage={data?.hasPreviousPage}
-                        nextCursor={data?.nextCursor}
-                        previousCursor={data?.previousCursor}
-                    />
-                
+
+                {isLoading ? (
+                    <div className='mt-2 grid md:grid-cols-2 grid-cols-1 gap-3'>
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <SkeletonTalentCard key={i} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className='mt-2 grid md:grid-cols-2 grid-cols-1 gap-3'>
+                        {allTalents.map((talent: talentProp, i: number) => (
+                            <TalentCard
+                             key={i}
+                              talent={talent}
+                              width='max-w-full'
+                               />
+                        ))}
+                    </div>
+                )}
+
+                <div
+                    ref={observerRef}
+                    className='h-10 mt-4 flex justify-center items-center'
+                >
+                    {isFetchingNextPage && <p>Loading more...</p>}
+                </div>
             </div>
-
-        </ParamLayout>
-    )
+    );
 }
-
-export default TalentList

@@ -32,7 +32,7 @@ const Navbar = async () => {
             <Link href="/#how-it-works"><li>How it works</li></Link>
           </ul>
           {
-            user ?
+            user && user?.data?.profile_completed ?
               <Link href={'/dashboard'} className='font-medium'>Go to dashboard</Link> :
               <div>
                 <Link href="/signup">

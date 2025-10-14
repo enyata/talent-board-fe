@@ -18,9 +18,6 @@ export default function AuthCallbackPageComponent() {
       return;
     }
 
-    console.log('refresh token at callback', refreshToken);
-    console.log('access token at callback', accessToken);
-
     if (env('appEnv') === 'local') {
       router.replace(
         `/api/auth/finalize?access_token=${accessToken}&refresh_token=${refreshToken}`
