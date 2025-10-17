@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useFormContext } from 'react-hook-form'
 import FormLayout from './formLayout';
+import { useAuthStore } from '@/store/authStore';
 
 const RoleForm = () => {
     const { watch, setValue } = useFormContext();
@@ -34,12 +35,16 @@ const RoleForm = () => {
 
 const ChooseRole = ({ image, title, desc }: { image: string; title: string; desc: string }) => {
     const { watch, reset } = useFormContext();
+    const user = useAuthStore.getState().user;
+    const { first_name, last_name } = user || {};
     const role = watch("data.role");
     const handleRoleChange = (newRole: string) => {
         reset({
             config: { currentForm: 1 },
             data: {
-                role: newRole
+                role: newRole,
+                first_name: first_name || '',
+                last_name: last_name || '',
             },
         });
 

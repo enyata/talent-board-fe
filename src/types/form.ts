@@ -22,9 +22,14 @@ export const onboardFormSchema = z
         .url("Enter a valid portfolio URL")
         .optional()
         .or(z.literal("")),
-      job_title: z.string()
+      job_title: z
+        .string()
         .optional()
-        .or(z.literal("")),
+        .or(z.literal(""))
+        .refine(
+          (val) => !val || val === "" || val.length >= 10,
+          { message: "Enter a valid job title" }
+        ),
       bio: z
         .string()
         .optional()
@@ -38,9 +43,7 @@ export const onboardFormSchema = z
           { message: "Bio must be less than 250 characters" }
         ),
       linkedin: z.string()
-        .url("Enter a valid LinkedIn URL")
-        .or(z.literal("")),
-
+        .url("Enter a valid LinkedIn URL"),
       hiring_for: z.enum(["myself", "my company"])
         .optional()
         .or(z.literal("")),
