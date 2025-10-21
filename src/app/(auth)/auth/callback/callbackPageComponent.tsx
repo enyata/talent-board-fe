@@ -1,8 +1,8 @@
 'use client';
 
+
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { env } from '@/lib/env';
 import { Loader } from '@/components/ui/loader';
 
 export default function AuthCallbackPageComponent() {
@@ -17,16 +17,17 @@ export default function AuthCallbackPageComponent() {
       router.replace('/login');
       return;
     }
+    // const appEnv = env('appEnv') ?? 'production';
+    // if (appEnv === 'local') {
+    //   router.replace(
+    //     `/api/auth/finalize?access_token=${accessToken}&refresh_token=${refreshToken}`
+    //   );
+    // } 
 
-    if (env('appEnv') === 'local') {
-      router.replace(
-        `/api/auth/finalize?access_token=${accessToken}&refresh_token=${refreshToken}`
-      );
-    } else {
       router.replace(
         `/auth/finalize/client?access_token=${accessToken}&refresh_token=${refreshToken}`
       );
-    }
+    
   }, [searchParams, router]);
 
   return <Loader className="text-primary shadow-none size-[40px]" />;

@@ -1,0 +1,11 @@
+services:
+  enyata-talent-board-fe:
+    build:
+      context: .
+    container_name: enyata-talentboard-fe-container
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    restart: always
