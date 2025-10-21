@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     authInterrupts: true,
   },
+  output: "standalone",
   images: {
     remotePatterns: [
       {
