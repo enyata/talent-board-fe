@@ -104,102 +104,135 @@ const ExperienceForm = () => {
     };
 
     return (
-        <FormLayout>
-            <p style={{ wordSpacing: '3px' }} className='text-[30px] font-bold leading-[38px] text-center'>
-                Finalise setting up your account
-            </p>
-            <p className='text-center mt-[12px] text-[14px]'>Be a part of Enyata talentboard today!</p>
-            <div className='flex flex-col gap-[36px] mt-[36px] text-[14px] font-normal'>
-                {role === 'talent' && (
-                    <div>
-                        <Label htmlFor='qualification' className='font-normal'>Upload resume*</Label>
-                        <div className='mt-2'>
-                            <FileUploadFrame />
-                        </div>
-                    </div>
-                )}
-
-                {role === 'recruiter' && (
-                    <div>
-                        <Label htmlFor='experience-level' className='font-normal'>Who are you hiring for?*</Label>
-                        <div id='hiring_for' className='flex gap-[10px] mt-[8px] w-full justify-between'>
-                            <ChooseHirer hirer='myself' />
-                            <ChooseHirer hirer='my company' />
-                        </div>
-                    </div>
-                )}
-
-                {
-                    role === 'recruiter' && (
-                        <div>
-                            <Label htmlFor='qualification' className='font-normal'>Company Industry*</Label>
-                            <Input
-                                id='qualification'
-                                type='text'
-                                className='mt-2'
-                                placeholder='enter company industry'
-                                {...register('data.company_industry',)}
-                            />
-                        </div>
-                    )
-                }
-
-                <div>
-                    <Label htmlFor='skills' className='font-normal'>{role === 'recruiter' ? 'What roles are you looking to hire for?*' : 'Skills*'}</Label>
-                    <Controller
-
-                        name={`data.${role === 'recruiter' ? 'roles_looking_for' : 'skills'}`}
-                        control={control}
-                        render={({ field }) => (
-                            <MultipleSelector
-                                className="mt-[8px]"
-                                hidePlaceholderWhenSelected={true}
-                                hideClearAllButton={true}
-                                defaultOptions={role === 'recruiter' ? ROLESOPTIONS : OPTIONS}
-                                placeholder="e.g product designer, ux designer"
-                                emptyIndicator={
-                                    <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                                        no results found.
-                                    </p>
-                                }
-                                value={role === 'recruiter' ? ROLESOPTIONS.filter(opt => field.value?.includes(opt.value)) : OPTIONS.filter(opt => field.value?.includes(opt.value))}
-                                onChange={(selected) => {
-                                    const valuesOnly = selected.map(opt => opt.value)
-                                    field.onChange(valuesOnly)
-                                }}
-                            />
-                        )}
-                    />
-                </div>
-
-                {role === 'talent' && (
-                    <div>
-                        <Label htmlFor='experience-level' className='font-normal'>Experience Level*</Label>
-                        <div id='experience-level' className='flex gap-[10px] mt-[8px] w-full justify-between'>
-                            <ChooseExperienceLevel level='entry' />
-                            <ChooseExperienceLevel level='intermediate' />
-                            <ChooseExperienceLevel level='expert' />
-                        </div>
-                    </div>
-                )}
-                <div className='flex justify-between gap-3 h-[42px] w-full'>
-                    <Button
-                        onClick={() => setValue('config.currentForm', 2)}
-                        variant={'outline'} className='h-full flex-1 cursor-pointer'>
-                        Go Back
-                    </Button>
-                    <ButtonWithLoader
-                        isLoading={isPending}
-                        disabled={!isStepValid || !isValid || isPending}
-                        onClick={() => handleSubmit()}
-                        className='bg-primary  h-full max-w-[182px] w-full flex-1 cursor-pointer'>
-                        Submit
-                    </ButtonWithLoader>
-
-                </div>
+      <FormLayout>
+        <p
+          style={{ wordSpacing: "3px" }}
+          className="text-[30px] font-bold leading-[38px] text-center"
+        >
+          Finalise setting up your account
+        </p>
+        <p className="text-center mt-[12px] text-[14px]">
+          Be a part of Enyata talentboard today!
+        </p>
+        <div className="flex flex-col gap-[36px] mt-[36px] text-[14px] font-normal">
+          {role === "talent" && (
+            <div>
+              <Label htmlFor="qualification" className="font-normal">
+                Upload resume*
+              </Label>
+              <div className="mt-2">
+                <FileUploadFrame />
+              </div>
             </div>
-        </FormLayout>
-    )
+          )}
+
+          {role === "recruiter" && (
+            <div>
+              <Label htmlFor="experience-level" className="font-normal">
+                Who are you hiring for?*
+              </Label>
+              <div
+                id="hiring_for"
+                className="flex gap-[10px] mt-[8px] w-full justify-between"
+              >
+                <ChooseHirer hirer="myself" />
+                <ChooseHirer hirer="my company" />
+              </div>
+            </div>
+          )}
+
+          {role === "recruiter" && (
+            <div>
+              <Label htmlFor="qualification" className="font-normal">
+                Company Industry*
+              </Label>
+              <Input
+                id="qualification"
+                type="text"
+                className="mt-2"
+                placeholder="enter company industry"
+                {...register("data.company_industry")}
+              />
+            </div>
+          )}
+
+          <div>
+            <Label htmlFor="skills" className="font-normal">
+              {role === "recruiter"
+                ? "What roles are you looking to hire for?*"
+                : "Skills*"}
+            </Label>
+            <Controller
+              name={`data.${
+                role === "recruiter" ? "roles_looking_for" : "skills"
+              }`}
+              control={control}
+              render={({ field }) => (
+                <MultipleSelector
+                  className="mt-[8px]"
+                  hidePlaceholderWhenSelected={true}
+                  hideClearAllButton={true}
+                  defaultOptions={role === "recruiter" ? ROLESOPTIONS : OPTIONS}
+                  placeholder="e.g product designer, ux designer"
+                  emptyIndicator={
+                    <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                      no results found.
+                    </p>
+                  }
+                  value={
+                    role === "recruiter"
+                      ? ROLESOPTIONS.filter((opt) =>
+                          field.value?.includes(opt.value)
+                        )
+                      : OPTIONS.filter((opt) =>
+                          field.value?.includes(opt.value)
+                        )
+                  }
+                  onChange={(selected) => {
+                    const valuesOnly = selected.map((opt) => opt.value);
+                    field.onChange(valuesOnly);
+                  }}
+                  creatable
+                />
+              )}
+            />
+          </div>
+
+          {role === "talent" && (
+            <div>
+              <Label htmlFor="experience-level" className="font-normal">
+                Experience Level*
+              </Label>
+              <div
+                id="experience-level"
+                className="flex gap-[10px] mt-[8px] w-full justify-between"
+              >
+                <ChooseExperienceLevel level="entry" />
+                <ChooseExperienceLevel level="intermediate" />
+                <ChooseExperienceLevel level="expert" />
+              </div>
+            </div>
+          )}
+          <div className="flex justify-between gap-3 h-[42px] w-full">
+            <Button
+              onClick={() => setValue("config.currentForm", 2)}
+              variant={"outline"}
+              className="h-full flex-1 cursor-pointer"
+            >
+              Go Back
+            </Button>
+            <ButtonWithLoader
+              isLoading={isPending}
+              disabled={!isStepValid || !isValid || isPending}
+              onClick={() => handleSubmit()}
+              className="bg-primary  h-full max-w-[182px] w-full flex-1 cursor-pointer"
+            >
+              Submit
+            </ButtonWithLoader>
+          </div>
+        </div>
+      </FormLayout>
+    );
 }
 const ChooseExperienceLevel = ({ level }: { level: string }) => {
     const { watch, setValue } = useFormContext();

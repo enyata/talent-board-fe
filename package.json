@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-     "docker-dev": "docker compose -f docker-compose.yml up --build",
+    "docker-dev": "docker compose -f docker-compose.yml up --build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -36,6 +36,7 @@
     "lucide-react": "^0.487.0",
     "next": "15.2.4",
     "next-themes": "^0.4.6",
+    "radix-ui": "^1.4.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.1",
