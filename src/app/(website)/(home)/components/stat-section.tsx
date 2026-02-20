@@ -40,6 +40,15 @@ const containerVariants = {
   },
 }
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+}
+
 const StatSection = () => {
   return (
     <section className="mt-[64px] max-w-[1198px] md:mx-auto md:px-0 px-4 ">
@@ -62,19 +71,19 @@ const StatSection = () => {
         ))}
       </motion.div>
     </section>
-  );
-};
+  )
+}
 
 type StatCardProps = {
-  img: string;
-  icon: string;
-  stat: string;
-  desc: string;
-  bg: string;
-  reverse: boolean;
-};
+  img: string
+  icon: string
+  stat: string
+  desc: string
+  bg: string
+  reverse: boolean
+}
 
-const MotionCard = motion.create(Card);
+const MotionCard = motion.create(Card)
 
 const StatCard: React.FC<StatCardProps> = ({
   img,
@@ -86,21 +95,8 @@ const StatCard: React.FC<StatCardProps> = ({
 }) => {
   return (
     <MotionCard
-      variants={{
-        hidden: { opacity: 0, y: 20 },
-        show: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.5, ease: "easeOut" },
-        },
-      }}
-      initial="hidden"
-      animate="show"
-      className={`max-w-[394px] w-full h-[480px] p-[20px] ${
-        reverse ? "pt-[36px]" : "pb-[36px]"
-      } ${bg} flex ${
-        reverse ? "flex-col-reverse" : "flex-col"
-      } justify-between`}
+      variants={cardVariants}
+      className={`max-w-[394px] w-full h-[480px] p-[20px] ${reverse ? 'pt-[36px]' : 'pb-[36px]'} ${bg} flex ${reverse ? 'flex-col-reverse' : 'flex-col'} justify-between`}
     >
       <Image
         src={img}
@@ -111,9 +107,8 @@ const StatCard: React.FC<StatCardProps> = ({
       />
       <div className="flex items-center justify-between">
         <div
-          className={`flex flex-col ${
-            reverse ? "text-black" : "text-white"
-          } font-semibold`}
+          className={`flex flex-col ${reverse ? 'text-black' : 'text-white'
+            } font-semibold`}
         >
           <span className="text-[56px]">{stat}</span>
           <p className="text-[18px]">{desc}</p>
@@ -121,7 +116,7 @@ const StatCard: React.FC<StatCardProps> = ({
         <Image src={icon} alt="icon" width={108} height={108} priority />
       </div>
     </MotionCard>
-  );
-};
+  )
+}
 
 export default StatSection
