@@ -7,7 +7,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import QueryProviders from "@/components/providers/queryProvider";
 
-
 const neueHaas = localFont({
   src: [
     {
