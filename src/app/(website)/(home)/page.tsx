@@ -11,13 +11,13 @@ import WhyEnyataSection from "./components/why-enyata";
 export default async function Home() {
   const talents = await fetchTopTalents();
   return (
-    <div className='md:mt-[140px] mt-[40px]'>
+    <div className="md:mt-[140px] mt-[40px]">
       <HeroSection />
       <StatSection />
       <SkillsSection />
       <FeaturedTalentsSection talents={talents?.data} />
       <Walkthrough />
-      <WhyEnyataSection/>
+      <WhyEnyataSection />
       <Footer />
     </div>
   );
