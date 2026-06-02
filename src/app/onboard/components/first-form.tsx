@@ -40,12 +40,12 @@ const ChooseRole = ({ image, title, desc }: { image: string; title: string; desc
     const role = watch("data.role");
     const handleRoleChange = (newRole: string) => {
         reset({
-            config: { currentForm: 1 },
-            data: {
-                role: newRole,
-                first_name: first_name || '',
-                last_name: last_name || '',
-            },
+          config: { currentForm: 1 },
+          data: {
+            role: newRole,
+            first_name: first_name || "John",
+            last_name: last_name || "Doe",
+          },
         });
 
     };

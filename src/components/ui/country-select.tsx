@@ -26,9 +26,15 @@ type Props = {
   value: string;
   onChange: (value: string) => void;
   className?: string;
+  isRequired?: boolean;
 };
 
-export function CountrySelect({ value, onChange, className }: Props) {
+export function CountrySelect({
+  value,
+  onChange,
+  isRequired,
+  className,
+}: Props) {
   const [open, setOpen] = React.useState(false);
 
   const countries = React.useMemo(() => Country.getAllCountries(), []);
@@ -37,7 +43,7 @@ export function CountrySelect({ value, onChange, className }: Props) {
 
   return (
     <div className="w-full">
-      <Label className="font-normal">Country</Label>
+      <Label className="font-normal">Country{isRequired ? "*" : ""}</Label>
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -81,7 +87,7 @@ export function CountrySelect({ value, onChange, className }: Props) {
                     <Check
                       className={cn(
                         "ml-auto h-4 w-4",
-                        value === country.isoCode ? "opacity-100" : "opacity-0"
+                        value === country.isoCode ? "opacity-100" : "opacity-0",
                       )}
                     />
                   </CommandItem>

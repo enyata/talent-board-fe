@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React from "react";
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,12 +16,14 @@ const PersonalInfoForm = () => {
     control,
     setValue,
     watch,
-    formState: { isValid, errors, touchedFields, dirtyFields },
+    formState: { errors, touchedFields, dirtyFields },
   } = useFormContext<OnboardFormSchema>();
   const role = watch("data.role");
   const step = watch("config.currentForm");
   const selectedCountryCode = watch("data.country");
   const bio = watch("data.bio", "") || "";
+  const jobTitle = watch("data.job_title", "");
+  const workEmail = watch("data.work_email", "");
 
   let fields = formSteps[step];
   if (role !== "recruiter") {
@@ -41,6 +43,14 @@ const PersonalInfoForm = () => {
     const error = errors?.data?.[field];
     return dirty && !error;
   });
+
+  const hasMissingRequiredRecruiterFields = !workEmail;
+  const hasMissingRequiredTalentFields = !bio || !jobTitle;
+
+  const hasMissingRequiredFields =
+    role === "recruiter"
+      ? hasMissingRequiredRecruiterFields
+      : hasMissingRequiredTalentFields;
 
   return (
     <FormLayout>
@@ -91,6 +101,7 @@ const PersonalInfoForm = () => {
               render={({ field }) => (
                 <CountrySelect
                   value={field.value}
+                  isRequired={true}
                   onChange={(val) => {
                     field.onChange(val);
                     setValue("data.state", ""); // Reset state
@@ -115,6 +126,7 @@ const PersonalInfoForm = () => {
               render={({ field }) => (
                 <StateSelect
                   countryCode={selectedCountryCode}
+                  isRequired={true}
                   value={field.value}
                   onChange={field.onChange}
                   disabled={!selectedCountryCode}
@@ -244,7 +256,7 @@ const PersonalInfoForm = () => {
             Go Back
           </Button>
           <Button
-            disabled={!isStepValid || !isValid}
+            disabled={!isStepValid || hasMissingRequiredFields}
             onClick={onNext}
             className="bg-primary  h-full flex-1 cursor-pointer"
           >

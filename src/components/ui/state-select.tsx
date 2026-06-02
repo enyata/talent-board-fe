@@ -28,6 +28,7 @@ type Props = {
   onChange: (value: string) => void;
   className?: string;
   disabled?: boolean;
+  isRequired?: boolean;
 };
 
 export function StateSelect({
@@ -36,19 +37,20 @@ export function StateSelect({
   onChange,
   className,
   disabled,
+  isRequired,
 }: Props) {
   const [open, setOpen] = React.useState(false);
 
   const states = React.useMemo(
     () => State.getStatesOfCountry(countryCode),
-    [countryCode]
+    [countryCode],
   );
 
   const selectedState = states.find((c) => c.name === value);
 
   return (
     <div className="w-full">
-      <Label className="font-normal">State</Label>
+      <Label className="font-normal">State{isRequired ? "*" : ""}</Label>
 
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
@@ -93,7 +95,7 @@ export function StateSelect({
                     <Check
                       className={cn(
                         "ml-auto h-4 w-4",
-                        value === state.isoCode ? "opacity-100" : "opacity-0"
+                        value === state.isoCode ? "opacity-100" : "opacity-0",
                       )}
                     />
                   </CommandItem>
