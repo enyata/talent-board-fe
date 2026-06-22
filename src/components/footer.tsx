@@ -1,5 +1,7 @@
-import Link from 'next/link'
-import React from 'react'
+/* eslint-disable @next/next/no-html-link-for-pages */
+
+import Link from "next/link";
+import React from "react";
 
 const Footer = () => {
   return (
@@ -49,6 +51,6 @@ const Footer = () => {
       </div>
     </footer>
   );
-}
+};
 
-export default Footer
+export default Footer;
