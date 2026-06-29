@@ -12,4 +12,4 @@ export const fetchTopTalents = async (timeoutMs = 30_000) => {
   // if (!res.ok) throw new Error("Failed to fetch top talents");
   if (!res.ok) undefined;
   return res.json();
-};;;
+};
