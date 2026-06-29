@@ -6,6 +6,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import QueryProviders from "@/components/providers/queryProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const neueHaas = localFont({
   src: [
@@ -80,6 +81,8 @@ export default function RootLayout({
         className={` ${neueHaas.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProviders>
+          <Toaster />
+          {/* TODO: rem react-toastify */}
           <ToastContainer
             position="top-right"
             autoClose={3000}

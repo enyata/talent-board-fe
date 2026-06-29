@@ -16,34 +16,37 @@ export default function AuthForm({ action }: { action: 'login' | 'signup' }) {
   }
 
   return (
-    <div className="mt-[32px] flex flex-col items-center justify-center w-full gap-4 text-[14px] text-[#5F5F5F]">
+    <div className="flex flex-col items-center justify-center w-full gap-4 text-[14px] text-[#5F5F5F]">
       <ButtonWithLoader
         disabled={loading}
-        isLoading={loading && provider === 'google'}
-        onClick={() => handleClick('google')}
+        isLoading={loading && provider === "google"}
+        onClick={() => handleClick("google")}
         variant="outline"
-        className="h-[56px] w-full flex gap-4 cursor-pointer rounded-md">
+        className="h-[42px] w-full flex gap-4 cursor-pointer rounded-md border-[#6D6C66]/50"
+      >
         <Image
-          src={'/assets/icons/google-icon.svg'}
+          src={"/assets/icons/google-icon.svg"}
           alt="Google Icon"
-          height={24}
-          width={24}
+          height={20}
+          width={20}
         />
-        <span>{action === 'login' ? 'Login' : 'Signup'} with Google</span>
+        <span>{action === "login" ? "Login" : "Signup"} with Google</span>
       </ButtonWithLoader>
 
       <ButtonWithLoader
         disabled={loading}
-        isLoading={loading && provider === 'linkedin'}
-        onClick={() => handleClick('linkedin')}
+        isLoading={loading && provider === "linkedin"}
+        onClick={() => handleClick("linkedin")}
         variant="outline"
-        className="h-[56px] w-full flex gap-4 cursor-pointer rounded-md">
+        className="h-[42px] w-full flex gap-4 cursor-pointer rounded-md border-[#6D6C66]/50"
+      >
         <Image
-          src={'/assets/icons/linkedin-icon.svg'}
+          src={"/assets/icons/linkedin-icon.svg"}
           alt="Linkedin Icon"
-          height={24}
-          width={24}
-        /> <span>{action === 'login' ? 'Login' : 'Signup'} with LinkedIn</span>
+          height={20}
+          width={20}
+        />{" "}
+        <span>{action === "login" ? "Login" : "Signup"} with LinkedIn</span>
       </ButtonWithLoader>
     </div>
   );
