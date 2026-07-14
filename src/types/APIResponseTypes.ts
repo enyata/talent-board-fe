@@ -39,3 +39,8 @@ export interface LoginResponse {
     refresh_token: string;
   };
 }
+
+export interface ForgotPasswordResponse {
+  status: string;
+  message: string;
+}

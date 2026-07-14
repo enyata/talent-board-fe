@@ -19,3 +19,7 @@ export interface VerifyEmailPayload {
 export interface ResendOtpPayload {
   email: string;
 }
+
+export interface ForgotPasswordPayload {
+  email: string;
+}

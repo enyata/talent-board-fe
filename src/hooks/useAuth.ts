@@ -3,12 +3,14 @@
 import { GET, POST } from "@/lib/requests";
 import { useAuthStore } from "@/store/authStore";
 import {
+  ForgotPasswordPayload,
   LoginPayload,
   ResendOtpPayload,
   SignupPayload,
   VerifyEmailPayload,
 } from "@/types/APIParamsTypes";
 import {
+  ForgotPasswordResponse,
   LoginResponse,
   ResendOtpResponse,
   SignupResponse,
@@ -57,6 +59,13 @@ export const useAuth = () => {
     return POST<ResendOtpResponse>("/api/v1/auth/resend-otp", payload);
   };
 
+  const forgotPassword = async (payload: ForgotPasswordPayload) => {
+    return POST<ForgotPasswordResponse>(
+      "/api/v1/auth/forgot-password",
+      payload,
+    );
+  };
+
   return {
     loginWithProvider,
     fetchUser,
@@ -64,5 +73,6 @@ export const useAuth = () => {
     login,
     verifyEmail,
     resendOtp,
+    forgotPassword,
   };
 };
