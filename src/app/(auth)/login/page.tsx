@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import React, { ChangeEvent, useState } from "react";
 import Link from "next/link";
-import AuthForm from "../components/auth-form";
+import SocialAuthButtons from "../components/social-auth-buttons";
 import { checkEmptyFields } from "@/lib/helpers";
 import { showSuccess } from "@/lib/Alerts";
 import CustomInput from "@/components/utils/custom-input";
@@ -85,7 +85,7 @@ const LoginPage = () => {
         <Separator className="flex-1 border-[#D4D5D7]" />
       </div>
 
-      <AuthForm action={"login"} />
+      <SocialAuthButtons action={"login"} />
       <p className="text-[14px] mt-[32px]">
         Dont have an account?
         <Link href={"/signup"} className="font-medium">

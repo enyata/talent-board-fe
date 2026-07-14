@@ -5,15 +5,19 @@ import { useAuthStore } from "@/store/authStore";
 import Image from "next/image";
 import { useState } from "react";
 
-export default function AuthForm({ action }: { action: 'login' | 'signup' }) {
+export default function SocialAuthButtons({
+  action,
+}: {
+  action: "login" | "signup";
+}) {
   const { loginWithProvider } = useAuth();
   const { loading } = useAuthStore();
-  const [provider, setProvider] = useState<'google' | 'linkedin' | undefined>();
+  const [provider, setProvider] = useState<"google" | "linkedin" | undefined>();
 
-  const handleClick = (provider: 'google' | 'linkedin') => {
+  const handleClick = (provider: "google" | "linkedin") => {
     setProvider(provider);
     loginWithProvider(provider);
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full gap-4 text-[14px] text-[#5F5F5F]">

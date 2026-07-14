@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import AuthForm from "../components/auth-form";
+import SocialAuthButtons from "../components/social-auth-buttons";
 import Link from "next/link";
 import React, { useState } from "react";
 import CustomInput from "@/components/utils/custom-input";
@@ -96,7 +96,7 @@ const SignupPage = () => {
         <Separator className="flex-1 border-[#D4D5D7]" />
       </div>
 
-      <AuthForm action={"signup"} />
+      <SocialAuthButtons action={"signup"} />
       <p className="text-[14px] mt-[32px]">
         Already have an account?
         <Link href={"/login"} className="font-medium">
