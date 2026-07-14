@@ -23,3 +23,10 @@ export interface ResendOtpPayload {
 export interface ForgotPasswordPayload {
   email: string;
 }
+
+export interface ResetPasswordPayload {
+  email: string;
+  token: string;
+  password: string;
+  confirm_password: string;
+}

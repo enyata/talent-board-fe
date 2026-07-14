@@ -6,6 +6,7 @@ import {
   ForgotPasswordPayload,
   LoginPayload,
   ResendOtpPayload,
+  ResetPasswordPayload,
   SignupPayload,
   VerifyEmailPayload,
 } from "@/types/APIParamsTypes";
@@ -13,6 +14,7 @@ import {
   ForgotPasswordResponse,
   LoginResponse,
   ResendOtpResponse,
+  ResetPasswordResponse,
   SignupResponse,
   VerifyEmailResponse,
 } from "@/types/APIResponseTypes";
@@ -66,6 +68,10 @@ export const useAuth = () => {
     );
   };
 
+  const resetPassword = async (payload: ResetPasswordPayload) => {
+    return POST<ResetPasswordResponse>("/api/v1/auth/reset-password", payload);
+  };
+
   return {
     loginWithProvider,
     fetchUser,
@@ -74,5 +80,6 @@ export const useAuth = () => {
     verifyEmail,
     resendOtp,
     forgotPassword,
+    resetPassword,
   };
 };
