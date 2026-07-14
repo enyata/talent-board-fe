@@ -9,6 +9,7 @@ import { formSteps, OnboardFormSchema } from '@/types/form'
 import { CountrySelect } from '@/components/ui/country-select'
 import { StateSelect } from '@/components/ui/state-select'
 import { Textarea } from '@/components/ui/textarea'
+import { useAuthStore } from '@/store/authStore'
 
 const PersonalInfoForm = () => {
   const {
@@ -18,6 +19,8 @@ const PersonalInfoForm = () => {
     watch,
     formState: { errors, touchedFields, dirtyFields },
   } = useFormContext<OnboardFormSchema>();
+  const user = useAuthStore((state) => state.user);
+  const isNameReadOnly = user?.provider !== "local";
   const role = watch("data.role");
   const step = watch("config.currentForm");
   const selectedCountryCode = watch("data.country");
@@ -71,7 +74,7 @@ const PersonalInfoForm = () => {
               First Name*
             </Label>
             <Input
-              readOnly
+              readOnly={isNameReadOnly}
               id="first_name"
               className="h-[42px] mt-2"
               placeholder="enter your first name"
@@ -83,7 +86,7 @@ const PersonalInfoForm = () => {
               Last Name*
             </Label>
             <Input
-              readOnly
+              readOnly={isNameReadOnly}
               id="last_name"
               className="h-[42px] mt-2"
               placeholder="enter your last name"

@@ -1,3 +1,4 @@
+import { isAxiosError } from "axios";
 import { showError } from "./Alerts";
 
 export const capitalizeFirstText = (str: string) => {
@@ -29,6 +30,14 @@ export const checkEmptyFields = (fields: any) => {
   });
 
   return err;
+};
+
+export const getApiErrorMessage = (err: unknown, fallback: string) => {
+  if (isAxiosError(err)) {
+    return err.response?.data?.message ?? fallback;
+  }
+
+  return fallback;
 };
 
 const capsRegex = new RegExp(/[A-Z]/);

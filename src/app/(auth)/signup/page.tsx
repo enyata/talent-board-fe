@@ -3,13 +3,18 @@ import { motion } from "framer-motion";
 import SocialAuthButtons from "../components/social-auth-buttons";
 import Link from "next/link";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import CustomInput from "@/components/utils/custom-input";
-import { Button } from "@/components/ui/button";
+import { ButtonWithLoader } from "@/components/ui/button-with-loader";
 import { Separator } from "@/components/ui/separator";
-import { checkEmptyFields } from "@/lib/helpers";
+import { checkEmptyFields, getApiErrorMessage } from "@/lib/helpers";
 import { showError, showSuccess } from "@/lib/Alerts";
+import { useAuth } from "@/hooks/useAuth";
 
 const SignupPage = () => {
+  const router = useRouter();
+  const { signup } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formState, setFormState] = useState({
     email: "",
     password: "",
@@ -22,25 +27,38 @@ const SignupPage = () => {
     setFormState({ ...formState, [name]: value });
   };
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const { email, password, confirmPassword } = formState;
 
     const isEmpty = checkEmptyFields({ password, email });
 
-    if (!isEmpty) {
-      if (password.length < 6) {
-        showError("Password should be at least 6 characters");
-        return;
-      }
+    if (isEmpty) return;
 
-      if (password !== confirmPassword) {
-        showError("Confirm password does not match new password");
-        return;
-      }
+    if (password.length < 6) {
+      showError("Password should be at least 6 characters");
+      return;
+    }
 
-      showSuccess("All field validation pass!");
+    if (password !== confirmPassword) {
+      showError("Confirm password does not match new password");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const response = await signup({
+        email,
+        password,
+        confirm_password: confirmPassword,
+      });
+      showSuccess(response.message || "Signup successful.");
+      router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+    } catch (err) {
+      showError(getApiErrorMessage(err, "Signup failed. Please try again."));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -82,9 +100,14 @@ const SignupPage = () => {
           placeholder="******"
           type="password"
         />
-        <Button type="submit" className="w-full h-[42px]">
+        <ButtonWithLoader
+          type="submit"
+          className="w-full h-[42px]"
+          isLoading={isSubmitting}
+          disabled={isSubmitting}
+        >
           Create account
-        </Button>
+        </ButtonWithLoader>
       </form>
 
       {/* Divider */}

@@ -3,9 +3,12 @@ import { motion } from "framer-motion";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ButtonWithLoader } from "@/components/ui/button-with-loader";
 import { Loader } from "@/components/ui/loader";
 import { showError, showSuccess } from "@/lib/Alerts";
+import { getApiErrorMessage } from "@/lib/helpers";
+import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/authStore";
 
 const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
@@ -22,9 +25,14 @@ const VerifyEmailForm = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
+  const { verifyEmail, resendOtp } = useAuth();
+  const { setAccessToken, setRefreshToken, setUser, set_isAuthenticated } =
+    useAuthStore();
 
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
 
   useEffect(() => {
@@ -71,7 +79,7 @@ const VerifyEmailForm = () => {
     inputsRef.current[Math.min(pasted.length, OTP_LENGTH - 1)]?.focus();
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const code = otp.join("");
 
@@ -80,16 +88,45 @@ const VerifyEmailForm = () => {
       return;
     }
 
-    showSuccess("Email verified successfully!");
-    router.push("/login");
+    setIsSubmitting(true);
+    try {
+      const response = await verifyEmail({ email, otp: code });
+      const { access_token, refresh_token } = response.tokens;
+      const { user } = response.data;
+
+      setAccessToken(access_token);
+      setRefreshToken(refresh_token);
+      document.cookie = `access_token=${access_token}; path=/; Secure; SameSite=Strict`;
+      document.cookie = `refresh_token=${refresh_token}; path=/; Secure; SameSite=Strict`;
+      setUser(user);
+      set_isAuthenticated(true);
+
+      showSuccess(response.message || "Email verified");
+      router.replace(user.profile_completed ? "/dashboard" : "/onboard");
+    } catch (err) {
+      showError(getApiErrorMessage(err, "Something went wrong. Please try again."));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleResend = () => {
-    if (secondsLeft > 0) return;
-    setOtp(Array(OTP_LENGTH).fill(""));
-    setSecondsLeft(RESEND_SECONDS);
-    showSuccess("A new code has been sent to your email");
-    inputsRef.current[0]?.focus();
+  const handleResend = async () => {
+    if (secondsLeft > 0 || isResending) return;
+
+    setIsResending(true);
+    try {
+      const response = await resendOtp({ email });
+      setOtp(Array(OTP_LENGTH).fill(""));
+      setSecondsLeft(RESEND_SECONDS);
+      showSuccess(
+        response.message || "A new code has been sent to your email",
+      );
+      inputsRef.current[0]?.focus();
+    } catch (err) {
+      showError(getApiErrorMessage(err, "Something went wrong. Please try again."));
+    } finally {
+      setIsResending(false);
+    }
   };
 
   const canSubmit = otp.every((digit) => digit);
@@ -145,20 +182,22 @@ const VerifyEmailForm = () => {
             <button
               type="button"
               onClick={handleResend}
-              className="text-primary font-medium cursor-pointer"
+              disabled={isResending}
+              className="text-primary font-medium cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Resend OTP
+              {isResending ? "Sending..." : "Resend OTP"}
             </button>
           )}
         </p>
 
-        <Button
+        <ButtonWithLoader
           type="submit"
           className="w-full h-[42px] mt-[52px]"
-          disabled={!canSubmit}
+          isLoading={isSubmitting}
+          disabled={!canSubmit || isSubmitting}
         >
           Verify and continue
-        </Button>
+        </ButtonWithLoader>
       </form>
 
       <p

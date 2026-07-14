@@ -1,7 +1,19 @@
 "use client";
 
-import { GET } from "@/lib/requests";
+import { GET, POST } from "@/lib/requests";
 import { useAuthStore } from "@/store/authStore";
+import {
+  LoginPayload,
+  ResendOtpPayload,
+  SignupPayload,
+  VerifyEmailPayload,
+} from "@/types/APIParamsTypes";
+import {
+  LoginResponse,
+  ResendOtpResponse,
+  SignupResponse,
+  VerifyEmailResponse,
+} from "@/types/APIResponseTypes";
 
 export const useAuth = () => {
   const { setUser, setLoading, set_isAuthenticated } = useAuthStore();
@@ -29,5 +41,28 @@ export const useAuth = () => {
     }
   };
 
-  return { loginWithProvider, fetchUser };
+  const signup = async (payload: SignupPayload) => {
+    return POST<SignupResponse>("/api/v1/auth/signup", payload);
+  };
+
+  const login = async (payload: LoginPayload) => {
+    return POST<LoginResponse>("/api/v1/auth/login", payload);
+  };
+
+  const verifyEmail = async (payload: VerifyEmailPayload) => {
+    return POST<VerifyEmailResponse>("/api/v1/auth/verify-email", payload);
+  };
+
+  const resendOtp = async (payload: ResendOtpPayload) => {
+    return POST<ResendOtpResponse>("/api/v1/auth/resend-otp", payload);
+  };
+
+  return {
+    loginWithProvider,
+    fetchUser,
+    signup,
+    login,
+    verifyEmail,
+    resendOtp,
+  };
 };

@@ -2,14 +2,22 @@
 import { motion } from "framer-motion";
 import React, { ChangeEvent, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import SocialAuthButtons from "../components/social-auth-buttons";
-import { checkEmptyFields } from "@/lib/helpers";
-import { showSuccess } from "@/lib/Alerts";
+import { checkEmptyFields, getApiErrorMessage } from "@/lib/helpers";
+import { showError, showSuccess } from "@/lib/Alerts";
 import CustomInput from "@/components/utils/custom-input";
-import { Button } from "@/components/ui/button";
+import { ButtonWithLoader } from "@/components/ui/button-with-loader";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/hooks/useAuth";
+import { useAuthStore } from "@/store/authStore";
 
 const LoginPage = () => {
+  const router = useRouter();
+  const { login } = useAuth();
+  const { setAccessToken, setRefreshToken, setUser, set_isAuthenticated } =
+    useAuthStore();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formState, setFormState] = useState({
     email: "",
     password: "",
@@ -21,15 +29,34 @@ const LoginPage = () => {
     setFormState({ ...formState, [name]: value });
   };
 
-  const handleSubmit = (e: ChangeEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const { email, password } = formState;
 
     const isEmpty = checkEmptyFields({ password, email });
 
-    if (!isEmpty) {
-      showSuccess("All field validation pass!");
+    if (isEmpty) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await login({ email, password });
+      const { access_token, refresh_token } = response.tokens;
+      const { user } = response.data;
+
+      setAccessToken(access_token);
+      setRefreshToken(refresh_token);
+      document.cookie = `access_token=${access_token}; path=/; Secure; SameSite=Strict`;
+      document.cookie = `refresh_token=${refresh_token}; path=/; Secure; SameSite=Strict`;
+      setUser(user);
+      set_isAuthenticated(true);
+
+      showSuccess(response.message || "Login successful");
+      router.replace(user.profile_completed ? "/dashboard" : "/onboard");
+    } catch (err) {
+      showError(getApiErrorMessage(err, "Login failed. Please try again."));
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -64,9 +91,14 @@ const LoginPage = () => {
           placeholder="******"
           type="password"
         />
-        <Button type="submit" className="w-full h-[42px]">
+        <ButtonWithLoader
+          type="submit"
+          className="w-full h-[42px]"
+          isLoading={isSubmitting}
+          disabled={isSubmitting}
+        >
           Log in
-        </Button>
+        </ButtonWithLoader>
         <p className="text-[14px]">
           Forgot password?
           <Link href={"/forgot-password"} className="text-primary font-medium">
