@@ -27,6 +27,8 @@ const PersonalInfoForm = () => {
   const bio = watch("data.bio", "") || "";
   const jobTitle = watch("data.job_title", "");
   const workEmail = watch("data.work_email", "");
+  const firstName = watch("data.first_name", "");
+  const lastName = watch("data.last_name", "");
 
   let fields = formSteps[step];
   if (role !== "recruiter") {
@@ -49,11 +51,13 @@ const PersonalInfoForm = () => {
 
   const hasMissingRequiredRecruiterFields = !workEmail;
   const hasMissingRequiredTalentFields = !bio || !jobTitle;
+  const hasMissingNameFields = !firstName?.trim() || !lastName?.trim();
 
   const hasMissingRequiredFields =
-    role === "recruiter"
+    hasMissingNameFields ||
+    (role === "recruiter"
       ? hasMissingRequiredRecruiterFields
-      : hasMissingRequiredTalentFields;
+      : hasMissingRequiredTalentFields);
 
   return (
     <FormLayout>
@@ -80,6 +84,13 @@ const PersonalInfoForm = () => {
               placeholder="enter your first name"
               {...register("data.first_name")}
             />
+            {touchedFields?.data?.first_name &&
+              errors?.data &&
+              "first_name" in errors.data && (
+                <p className="text-sm text-red-500 mt-1">
+                  {(errors.data.first_name as { message?: string })?.message}
+                </p>
+              )}
           </div>
           <div className="w-full">
             <Label htmlFor="last_name" className="font-normal">
@@ -92,6 +103,13 @@ const PersonalInfoForm = () => {
               placeholder="enter your last name"
               {...register("data.last_name")}
             />
+            {touchedFields?.data?.last_name &&
+              errors?.data &&
+              "last_name" in errors.data && (
+                <p className="text-sm text-red-500 mt-1">
+                  {(errors.data.last_name as { message?: string })?.message}
+                </p>
+              )}
           </div>
         </div>
 

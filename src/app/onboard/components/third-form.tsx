@@ -11,6 +11,7 @@ import FormLayout from "./formLayout";
 import { PATCH } from "@/lib/requests";
 import { formSteps, OnboardFormSchema } from "@/types/form";
 import { flattenAndSortSkills } from "@/lib/skills_sort";
+import { useAuthStore } from "@/store/authStore";
 import skillsLibrary from "../../../../public/skills_library.json";
 import rolesLibrary from "../../../../public/roles_library.json";
 
@@ -27,6 +28,8 @@ const ExperienceForm = () => {
     control,
     formState: { isValid, dirtyFields, errors },
   } = useFormContext<OnboardFormSchema>();
+  const user = useAuthStore((state) => state.user);
+  const isLocalProvider = user?.provider === "local";
   const role = watch("data.role");
   const companyIndustry = watch("data.company_industry");
   const rolesLookingFor = watch("data.roles_looking_for") || [];
@@ -80,6 +83,10 @@ const ExperienceForm = () => {
   }
   if (role === "recruiter") {
     form.append("company_industry", watch("data.company_industry") ?? "");
+  }
+  if (isLocalProvider) {
+    form.append("first_name", watch("data.first_name") ?? "");
+    form.append("last_name", watch("data.last_name") ?? "");
   }
   form.append("country", watch("data.country"));
   form.append("state", watch("data.state"));
