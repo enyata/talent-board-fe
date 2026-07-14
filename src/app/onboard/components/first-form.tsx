@@ -43,8 +43,8 @@ const ChooseRole = ({ image, title, desc }: { image: string; title: string; desc
           config: { currentForm: 1 },
           data: {
             role: newRole,
-            first_name: first_name || "John",
-            last_name: last_name || "Doe",
+            first_name: first_name || "",
+            last_name: last_name || "",
           },
         });
 

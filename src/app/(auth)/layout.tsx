@@ -55,8 +55,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       >
         Talentboard
       </Link> */}
-      <Link href={'/'} className='absolute md:top-[32px] top-[24px] md:left-[32px] left-[24px] z-10 flex items-center gap-[4px] md:gap-[10px]'>
-        <div className='relative size-[32px] md:size-[45px]'>
+      <Link
+        href={"/"}
+        className="absolute md:top-[32px] top-[24px] md:left-[32px] left-[24px] z-10 flex items-center gap-[4px] md:gap-[10px]"
+      >
+        <div className="relative size-[32px] md:size-[35px]">
           <Image
             src="/assets/icons/brand-icon.svg"
             alt="Talentboard Logo"
@@ -64,7 +67,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             className="object-contain"
           />
         </div>
-        <span className="font-semibold md:text-[24px]">Talentboard</span>
+        <span className="font-semibold md:text-[18px]">Talentboard</span>
       </Link>
 
       <div
@@ -89,7 +92,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         </section>
       </div>
     </div>
-  )
+  );
 }
 
 export default AuthLayout
