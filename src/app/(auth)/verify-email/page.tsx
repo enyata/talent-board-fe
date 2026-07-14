@@ -142,7 +142,7 @@ const VerifyEmailForm = () => {
         Verify your email
       </h2>
       <p className="text-[#667085] text-center">
-        Enter the code we sent to{" "}
+        Enter the code we sent to <br />
         <span className="font-medium text-[#101828]">
           {email || "your email"}
         </span>
@@ -208,8 +208,8 @@ const VerifyEmailForm = () => {
         Back
       </p>
 
-      <div className="flex items-center gap-3 bg-neutral-50 rounded-2xl p-4 mt-[36px] w-full md:w-[480px]">
-        <span className="mt-1 w-[8px] h-[8px] rounded-full bg-primary shrink-0" />
+      <div className="flex items-center gap-3 bg-neutral-50 rounded-2xl p-4 mt-[36px] w-full md:w-[470px] border border-[#E4E7EC]">
+        <span className="mt-1 w-[9px] h-[9px] rounded-full bg-primary shrink-0" />
         <p className="text-[14px] text-[#667085] leading-relaxed">
           Check your spam or promotions folder if it doesn&apos;t arrive in a
           minute. Codes are single-use and expire in 10 minutes.

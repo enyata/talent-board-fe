@@ -36,8 +36,8 @@ const SignupPage = () => {
 
     if (isEmpty) return;
 
-    if (password.length < 6) {
-      showError("Password should be at least 6 characters");
+    if (password.length < 8) {
+      showError("Password should be at least 8 characters");
       return;
     }
 
