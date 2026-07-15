@@ -16,7 +16,7 @@ export const capitalizeText = (str: string) => {
     .join(" ");
 };
 
-export const checkEmptyFields = (fields: any) => {
+export const checkEmptyFields = (fields: Record<string, unknown>) => {
   let err = false;
   Object.keys(fields).forEach((key) => {
     if (

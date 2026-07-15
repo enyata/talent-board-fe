@@ -13,7 +13,7 @@ interface CustomInputProps extends React.ComponentProps<"input"> {
   greyInput?: boolean;
   inputRightElement?: ReactNode;
   inputLeftElement?: ReactNode;
-  onChange?: (e: any) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const CustomInput = ({
@@ -43,6 +43,11 @@ const CustomInput = ({
         ""
       )}
       <div className="relative">
+        {inputLeftElement && (
+          <div className="absolute left-2.5 top-1/2 -translate-y-1/2">
+            {inputLeftElement}
+          </div>
+        )}
         <Input
           id={name}
           type={type === "password" ? passwordType : type}
@@ -50,9 +55,19 @@ const CustomInput = ({
           name={name}
           value={value}
           onChange={onChange}
-          className="h-[42px] border-[#D0D5DD] text-[13.5px] focus-visible:bg-white"
+          readOnly={readOnly}
+          className={`h-[42px] border-[#D0D5DD] text-[13.5px] focus-visible:bg-white ${
+            greyInput ? "bg-[#F9FAFB]" : ""
+          } ${inputLeftElement ? "pl-9" : ""} ${
+            inputRightElement || type === "password" ? "pr-9" : ""
+          }`}
           {...rest}
         />
+        {inputRightElement && (
+          <div className="absolute right-2.5 top-1/2 -translate-y-1/2">
+            {inputRightElement}
+          </div>
+        )}
         {type === "password" && (
           <button
             type="button"

@@ -32,7 +32,7 @@ const ForgotPasswordForm = ({
         Forgot password?
       </h2>
       <p className="text-[#667085]">
-        No worries, we'll send you reset instructions.
+        No worries, we&apos;ll send you reset instructions.
       </p>
 
       <form
