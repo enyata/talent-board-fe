@@ -6,47 +6,6 @@ import Link from 'next/link'
 import TestimonyCarousel from './components/testimony-carousel'
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const currentIndex = useRef(0)
-  const isThrottled = useRef(false)
-  const sectionCount = 2
-
-  const scrollToSection = (index: number) => {
-    const container = containerRef.current
-    if (!container) return
-
-    const sections = container.querySelectorAll<HTMLElement>('section')
-    const target = sections[index]
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
-  useEffect(() => {
-    const container = containerRef.current
-    if (!container || window.innerWidth >= 768) return // Only on mobile
-
-    const handleScroll = (e: WheelEvent) => {
-      if (isThrottled.current) return
-
-      isThrottled.current = true
-      setTimeout(() => (isThrottled.current = false), 800)
-
-      const delta = e.deltaY
-
-      if (delta > 0 && currentIndex.current < sectionCount - 1) {
-        currentIndex.current++
-        scrollToSection(currentIndex.current)
-      } else if (delta < 0 && currentIndex.current > 0) {
-        currentIndex.current--
-        scrollToSection(currentIndex.current)
-      }
-    }
-
-    container.addEventListener('wheel', handleScroll, { passive: false })
-    return () => container.removeEventListener('wheel', handleScroll)
-  }, [])
-
   return (
     <div className="relative md:h-screen">
       {/* <Link
@@ -70,15 +29,12 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         <span className="font-semibold md:text-[18px]">Talentboard</span>
       </Link>
 
-      <div
-        ref={containerRef}
-        className="block md:flex md:h-screen overflow-y-scroll md:overflow-hidden"
-      >
-        <section className="w-full md:w-1/2 h-screen flex items-center justify-center px-4">
+      <div className="block md:flex md:min-h-screen overflow-y-scroll md:overflow-hidden">
+        <section className="w-full md:w-1/2 flex items-center justify-center px-4 h-[850px]">
           {children}
         </section>
 
-        <section className="w-full md:w-1/2 h-screen relative">
+        <section className="w-full md:w-1/2 relative h-screen md:h-[unset]">
           <Image
             src="/assets/images/auth-img.avif"
             alt="Auth image"
@@ -93,6 +49,6 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
       </div>
     </div>
   );
-}
+};
 
 export default AuthLayout
