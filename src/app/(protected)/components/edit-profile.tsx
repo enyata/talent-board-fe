@@ -13,7 +13,7 @@ import { ProfileSchema, profileSchema } from '@/types/profile-edit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
+import { showError, showSuccess } from '@/lib/Alerts'
 
 const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void }) => {
     const { fetchUser } = useAuth();
@@ -59,16 +59,16 @@ const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
                     `/api/v1/users/me`, form
                 );
                 if (res.status !== "success") {
-                    toast.error(res.message || "Something went wrong");
+                    showError(res.message || "Something went wrong");
                     return;
                 }
                 await fetchUser();
-                toast.success('Profile edited successfully')
+                showSuccess('Profile edited successfully')
                 setOpenDialog(false)
 
             } catch (error) {
                 console.error("Error from form submission:", error);
-                toast.error("Something went wrong. Please try again.");
+                showError("Something went wrong. Please try again.");
             }
         });
 

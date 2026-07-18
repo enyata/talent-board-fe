@@ -1,5 +1,5 @@
 import React, { useTransition } from "react";
-import { toast } from "react-toastify";
+import { showError } from "@/lib/Alerts";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Controller, useFormContext } from "react-hook-form";
@@ -122,14 +122,14 @@ const ExperienceForm = () => {
           form,
         );
         if (res.status === "failure") {
-          toast.error(res.message || "Something went wrong");
+          showError(res.message || "Something went wrong");
           return;
         }
         // toast.success("You have successfully updated your profile");
         setValue("config.currentForm", 4);
       } catch (error) {
         console.error("Error from form submission:", error);
-        toast.error("Something went wrong. Please try again.");
+        showError("Something went wrong. Please try again.");
       }
     });
   };
