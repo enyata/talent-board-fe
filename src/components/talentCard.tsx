@@ -14,7 +14,7 @@ import {
 import { useRouter } from 'next/navigation'
 import { talentProp } from '@/types/user'
 import { useAuthStore } from '@/store/authStore'
-import { toast } from 'react-toastify'
+import { showError, showInfo, showSuccess } from '@/lib/Alerts'
 import skillsLibrary from '../../public/skills_library.json'
 import { getSkillLabelByValue } from '@/lib/skills_sort'
 import { getCountryNameByCode } from '@/lib/countryfromIsocode'
@@ -47,7 +47,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
             return
         }
         if (user && user?.role === 'talent') {
-            toast.info('You need a recruiter account to view this talent profile.')
+            showInfo('You need a recruiter account to view this talent profile.')
             return
         }
         if (user && user?.role === 'recruiter') {
@@ -66,17 +66,19 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
             return
         }
         if (user && user?.role === 'talent') {
-            toast.info('You need a recruiter account to bookmark this talent profile.')
+            showInfo('You need a recruiter account to bookmark this talent profile.')
             return
         }
         if (user && user?.role === 'recruiter') {
+            const wasBookmarked = bookmarked
             setBookmarked(prev => !prev)
             saveATalent(talentId, {
                 onSuccess: () => {
-                    toast.success(`Talent ${!bookmarked ? 'bookmarked' : 'removed from bookmarks'} successfully!`)
+                    showSuccess(`Talent ${!wasBookmarked ? 'bookmarked' : 'removed from bookmarks'} successfully!`)
                 },
                 onError: () => {
-                    toast.error(`Failed to ${!bookmarked ? 'bookmark' : 'remove bookmark'} talent.`)
+                    setBookmarked(wasBookmarked)
+                    showError(`Failed to ${!wasBookmarked ? 'bookmark' : 'remove bookmark'} talent.`)
                 },
             });
         }
@@ -89,23 +91,22 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
             return
         }
         if (user && user?.role === 'talent') {
-            toast.info('You need a recruiter account to upvote this talent profile.')
+            showInfo('You need a recruiter account to upvote this talent profile.')
             return
         }
 
         if (user && user?.role === 'recruiter') {
-            if (!isUpvoted) {
-                setUpvotes((prev) => (prev || 0) + 1)
-            } else {
-                setUpvotes((prev) => (prev || 0) - 1)
-            }
+            const wasUpvoted = isUpvoted
+            setUpvotes((prev) => (prev || 0) + (wasUpvoted ? -1 : 1))
             setIsUpvoted(prev => !prev)
             upvoteATalent(talentId, {
                 onSuccess: () => {
-                    toast.success(`Talent ${!isUpvoted ? 'upvoted' : 'downvoted'} successfully!`);
+                    showSuccess(`Talent ${!wasUpvoted ? 'upvoted' : 'downvoted'} successfully!`);
                 },
                 onError: () => {
-                    toast.error(`Failed to ${!isUpvoted ? 'upvote' : 'downvote'} talent.`);
+                    setUpvotes((prev) => (prev || 0) + (wasUpvoted ? 1 : -1))
+                    setIsUpvoted(wasUpvoted)
+                    showError(`Failed to ${!wasUpvoted ? 'upvote' : 'downvote'} talent.`);
                 },
             });
         }
@@ -118,7 +119,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
             router.push('/login')
         }
         if (user && user?.role === 'talent') {
-            toast.info('You need a recruiter account to access this profile.')
+            showInfo('You need a recruiter account to access this profile.')
         }
         if (user && user?.role === 'recruiter') {
             window.open(portfolio, '_blank')
