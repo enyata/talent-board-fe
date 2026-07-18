@@ -23,7 +23,7 @@ const Prompt = () => {
                             <span className='text-[14px] font-medium text-[#475467]'>Ready to find your next great hire?</span>
                         </div>
                     </div>
-                    <Link href={'/talents'} className='mt-4 md:mt-0'>
+                    <Link href={'/recruiter-talents'} className='mt-4 md:mt-0'>
                         <Button className='font-semibold cursor-pointer w-full'>
                             Search Talents
                         </Button>

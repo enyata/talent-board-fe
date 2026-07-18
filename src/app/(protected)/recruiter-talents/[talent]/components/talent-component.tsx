@@ -13,10 +13,9 @@ import {
     ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useTalentApi } from "@/hooks/useTalents";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import TalentCardSkeleton from "./talent-skeleton";
 import { talentProp } from "@/types/user";
 import { getSkillLabelByValue } from "@/lib/skills_sort";
@@ -27,6 +26,7 @@ import { toast } from "react-toastify";
 
 
 const TalentComponent = ({ talentID }: { talentID: string }) => {
+    const router = useRouter()
     const { fetchTalentById } = useTalentApi()
     const { data, isLoading, isError } = useQuery<talentProp>({
         queryKey: [`talent`, talentID],
@@ -92,10 +92,10 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
 
     return (
         <div className="max-w-[951px] w-full flex flex-col gap-9 px-4 md:px-0">
-            <Link href={'/talents'} className="flex items-center gap-2 text-[#09090B] text-[14px]">
+            <button onClick={() => router.back()} className="flex items-center gap-2 text-[#09090B] text-[14px] cursor-pointer">
                 <ChevronLeft size={14} strokeWidth={2.5} className="text-[#71717A]" />
                 Back to results
-            </Link>
+            </button>
 
             {isLoading ?
                 <TalentCardSkeleton />

@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const profileSchema = z.object({
     display_photo: z
-        .union([z.instanceof(File), z.string().url()])
+        .union([z.instanceof(File), z.string().url(), z.literal("")])
         .superRefine((value, ctx) => {
             if (value instanceof File && value.size > 5 * 1024 * 1024) {
                 ctx.addIssue({

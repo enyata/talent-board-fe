@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button'
 import { ButtonWithLoader } from '@/components/ui/button-with-loader'
 import { useRouter } from 'next/navigation'
 import { POST } from '@/lib/requests'
-import { toast } from 'react-toastify'
+import { useAuthStore } from '@/store/authStore'
+import { showError, showSuccess } from '@/lib/Alerts'
 
 const LogoutModal = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void }) => {
   const router = useRouter()
@@ -18,17 +19,20 @@ const LogoutModal = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
           `/api/v1/auth/logout`
         );
         if (res.status !== "success") {
-          toast.error(res.message || "Something went wrong");
+          showError(res.message || "Something went wrong");
           return;
         }
+        useAuthStore.getState().logout()
+        document.cookie = 'access_token=; path=/; Secure; SameSite=Strict; Max-Age=0'
+        document.cookie = 'refresh_token=; path=/; Secure; SameSite=Strict; Max-Age=0'
         setOpenDialog(false)
-        toast.success('Logged out successfully')
+        showSuccess('Logged out successfully')
         router.replace('/login')
 
 
       } catch (error) {
         console.error("Error from form submission:", error);
-        toast.error("Something went wrong. Please try again.");
+        showError("Something went wrong. Please try again.");
       }
     });
   };
