@@ -13,20 +13,20 @@ import {
     ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useTalentApi } from "@/hooks/useTalents";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
 import TalentCardSkeleton from "./talent-skeleton";
 import { talentProp } from "@/types/user";
 import { getSkillLabelByValue } from "@/lib/skills_sort";
 import skillsLibrary from "../../../../../../public/skills_library.json";
 import { getCountryNameByCode } from "@/lib/countryfromIsocode";
 import { useSaveTalentMutation, useUpvoteTalentMutation } from "@/hooks/mutations/talent";
-import { toast } from "react-toastify";
+import { showError, showSuccess } from "@/lib/Alerts";
 
 
 const TalentComponent = ({ talentID }: { talentID: string }) => {
+    const router = useRouter()
     const { fetchTalentById } = useTalentApi()
     const { data, isLoading, isError } = useQuery<talentProp>({
         queryKey: [`talent`, talentID],
@@ -54,29 +54,30 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
         window.open(external_link, '_blank')
     }
     const handleUpvote = () => {
-        if (!isUpvoted) {
-            setUpvotes((prev) => (prev || 0) + 1)
-        } else {
-            setUpvotes((prev) => (prev || 0) - 1)
-        }
+        const wasUpvoted = isUpvoted
+        setUpvotes((prev) => (prev || 0) + (wasUpvoted ? -1 : 1))
         setIsUpvoted(prev => !prev)
         upvoteATalent(talentID, {
             onSuccess: () => {
-                toast.success(`Talent ${!isUpvoted ? 'upvoted' : 'downvoted'} successfully!`);
+                showSuccess(`Talent ${!wasUpvoted ? 'upvoted' : 'downvoted'} successfully!`);
             },
             onError: () => {
-                toast.error(`Failed to ${!isUpvoted ? 'upvote' : 'downvote'} talent.`);
+                setUpvotes((prev) => (prev || 0) + (wasUpvoted ? 1 : -1))
+                setIsUpvoted(wasUpvoted)
+                showError(`Failed to ${!wasUpvoted ? 'upvote' : 'downvote'} talent.`);
             },
         });
     }
     const handleBookmark = () => {
+        const wasBookmarked = bookmarked
         setBookmarked(prev => !prev)
         saveATalent(talentID, {
             onSuccess: () => {
-                toast.success(`Talent ${!bookmarked ? 'bookmarked' : 'removed from bookmarks'} successfully!`)
+                showSuccess(`Talent ${!wasBookmarked ? 'bookmarked' : 'removed from bookmarks'} successfully!`)
             },
             onError: () => {
-                toast.error(`Failed to ${!bookmarked ? 'bookmark' : 'remove bookmark'} talent.`)
+                setBookmarked(wasBookmarked)
+                showError(`Failed to ${!wasBookmarked ? 'bookmark' : 'remove bookmark'} talent.`)
             },
         });
     }
@@ -92,10 +93,10 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
 
     return (
         <div className="max-w-[951px] w-full flex flex-col gap-9 px-4 md:px-0">
-            <Link href={'/talents'} className="flex items-center gap-2 text-[#09090B] text-[14px]">
+            <button onClick={() => router.back()} className="flex items-center gap-2 text-[#09090B] text-[14px] cursor-pointer">
                 <ChevronLeft size={14} strokeWidth={2.5} className="text-[#71717A]" />
                 Back to results
-            </Link>
+            </button>
 
             {isLoading ?
                 <TalentCardSkeleton />

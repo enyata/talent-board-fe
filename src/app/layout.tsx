@@ -1,7 +1,4 @@
 import type { Metadata } from "next";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 import { Geist, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -82,18 +79,6 @@ export default function RootLayout({
       >
         <QueryProviders>
           <Toaster />
-          {/* TODO: rem react-toastify */}
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
           {children}
         </QueryProviders>
       </body>

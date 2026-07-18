@@ -156,7 +156,7 @@ export default function BookmarkedList() {
               Save your favorite candidates here for quick access when you&apos;re
               ready to hire.
             </p>
-            <Link href={'/talents'}>
+            <Link href={'/recruiter-talents'}>
               <Button variant={'outline'} className='rounded-sm mt-4'>
                 Bookmark new talent
               </Button>
