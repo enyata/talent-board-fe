@@ -49,3 +49,22 @@ export interface ResetPasswordResponse {
   status: string;
   message: string;
 }
+
+export interface Skill {
+  id: string;
+  name: string;
+}
+
+export interface SkillsResponse {
+  status: string;
+  data: {
+    skills: Skill[];
+  };
+}
+
+export interface CreateSkillResponse {
+  status: string;
+  data: {
+    skill: Skill;
+  };
+}
