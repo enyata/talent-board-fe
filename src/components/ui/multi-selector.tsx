@@ -32,6 +32,12 @@ interface MultipleSelectorProps {
   loadingIndicator?: React.ReactNode;
   /** Empty component. */
   emptyIndicator?: React.ReactNode;
+  /**
+   * Externally controlled loading state - e.g. while `options` is being fetched from an
+   * API. Shows `loadingIndicator` instead of the options/empty state, same as the
+   * built-in `onSearch` loading behavior.
+   */
+  loading?: boolean;
   /** Debounce time for async search. Only work with `onSearch`. */
   delay?: number;
   /**
@@ -68,6 +74,13 @@ interface MultipleSelectorProps {
   selectFirstItem?: boolean;
   /** Allow user to create option when there is no option matched. */
   creatable?: boolean;
+  /**
+   * Called when the user selects the "Create ..." option. Await this to persist the
+   * new option (e.g. to the backend) and return the option to add - typically with a
+   * server-assigned `value`. Return `null`/`undefined` to abort. Falls back to a
+   * local-only `{ value: inputValue, label: inputValue }` option when omitted.
+   */
+  onCreate?: (inputValue: string) => Promise<Option | null | undefined>;
   /** Props of `Command` */
   commandProps?: React.ComponentPropsWithoutRef<typeof Command>;
   /** Props of `CommandInput` */
@@ -179,6 +192,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       onSearchSync,
       loadingIndicator,
       emptyIndicator,
+      loading: loadingProp = false,
       maxSelected = Number.MAX_SAFE_INTEGER,
       onMaxSelected,
       hidePlaceholderWhenSelected,
@@ -188,6 +202,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       badgeClassName,
       selectFirstItem = true,
       creatable = false,
+      onCreate,
       triggerSearchOnFocus = false,
       commandProps,
       inputProps,
@@ -198,7 +213,9 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
     const inputRef = React.useRef<HTMLInputElement>(null);
     const [open, setOpen] = React.useState(false);
     const [onScrollbar, setOnScrollbar] = React.useState(false);
+    const [isCreating, setIsCreating] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
+    const showLoading = isLoading || loadingProp;
     const dropdownRef = React.useRef<HTMLDivElement>(null); // Added this
 
     const [selected, setSelected] = React.useState<Option[]>(value || []);
@@ -356,6 +373,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
       const Item = (
         <CommandItem
           value={inputValue}
+          disabled={isCreating}
           className="cursor-pointer"
           onMouseDown={(e) => {
             e.preventDefault();
@@ -366,18 +384,37 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
               onMaxSelected?.(selected.length);
               return;
             }
-            setInputValue('');
-            const newOptions = [...selected, { value, label: value }];
-            setSelected(newOptions);
-            onChange?.(newOptions);
+            if (isCreating) return;
+
+            if (!onCreate) {
+              setInputValue('');
+              const newOptions = [...selected, { value, label: value }];
+              setSelected(newOptions);
+              onChange?.(newOptions);
+              return;
+            }
+
+            void (async () => {
+              setIsCreating(true);
+              try {
+                const created = await onCreate(value);
+                if (!created) return;
+                setInputValue('');
+                const newOptions = [...selected, created];
+                setSelected(newOptions);
+                onChange?.(newOptions);
+              } finally {
+                setIsCreating(false);
+              }
+            })();
           }}
         >
-          {`Create "${inputValue}"`}
+          {isCreating ? 'Creating...' : `Create "${inputValue}"`}
         </CommandItem>
       );
 
       // For normal creatable
-      if (!onSearch && inputValue.length > 0) {
+      if (!onSearch && inputValue.length > 0 && !showLoading) {
         return Item;
       }
 
@@ -553,7 +590,7 @@ const MultipleSelector = React.forwardRef<MultipleSelectorRef, MultipleSelectorP
                 inputRef?.current?.focus();
               }}
             >
-              {isLoading ? (
+              {showLoading ? (
                 <>{loadingIndicator}</>
               ) : (
                 <>

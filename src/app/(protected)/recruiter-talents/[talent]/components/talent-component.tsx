@@ -13,6 +13,7 @@ import {
     ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getProxiedImageUrl } from "@/lib/proxy-image";
 import { useQuery } from "@tanstack/react-query";
 import { useTalentApi } from "@/hooks/useTalents";
 import { notFound, useRouter } from "next/navigation";
@@ -107,7 +108,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
                         <div className="flex gap-6 items-center">
                             <div className="rounded-lg overflow-hidden relative max-w-[109px] w-full h-[140px]">
                                 <Image
-                                    src={data?.avatar || "/assets/images/placeholder-img.svg"}
+                                    src={getProxiedImageUrl(data?.avatar) || "/assets/images/placeholder-img.svg"}
                                     alt="talent-image"
                                     width={109}
                                     height={140}

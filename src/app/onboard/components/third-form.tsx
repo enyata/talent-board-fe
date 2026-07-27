@@ -1,21 +1,21 @@
-import React, { useTransition } from "react";
+import React, { useMemo, useTransition } from "react";
 import { showError } from "@/lib/Alerts";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Controller, useFormContext } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { ButtonWithLoader } from "@/components/ui/button-with-loader";
-import MultipleSelector from "@/components/ui/multi-selector";
+import MultipleSelector, { Option } from "@/components/ui/multi-selector";
 import { FileUploadFrame } from "./file-upload-frame";
 import FormLayout from "./formLayout";
 import { PATCH } from "@/lib/requests";
 import { formSteps, OnboardFormSchema } from "@/types/form";
-import { flattenAndSortSkills } from "@/lib/skills_sort";
 import { useAuthStore } from "@/store/authStore";
-import skillsLibrary from "../../../../public/skills_library.json";
+import { useSkillsApi } from "@/hooks/useSkills";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Skill } from "@/types/APIResponseTypes";
 import rolesLibrary from "../../../../public/roles_library.json";
 
-const OPTIONS = flattenAndSortSkills(skillsLibrary);
 const ROLESOPTIONS = rolesLibrary.sort((a, b) =>
   a.label.localeCompare(b.label),
 );
@@ -34,6 +34,36 @@ const ExperienceForm = () => {
   const companyIndustry = watch("data.company_industry");
   const rolesLookingFor = watch("data.roles_looking_for") || [];
   const skills = watch("data.skills") || [];
+
+  const { fetchSkills, createSkill } = useSkillsApi();
+  const queryClient = useQueryClient();
+  const { data: skillsData, isLoading: isSkillsLoading } = useQuery({
+    queryKey: ["skills"],
+    queryFn: () => fetchSkills(),
+    enabled: role === "talent",
+  });
+  const SKILLOPTIONS: Option[] = useMemo(
+    () =>
+      (skillsData ?? [])
+        .map((skill) => ({ value: skill.id, label: skill.name }))
+        .sort((a, b) => a.label.localeCompare(b.label)),
+    [skillsData],
+  );
+
+  const handleCreateSkill = async (name: string): Promise<Option | null> => {
+    try {
+      const skill = await createSkill(name);
+      queryClient.setQueryData<Skill[]>(["skills"], (existing) => [
+        ...(existing ?? []),
+        skill,
+      ]);
+      return { value: skill.id, label: skill.name };
+    } catch (error) {
+      console.error("Error creating skill:", error);
+      showError("Couldn't create that skill. Please try again.");
+      return null;
+    }
+  };
   const step = watch("config.currentForm");
 
   let fields = formSteps[step];
@@ -203,8 +233,15 @@ const ExperienceForm = () => {
                 className="mt-[8px]"
                 hidePlaceholderWhenSelected={true}
                 hideClearAllButton={true}
-                defaultOptions={role === "recruiter" ? ROLESOPTIONS : OPTIONS}
+                defaultOptions={role === "recruiter" ? ROLESOPTIONS : undefined}
+                options={role === "recruiter" ? undefined : SKILLOPTIONS}
+                loading={role === "recruiter" ? false : isSkillsLoading}
                 placeholder="e.g product designer, ux designer"
+                loadingIndicator={
+                  <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
+                    loading skills...
+                  </p>
+                }
                 emptyIndicator={
                   <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
                     no results found.
@@ -215,12 +252,17 @@ const ExperienceForm = () => {
                     ? ROLESOPTIONS.filter((opt) =>
                         field.value?.includes(opt.value),
                       )
-                    : OPTIONS.filter((opt) => field.value?.includes(opt.value))
+                    : SKILLOPTIONS.filter((opt) =>
+                        field.value?.includes(opt.value),
+                      )
                 }
                 onChange={(selected) => {
                   const valuesOnly = selected.map((opt) => opt.value);
                   field.onChange(valuesOnly);
                 }}
+                onCreate={
+                  role === "recruiter" ? undefined : handleCreateSkill
+                }
                 creatable
               />
             )}

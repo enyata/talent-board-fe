@@ -3,6 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { getCountryNameByCode } from '@/lib/countryfromIsocode';
+import { getProxiedImageUrl } from '@/lib/proxy-image';
 import { timeAgo } from '@/lib/timeStampFormatter'
 import { useAuthStore } from '@/store/authStore';
 import { NotificationData, TalentDashboardData } from '@/types/dashboard'
@@ -57,7 +58,7 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                     <div className=" flex gap-2 items-center">
                       <span className="bg-[#4976F4] size-[10px] rounded-full"></span>
                       <Avatar>
-                        <AvatarImage src={item.sender.avatar} sizes="32px" />
+                        <AvatarImage src={getProxiedImageUrl(item.sender.avatar)} sizes="32px" />
                         <AvatarFallback>
                           {item.sender.name.trim().charAt(0).toUpperCase()}
                         </AvatarFallback>
@@ -79,7 +80,7 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                         <div className="flex flex-row gap-2 justify-between md:items-center">
                           <div className="flex gap-2 items-center w-full">
                             <Avatar className="size-[48px]">
-                              <AvatarImage src={user?.avatar} />
+                              <AvatarImage src={getProxiedImageUrl(user?.avatar)} />
                               <AvatarFallback>
                                 {user?.first_name
                                   .trim()
