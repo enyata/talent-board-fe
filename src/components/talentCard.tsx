@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { talentProp } from '@/types/user'
 import { useAuthStore } from '@/store/authStore'
 import { showError, showInfo, showSuccess } from '@/lib/Alerts'
+import { getProxiedImageUrl } from '@/lib/proxy-image'
 import skillsLibrary from '../../public/skills_library.json'
 import { getSkillLabelByValue } from '@/lib/skills_sort'
 import { getCountryNameByCode } from '@/lib/countryfromIsocode'
@@ -141,7 +142,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
                 <div className='flex justify-between items-center'>
                     <div className='flex gap-2 items-center'>
                         <Avatar className='size-[48px]'>
-                            <AvatarImage src={talent?.avatar} />
+                            <AvatarImage src={getProxiedImageUrl(talent?.avatar)} />
                             <AvatarFallback>{talent ? (talent.first_name ? talent.first_name.trim().charAt(0).toUpperCase() : '') : ''}</AvatarFallback>
                         </Avatar>
                         <div>

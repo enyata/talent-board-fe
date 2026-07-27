@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { getProxiedImageUrl } from '@/lib/proxy-image';
 import { useAuthStore } from '@/store/authStore'
 import Link from 'next/link';
 import React from 'react'
@@ -15,7 +16,7 @@ const Prompt = () => {
                 <div className='flex flex-col md:flex-row justify-between md:items-center'>
                     <div className='flex items-center gap-2'>
                         <Avatar className='size-[64px] border-[2px] border-[#E0E0E0]'>
-                            <AvatarImage src={user?.avatar} />
+                            <AvatarImage src={getProxiedImageUrl(user?.avatar)} />
                             <AvatarFallback>{user?.first_name.trim().charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div className='text-[#3A374B] flex flex-col'>

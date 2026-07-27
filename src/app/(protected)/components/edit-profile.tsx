@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { UploadAvatar } from '@/components/ui/picture-upload'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from "@/hooks/useAuth";
+import { getProxiedImageUrl } from '@/lib/proxy-image'
 import { PATCH } from '@/lib/requests'
 import { useAuthStore } from '@/store/authStore'
 import { ProfileSchema, profileSchema } from '@/types/profile-edit'
@@ -17,7 +18,7 @@ import { showError, showSuccess } from '@/lib/Alerts'
 
 const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void }) => {
     const { fetchUser } = useAuth();
-    const user = useAuthStore.getState().user;
+    const user = useAuthStore((state) => state.user);
     const { first_name, last_name, avatar, profile } = user || {};
     const { register, watch, control, formState: { isDirty, isValid, errors } } = useForm<ProfileSchema>(
         {
@@ -103,7 +104,7 @@ const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
                     photo instanceof File
                       ? URL.createObjectURL(photo)
                       : typeof photo === "string"
-                        ? photo
+                        ? getProxiedImageUrl(photo)
                         : ""
                   }
                 />
