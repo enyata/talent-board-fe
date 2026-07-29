@@ -3,14 +3,12 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import {
     Bookmark,
-    ChevronUp,
     Mail,
     MapPinned,
     SquareArrowOutUpRight,
     ChevronLeft,
     CircleArrowDown,
     BookmarkCheck,
-    ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getProxiedImageUrl } from "@/lib/proxy-image";
@@ -22,7 +20,7 @@ import { talentProp } from "@/types/user";
 import { getSkillLabelByValue } from "@/lib/skills_sort";
 import skillsLibrary from "../../../../../../public/skills_library.json";
 import { getCountryNameByCode } from "@/lib/countryfromIsocode";
-import { useSaveTalentMutation, useUpvoteTalentMutation } from "@/hooks/mutations/talent";
+import { useSaveTalentMutation } from "@/hooks/mutations/talent";
 import { showError, showSuccess } from "@/lib/Alerts";
 
 
@@ -35,17 +33,12 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
     });
 
     const [bookmarked, setBookmarked] = useState(false);
-    const [isUpvoted, setIsUpvoted] = useState(false);
-    const [upvotes, setUpvotes] = useState<number | undefined>(undefined);
     useEffect(() => {
         if (data) {
             setBookmarked(data.is_saved ?? false);
-            setIsUpvoted(data.is_upvoted ?? false);
-            setUpvotes(data.upvotes ?? 0);
         }
     }, [data]);
 
-    const { mutate: upvoteATalent, isPending: isUpvoting } = useUpvoteTalentMutation();
     const { mutate: saveATalent, isPending: isSaving } = useSaveTalentMutation()
 
     if (isError) {
@@ -53,21 +46,6 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
     }
     const handleLinkClick = (external_link: string = '') => {
         window.open(external_link, '_blank')
-    }
-    const handleUpvote = () => {
-        const wasUpvoted = isUpvoted
-        setUpvotes((prev) => (prev || 0) + (wasUpvoted ? -1 : 1))
-        setIsUpvoted(prev => !prev)
-        upvoteATalent(talentID, {
-            onSuccess: () => {
-                showSuccess(`Talent ${!wasUpvoted ? 'upvoted' : 'downvoted'} successfully!`);
-            },
-            onError: () => {
-                setUpvotes((prev) => (prev || 0) + (wasUpvoted ? 1 : -1))
-                setIsUpvoted(wasUpvoted)
-                showError(`Failed to ${!wasUpvoted ? 'upvote' : 'downvote'} talent.`);
-            },
-        });
     }
     const handleBookmark = () => {
         const wasBookmarked = bookmarked
@@ -138,22 +116,7 @@ const TalentComponent = ({ talentID }: { talentID: string }) => {
 
                         <div className="flex gap-2 mt-2 md:mt-0">
                             <Button
-                                disabled={isUpvoting || isSaving}
-                                onClick={handleUpvote}
-                                variant={"outline"}
-                                className="h-[28px] border-[0.5px] w-[96px] gap-1 text-[#5F5F5F] rounded-[3px] text-[12px] flex">
-                                {
-                                    isUpvoted ?
-                                        <ChevronDown size={14} strokeWidth={2.5} /> :
-                                        <ChevronUp size={14} strokeWidth={2.5} />
-                                }
-                                <p className="font-normal">
-                                    {isUpvoted ? 'Downvote' : 'Upvote'} <span className="font-bold">{upvotes}</span>
-                                </p>
-                            </Button>
-
-                            <Button
-                                disabled={isUpvoting || isSaving}
+                                disabled={isSaving}
                                 onClick={handleBookmark}
                                 variant={"outline"}
                                 className="h-[28px] w-[60px] border-[0.5px] rounded-[3px] text-[12px] text-[#5F5F5F] font-medium gap-1">
