@@ -7,7 +7,7 @@ import { getProxiedImageUrl } from '@/lib/proxy-image';
 import { timeAgo } from '@/lib/timeStampFormatter'
 import { useAuthStore } from '@/store/authStore';
 import { NotificationData, TalentDashboardData } from '@/types/dashboard'
-import { ChevronUp, MapPinned } from 'lucide-react'
+import { MapPinned } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 
@@ -97,15 +97,6 @@ const Notifications = ({ data }: { data: TalentDashboardData | undefined }) => {
                               </p>
                             </div>
                           </div>
-                          <Button
-                            variant={"outline"}
-                            className=" mt-2 md:mt-0 h-[32px] w-full max-w-[110px] px-2 text-[#5F5F5F] rounded-[3px] text-[12px] flex gap-2"
-                          >
-                            <span>
-                              <ChevronUp size={14} strokeWidth={3} />
-                            </span>
-                            <span>{data?.total_upvotes}</span>
-                          </Button>
                         </div>
                         <div className="flex items-center gap-1 text-[#5F5F5F] font-medium text-[13px] mt-[24px]">
                           <span>

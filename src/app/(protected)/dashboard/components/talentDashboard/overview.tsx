@@ -9,13 +9,8 @@ import Image from 'next/image'
 
 
 const DashboardOverview = ({ data }: { data: TalentDashboardData | undefined }) => {
-    const {profile_views, recruiter_saves, total_upvotes} = data || {}
+    const {profile_views, recruiter_saves} = data || {}
     const overviewCardDetails = [
-        {
-            title: 'Total Upvotes',
-            number: total_upvotes,
-            icon: '/assets/icons/loyalty-card.svg'
-        },
         {
             title: 'Profile Views',
             number: profile_views,
