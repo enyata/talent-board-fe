@@ -260,10 +260,8 @@ const ExperienceForm = () => {
                   const valuesOnly = selected.map((opt) => opt.value);
                   field.onChange(valuesOnly);
                 }}
-                onCreate={
-                  role === "recruiter" ? undefined : handleCreateSkill
-                }
-                creatable
+                onCreate={handleCreateSkill}
+                creatable={role !== "recruiter"}
               />
             )}
           />
