@@ -15,11 +15,13 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/store/authStore";
+import { useLogout } from "@/hooks/useLogout";
 import Image from "next/image";
 import Link from "next/link";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
+  const { handleLogout, isPending } = useLogout();
 
   const navGroups = () => {
     const role = user?.role;
@@ -101,7 +103,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       className="object-contain"
                     />
                   </div>
-                  <span className="font-semibold md:text-[24px] md:hidden">
+                  <span className="font-semibold md:text-[24px] md:group-data-[collapsible=icon]:hidden">
                     Talentboard
                   </span>
                 </Link>
@@ -118,7 +120,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenuButton
                 size="lg"
                 className="cursor-pointer data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground gap-[20px]"
-                onClick={logout}
+                onClick={() => handleLogout()}
+                disabled={isPending}
               >
                 <LogOut />
                 <p className="truncate text-[14px] font-semibold capitalize">

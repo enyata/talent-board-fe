@@ -19,20 +19,26 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ChevronsUpDown, LogOut, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLogout } from "@/hooks/useLogout";
 
 export function DashboardSubLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { user, logout } = useAuthStore();
+  const { handleLogout, isPending } = useLogout();
+  const { user } = useAuthStore();
   const isMobile = useIsMobile();
   const pathname = usePathname();
-  const pageTitle = pathname
-    .split("/")
-    .filter(Boolean)
-    .pop()
-    ?.replace(/-/g, " ");
+  const lastSegment = pathname.split("/").filter(Boolean).pop();
+  const isDynamicId =
+    !!lastSegment &&
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      lastSegment,
+    );
+  const pageTitle = isDynamicId
+    ? "Talent Profile"
+    : lastSegment?.replace(/-/g, " ");
   const initials =
     `${user?.first_name?.[0] ?? ""}${user?.last_name?.[0] ?? ""}`.toUpperCase();
 
@@ -101,7 +107,7 @@ export function DashboardSubLayout({
                       </Avatar>
                       <div className="grid flex-1 text-left text-sm leading-tight">
                         <span className="truncate font-medium capitalize">
-                          {user?.first_name}
+                          {`${user?.first_name} ${user?.last_name}`}
                         </span>
                         <span className="truncate text-xs capitalize">
                           {user?.role?.replace(/_/, " ")}
@@ -119,7 +125,10 @@ export function DashboardSubLayout({
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout}>
+                  <DropdownMenuItem
+                    onClick={() => handleLogout()}
+                    disabled={isPending}
+                  >
                     <LogOut />
                     Log out
                   </DropdownMenuItem>
