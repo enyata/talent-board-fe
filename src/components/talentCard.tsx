@@ -47,7 +47,7 @@ const TalentCard = ({ width = 'max-w-[418px]', height = 'md:h-[291px]', talent }
             return
         }
         if (user && user?.role === 'recruiter') {
-            router.push(`/recruiter-talents/${talent?.id}`)
+            router.push(`/dashboard/talents/${talent?.id}`)
         }
     }
 

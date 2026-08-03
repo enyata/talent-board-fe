@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { devtools } from 'zustand/middleware';
 
 
 type profile = {
@@ -6,13 +7,16 @@ type profile = {
     job_title?: string;
     skills?: string[];
 }
+
+export type UserRole = 'talent' | 'recruiter';
+
 export type User = {
     id: string;
     first_name: string;
     last_name: string;
     avatar: string;
     email: string;
-    role: string | null;
+    role: UserRole | null;
     provider: string;
     profile_completed: boolean;
     country?: string;
@@ -35,17 +39,22 @@ interface AuthState {
     logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-    user: null,
-    accessToken: null,
-    refreshToken: null,
-    loading: false,
-    is_authenticated: false,
-    resetAuth: () => set({ user: null, accessToken: undefined }),
-    set_isAuthenticated: (isAuthenticated) => set({ is_authenticated: isAuthenticated }),
-    setUser: (user) => set({ user }),
-    setAccessToken: (token) => set({ accessToken: token }),
-    setRefreshToken: (refreshToken) => set({ refreshToken: refreshToken }),
-    setLoading: (loading) => set({ loading }),
-    logout: () => set({ user: null, accessToken: null, refreshToken: null, is_authenticated: false }),
-}));
+export const useAuthStore = create<AuthState>()(
+    devtools(
+        (set) => ({
+            user: null,
+            accessToken: null,
+            refreshToken: null,
+            loading: false,
+            is_authenticated: false,
+            resetAuth: () => set({ user: null, accessToken: undefined }),
+            set_isAuthenticated: (isAuthenticated) => set({ is_authenticated: isAuthenticated }),
+            setUser: (user) => set({ user }),
+            setAccessToken: (token) => set({ accessToken: token }),
+            setRefreshToken: (refreshToken) => set({ refreshToken: refreshToken }),
+            setLoading: (loading) => set({ loading }),
+            logout: () => set({ user: null, accessToken: null, refreshToken: null, is_authenticated: false }),
+        }),
+        { name: 'authStore', enabled: process.env.NODE_ENV !== 'production' }
+    )
+);

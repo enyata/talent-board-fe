@@ -8,25 +8,16 @@ const DashboardPage = () => {
     const { user } = useAuthStore()
 
     return (
-        <div className='md:mt-[64px] w-full px-4'>
-            <div className='flex justify-between'>
-                <span className='font-semibold text-[24px] hidden md:block'>Dashboard</span>
-                {/* <Link href={'/profile'}>
-                    <Button className='font-medium text-[14px] text-[#404D61] cursor-pointer flex items-center gap-2' variant={'outline'}>
-                        <span><PencilLine /></span>
-                        <span>Edit Profile</span>
-                    </Button>
-                </Link> */}
-            </div>
-            <div>
-                {user?.role === 'talent' ?
-                    <TalentDashboard /> :
-                    <RecruiterDashboard />
-                }
-            </div>
+      <div className="w-full px-4 md:px-[32px] mt-[24px] pb-[80px]">
+        <div>
+          {user?.role === "talent" ? (
+            <TalentDashboard />
+          ) : (
+            <RecruiterDashboard />
+          )}
         </div>
-
-    )
+      </div>
+    );
 }
 
 export default DashboardPage
