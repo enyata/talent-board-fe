@@ -10,7 +10,6 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
-import { useAuthStore } from "@/store/authStore";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
@@ -39,15 +38,13 @@ export function NavMain({
   collapsed?: boolean;
 }) {
   const pathname = usePathname();
-  const { user } = useAuthStore();
   return (
     <SidebarGroup className="p-0">
       <SidebarMenu>
         {items.map((item) => {
           const isActive =
             pathname === item.href ||
-            (item.href !== `/${user?.role?.replace(/_/, "-")}` &&
-              pathname.startsWith(item.href));
+            (item.href !== "/dashboard" && pathname.startsWith(item.href));
 
           const hasChildren = item.children && item.children.length > 0;
           const isChildActive = item.children?.some(

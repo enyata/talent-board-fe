@@ -11,7 +11,7 @@ const BookmarkedTalent = ({ talents }: { talents: talentProp[] }) => {
         <Card className='shadow-none outline-px md:mt-[36px] mt-[24px] gap-0 bg-[#fafafa] px-4 text-[#101828]'>
             <div className='flex  gap-6 items-baseline justify-between'>
                 <span className='text-[16px] font-semibold self-baseline mt-auto'>Your Bookmarked Talents</span>
-                <Link href={'/recruiter-talents/bookmark'} className=''>
+                <Link href={'/dashboard/bookmarks'} className=''>
                     <Button variant={'outline'} className=' w-[120px] h-[36px] text-[14px] rounded-md cursor-pointer'>
                         View All <span className=''><ArrowRight strokeWidth={3} /></span>
                     </Button>
