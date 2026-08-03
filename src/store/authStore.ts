@@ -7,13 +7,16 @@ type profile = {
     job_title?: string;
     skills?: string[];
 }
+
+export type UserRole = 'talent' | 'recruiter';
+
 export type User = {
     id: string;
     first_name: string;
     last_name: string;
     avatar: string;
     email: string;
-    role: string | null;
+    role: UserRole | null;
     provider: string;
     profile_completed: boolean;
     country?: string;

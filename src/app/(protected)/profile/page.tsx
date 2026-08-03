@@ -1,12 +1,8 @@
 'use client'
-import React from 'react'
+import { ComingSoon } from '@/components/coming-soon'
 
 const ProfilePage = () => {
-    return (
-        <div>
-            my profile page
-        </div >
-    )
+    return <ComingSoon />
 }
 
 export default ProfilePage
