@@ -8,6 +8,7 @@ import ChatListEmptyState from "./components/ChatListEmptyState";
 import ChatThread from "./components/ChatThread";
 import TabButton from "./components/TabButton";
 import ActiveChat from "./components/ActiveChat";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export type ThreadType = {
   id: number;
@@ -37,6 +38,7 @@ const MessagesPage = () => {
   const [tab, setTab] = useState<Tab>("all");
   const [threadSearch, setThreadSearch] = useState("");
   const [selectedThread, setSelectedThread] = useState<ThreadType | null>(null);
+  const isMobile = useIsMobile();
 
   const rows = React.useMemo(() => {
     const q = threadSearch.trim().toLowerCase();
@@ -56,7 +58,12 @@ const MessagesPage = () => {
       <div className=" w-full">
         <Card className="shadow-none outline-px md:mt-[36px] mt-[16px] py-0 grid grid-cols-1 gap-0 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
           {/* chat list */}
-          <div className="relative lg:border-r py-2 h-[650px] overflow-y-auto">
+          <div
+            className={`
+        relative h-[calc(100dvh-100px)] overflow-y-auto py-2 lg:border-r
+        ${selectedThread ? "hidden lg:block" : "block"}
+      `}
+          >
             <div className="sticky -top-2 z-10 bg-background">
               {/* ── Tabs ── */}
               <div className="flex flex-wrap justify-between items-center gap-1 border-b px-3">
@@ -126,15 +133,25 @@ const MessagesPage = () => {
           </div>
 
           {/* chat */}
-          {!selectedThread ? (
-            <div className="flex justify-center items-center h-[650px] overflow-y-auto">
-              <p className="text-muted-foreground text-sm">
-                All messages will appear here
-              </p>
-            </div>
-          ) : (
-            <ActiveChat thread={selectedThread} />
-          )}
+          <div
+            className={`
+        relative h-[calc(100dvh-100px)] overflow-y-auto py-2
+        ${selectedThread ? "block" : "hidden lg:flex"}
+      `}
+          >
+            {!selectedThread ? (
+              <div className="flex h-full w-full items-center justify-center">
+                <p className="text-muted-foreground text-sm">
+                  All messages will appear here
+                </p>
+              </div>
+            ) : (
+              <ActiveChat
+                thread={selectedThread}
+                closeThread={() => setSelectedThread(null)}
+              />
+            )}
+          </div>
         </Card>
       </div>
     </div>

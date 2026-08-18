@@ -4,8 +4,15 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { showSuccess } from "@/lib/Alerts";
+import { ArrowLeft } from "lucide-react";
 
-const ActiveChat = ({ thread }: { thread: ThreadType }) => {
+const ActiveChat = ({
+  thread,
+  closeThread,
+}: {
+  thread: ThreadType;
+  closeThread: () => void;
+}) => {
   const [text, setText] = useState("");
 
   const sendText = (e: ChangeEvent<HTMLFormElement>) => {
@@ -15,11 +22,14 @@ const ActiveChat = ({ thread }: { thread: ThreadType }) => {
     showSuccess("Text sent");
   };
   return (
-    <div className="relative flex flex-col py-2 h-[650px] overflow-y-auto">
+    <div className="relative flex flex-col h-full w-full">
       {/* top bar */}
       <div className="sticky -top-2 z-10 bg-background">
         <div className="flex justify-between items-center px-[24px] py-[9px] border-b">
           <div className="flex items-center gap-[10px] text-left transition-colors hover:bg-muted/50">
+            <button type="button" className="lg:hidden" onClick={closeThread}>
+              <ArrowLeft className="size-5" />
+            </button>
             <div className="relative shrink-0">
               <img
                 src={thread.avatar}
