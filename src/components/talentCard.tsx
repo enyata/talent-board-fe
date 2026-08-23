@@ -39,6 +39,8 @@ import {
 } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { cn } from "@/lib/utils";
+import { useSendMessageRequest } from "@/hooks/mutations/messages";
+import { ButtonWithLoader } from "./ui/button-with-loader";
 
 interface TalentboardProps {
   width?: string;
@@ -62,7 +64,7 @@ const MESSAGE_TEMPS = [
   {
     label: "Ask about availability",
     value:
-      "I'm reaching out to check your availability for an upcoming project. Would you be open to sharing your current schedule and earliest start date?|",
+      "I'm reaching out to check your availability for an upcoming project. Would you be open to sharing your current schedule and earliest start date?",
   },
 ];
 
@@ -155,6 +157,35 @@ const TalentCard = ({
     }
     if (user && user?.role === "recruiter") {
       window.open(portfolio, "_blank");
+    }
+  };
+
+  const { mutate: sendRequest, isPending: isSendRequestLoading } =
+    useSendMessageRequest();
+  const handleSendMessageRequest = () => {
+    if (!user) {
+      router.push("/login");
+    }
+    if (user && user?.role === "talent") {
+      showInfo("You need a recruiter account to access this profile.");
+    }
+
+    if (!talentMessage) {
+      showError("Provide an intro note");
+      return;
+    }
+    if (user && user?.role === "recruiter") {
+      sendRequest(
+        { talent_id: talent?.id || "", intro_note: talentMessage },
+        {
+          onSuccess: () => {
+            showSuccess(
+              "Sent! You will be able to continue chatting when request is accepted.",
+            );
+            setShowMessageDialog(false);
+          },
+        },
+      );
     }
   };
 
@@ -299,7 +330,7 @@ const TalentCard = ({
           <DialogContent className="max-w-[350px] md:max-w-[521px] rounded-[20px] gap-[24px] p-[16px]">
             <DialogHeader>
               <DialogTitle className="text-[24px] font-semibold">
-                Message Sharon
+                Message {talent?.first_name}
               </DialogTitle>
             </DialogHeader>
 
@@ -338,9 +369,14 @@ const TalentCard = ({
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" className="h-[42px]">
+              <ButtonWithLoader
+                type="submit"
+                className="h-[42px]"
+                isLoading={isSendRequestLoading}
+                onClick={handleSendMessageRequest}
+              >
                 Send request
-              </Button>
+              </ButtonWithLoader>
             </DialogFooter>
           </DialogContent>
         </form>

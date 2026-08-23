@@ -2,56 +2,70 @@
 import { Card } from "@/components/ui/card";
 import React, { useState } from "react";
 import { Search, X } from "lucide-react";
-import { AcceptedChatLists, NotAcceptedChatLists } from "@/lib/mock-data";
+import { NotAcceptedChatLists } from "@/lib/mock-data";
 import { Input } from "@/components/ui/input";
 import ChatListEmptyState from "./components/ChatListEmptyState";
 import ChatThread from "./components/ChatThread";
 import TabButton from "./components/TabButton";
 import ActiveChat from "./components/ActiveChat";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useMessagesApi } from "@/hooks/useMessages";
+import { useQuery } from "@tanstack/react-query";
+import {
+  MessageRequest,
+  Thread,
+  ThreadOrRequest,
+} from "@/types/APIResponseTypes";
+import { isThread } from "@/lib/helpers";
+import { ChatListSkeleton } from "./components/ChatListSkeleton";
+import { useAuthStore } from "@/store/authStore";
 
-export type ThreadType = {
-  id: number;
-  name: string;
-  avatar: string;
-  message: string;
-  time: string;
-  online?: boolean;
-  read?: boolean;
-  isAccepted?: boolean;
-  unreadCount?: number;
-};
 type Tab = "all" | "accepted" | "requests";
 
-function threadMatchesTab(c: ThreadType, tab: Tab): boolean {
-  switch (tab) {
-    case "all":
-      return true;
-    case "accepted":
-      return !!c?.isAccepted;
-    case "requests":
-      return !!!c?.isAccepted;
-  }
-}
-
 const MessagesPage = () => {
+  const { user } = useAuthStore();
   const [tab, setTab] = useState<Tab>("all");
   const [threadSearch, setThreadSearch] = useState("");
-  const [selectedThread, setSelectedThread] = useState<ThreadType | null>(null);
-  const isMobile = useIsMobile();
+  const [selectedThread, setSelectedThread] = useState<ThreadOrRequest | null>(
+    null,
+  );
 
-  const rows = React.useMemo(() => {
-    const q = threadSearch.trim().toLowerCase();
-    const ALL_Threads: ThreadType[] = [
-      ...NotAcceptedChatLists,
-      ...AcceptedChatLists,
-    ];
-    return ALL_Threads.filter((c) => threadMatchesTab(c, tab)).filter((c) => {
-      if (!q) return true;
-      const hay = `${c.name} ${c.message}`.toLowerCase();
-      return hay.includes(q);
+  const {
+    fetchOutgoingMessageRequests,
+    fetchIncomingMessageRequests,
+    fetchActiveThreads,
+  } = useMessagesApi();
+  const { data: outgoingRequests, isLoading: isFetchOutgoingRequestsLoading } =
+    useQuery({
+      queryKey: ["outgoing-requests"],
+      queryFn: fetchOutgoingMessageRequests,
+      enabled: user?.role !== "talent",
     });
-  }, [tab, threadSearch]);
+  const { data: incomingRequests, isLoading: isFetchIncomingRequestsLoading } =
+    useQuery({
+      queryKey: ["incoming-requests"],
+      queryFn: fetchIncomingMessageRequests,
+      enabled: user?.role !== "recruiter",
+    });
+  const { data: activeThreads, isLoading: isFetchActiveThreadsLoading } =
+    useQuery({
+      queryKey: ["active-threads"],
+      queryFn: fetchActiveThreads,
+    });
+  const rows = React.useMemo(() => {
+    // Extract and safely fallback to empty arrays if undefined
+    const outgoing = outgoingRequests ?? [];
+    const incoming = incomingRequests ?? [];
+    const threads = activeThreads ?? [];
+
+    const ALL_ITEMS: ThreadOrRequest[] = [...outgoing, ...incoming, ...threads];
+
+    const q = threadSearch.trim().toLowerCase();
+
+    return ALL_ITEMS.filter((t) => threadMatchesTab(t, tab)).filter((t) => {
+      if (!q) return true;
+      return getSearchableText(t).includes(q);
+    });
+  }, [tab, threadSearch, incomingRequests, outgoingRequests, activeThreads]);
 
   return (
     <div className="w-full px-4 md:px-[32px] mt-[24px] pb-[80px]">
@@ -117,7 +131,18 @@ const MessagesPage = () => {
               </div>
             </div>
             <div>
-              {!rows.length ? <ChatListEmptyState /> : ""}
+              {isFetchActiveThreadsLoading ||
+              isFetchIncomingRequestsLoading ||
+              isFetchOutgoingRequestsLoading ? (
+                <>
+                  <ChatListSkeleton />
+                  <ChatListSkeleton />
+                  <ChatListSkeleton />
+                  <ChatListSkeleton />
+                </>
+              ) : (
+                !rows.length && <ChatListEmptyState query={threadSearch} />
+              )}
               {rows.map((chat, idx) => {
                 const isActive = selectedThread?.id === chat.id;
                 return (
@@ -156,6 +181,41 @@ const MessagesPage = () => {
       </div>
     </div>
   );
+};
+
+function threadMatchesTab(c: MessageRequest | Thread, tab: Tab): boolean {
+  switch (tab) {
+    case "all":
+      return true;
+
+    case "accepted":
+      // Threads represent accepted connections
+      // If it's a MessageRequest, check if status is explicitly 'accepted'
+      if (isThread(c)) return true;
+      return c.status === "accepted";
+
+    case "requests":
+      // MessageRequests with 'pending' (or non-accepted) status are pending requests
+      if (isThread(c)) return false;
+      return c.status === "pending";
+
+    default:
+      return true;
+  }
+}
+
+// Helper to safely extract search text across both types
+const getSearchableText = (item: ThreadOrRequest): string => {
+  const noteOrMessage =
+    "intro_note" in item ? item.intro_note : (item.latest_message?.body ?? "");
+  const recruiterName = `${item.recruiter.first_name} ${item.recruiter.last_name}`;
+  const talentName = `${item.talent.first_name} ${item.talent.last_name}`;
+  const partnerName =
+    "conversation_partner" in item
+      ? `${item.conversation_partner.first_name} ${item.conversation_partner.last_name}`
+      : "";
+
+  return `${recruiterName} ${talentName} ${partnerName} ${noteOrMessage}`.toLowerCase();
 };
 
 export default MessagesPage;
