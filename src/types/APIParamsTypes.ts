@@ -24,6 +24,11 @@ export interface ForgotPasswordPayload {
   email: string;
 }
 
+export interface SendMessageRequestBody {
+  talent_id: string;
+  intro_note: string;
+}
+
 export interface ResetPasswordPayload {
   email: string;
   token: string;
