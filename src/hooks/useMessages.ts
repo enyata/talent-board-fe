@@ -36,17 +36,21 @@ export const useMessagesApi = () => {
 
   const sendMessageRequest = async (
     body: SendMessageRequestBody,
-  ): Promise<any> => {
+  ): Promise<unknown> => {
     const res = await POST("/api/v1/messages/requests", body);
     return res;
   };
 
-  const acceptMessageRequest = async (requestId: string): Promise<any> => {
+  const acceptMessageRequest = async (
+    requestId: string,
+  ): Promise<unknown> => {
     const res = await POST(`/api/v1/messages/requests/${requestId}/accept`);
     return res;
   };
 
-  const declineMessageRequest = async (requestId: string): Promise<any> => {
+  const declineMessageRequest = async (
+    requestId: string,
+  ): Promise<unknown> => {
     const res = await POST(`/api/v1/messages/requests/${requestId}/decline`);
     return res;
   };

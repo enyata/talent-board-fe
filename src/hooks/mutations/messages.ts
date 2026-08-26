@@ -9,7 +9,7 @@ export const useSendMessageRequest = () => {
   return useMutation({
     mutationKey: ["send-message-request"],
     mutationFn: sendMessageRequest,
-    onSuccess: (_data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["incoming-requests"] });
       queryClient.invalidateQueries({ queryKey: ["outgoing-requests"] });
       // queryClient.invalidateQueries({ queryKey: ["active-threads"] });
@@ -27,7 +27,7 @@ export const useAcceptMessageRequest = () => {
   return useMutation({
     mutationKey: ["accept-message-request"],
     mutationFn: acceptMessageRequest,
-    onSuccess: (_data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["incoming-requests"] });
       queryClient.invalidateQueries({ queryKey: ["outgoing-requests"] });
       queryClient.invalidateQueries({ queryKey: ["active-threads"] });
@@ -45,7 +45,7 @@ export const useDeclineMessageRequest = () => {
   return useMutation({
     mutationKey: ["decline-message-request"],
     mutationFn: declineMessageRequest,
-    onSuccess: (_data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["incoming-requests"] });
       queryClient.invalidateQueries({ queryKey: ["outgoing-requests"] });
       queryClient.invalidateQueries({ queryKey: ["active-threads"] });

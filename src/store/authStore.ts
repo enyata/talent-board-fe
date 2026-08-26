@@ -54,13 +54,13 @@ export const useAuthStore = create<AuthState>()(
       setRefreshToken: (refreshToken) => set({ refreshToken: refreshToken }),
       setLoading: (loading) => set({ loading }),
       logout: () => {
-        (set({
+        set({
           user: null,
           accessToken: null,
           refreshToken: null,
           is_authenticated: false,
-        }),
-          (window.location.href = "/"));
+        });
+        window.location.href = "/";
       },
     }),
     { name: "authStore", enabled: process.env.NODE_ENV !== "production" },

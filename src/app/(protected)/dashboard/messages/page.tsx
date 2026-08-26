@@ -147,6 +147,7 @@ const MessagesPage = () => {
                 const isActive = selectedThread?.id === chat.id;
                 return (
                   <ChatThread
+                    key={chat.id}
                     thread={chat}
                     selectThread={() => setSelectedThread(chat)}
                     isActive={isActive}

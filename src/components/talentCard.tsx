@@ -339,6 +339,7 @@ const TalentCard = ({
               <div className="flex flex-wrap gap-2 mb-[8px]">
                 {MESSAGE_TEMPS.map((temp) => (
                   <Button
+                    key={temp.label}
                     type="button"
                     variant="outline"
                     className={cn(

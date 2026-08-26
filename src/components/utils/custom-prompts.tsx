@@ -127,7 +127,7 @@ const CustomPrompts = ({
               {/* Name & Description */}
               <div className="flex flex-col gap-1.5 text-left mt-5">
                 <label className="text-xs font-bold text-foreground">
-                  To confirm, type "{confirmString}" in the box below
+                  To confirm, type &quot;{confirmString}&quot; in the box below
                 </label>
                 <Input
                   value={confirmText}
