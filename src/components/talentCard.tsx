@@ -193,7 +193,7 @@ const TalentCard = ({
 
   return (
     <Card
-      className={`${width} ${height} min-h-[291px] flex flex-col justify-between w-full p-[20px] shadow-none cursor-pointer hover:bg-[#fafafa]`}
+      className={`${width} ${height} min-h-[291px] min-w-0 flex flex-col justify-between w-full p-[20px] shadow-none cursor-pointer hover:bg-[#fafafa]`}
     >
       <div>
         <div className="flex justify-between items-center">
@@ -269,7 +269,7 @@ const TalentCard = ({
         </div>
 
         <p
-          className="mt-[8px] font-semibold text-[13px] text-[#5F5F5F] text-ellipsis"
+          className="mt-[8px] font-semibold text-[13px] text-[#5F5F5F] text-ellipsis break-words"
           onClick={handleCardClick}
         >
           {displayText}
@@ -283,7 +283,7 @@ const TalentCard = ({
             <Button
               key={index}
               onClick={stopPropagation}
-              className="bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] border-[1px] border-[#696969] p-[6px] text-[12px]"
+              className="bg-[#F5F5F5] text-[#5F5F5F] h-[24px] rounded-[2px] border-[1px] border-[#696969] p-[6px] text-[12px] max-w-full shrink truncate"
             >
               {getSkillLabelByValue(skill, skillsLibrary)}
             </Button>

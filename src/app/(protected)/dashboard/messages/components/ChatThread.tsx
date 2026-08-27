@@ -91,7 +91,7 @@ const ChatThread = ({
 
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="truncate text-sm font-medium capitalize">{name}</h3>
+          <h3 className="truncate text-sm font-medium capitalize">{name} </h3>
 
           <span className="shrink-0 text-[10px] text-muted-foreground">
             {time}

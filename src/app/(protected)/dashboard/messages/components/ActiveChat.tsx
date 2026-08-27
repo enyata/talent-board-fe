@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { showSuccess } from "@/lib/Alerts";
@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   useAcceptMessageRequest,
   useDeclineMessageRequest,
+  useGetMessageThread,
+  useReplyMessageRequest,
 } from "@/hooks/mutations/messages";
 import { ButtonWithLoader } from "@/components/ui/button-with-loader";
 import CustomPrompts from "@/components/utils/custom-prompts";
@@ -28,6 +30,7 @@ const getThreadData = (item: ThreadOrRequest, userRole: UserRole) => {
   const name = `${partner.first_name} ${partner.last_name}`;
   const role = partner.role;
   const avatar = partner.avatar;
+  const id = item.id;
 
   // 2. Extract preview message
   const message = isThread(item)
@@ -45,6 +48,7 @@ const getThreadData = (item: ThreadOrRequest, userRole: UserRole) => {
   const isUnseen = isThread(item) && item.latest_message_seen_status !== "seen";
 
   return {
+    id,
     name,
     avatar,
     role,
@@ -65,20 +69,60 @@ const ActiveChat = ({
   let intro_note = "";
   const { user } = useAuthStore();
   const [text, setText] = useState("");
-  const { name, avatar, role, isAccepted } = getThreadData(
+  const { name, avatar, role, isAccepted, id } = getThreadData(
     thread,
     user?.role || "talent",
   );
+  const currentUserId = user?.id;
+
+  console.log(name, id);
+
+  const { data: allMessages } = useGetMessageThread(id);
+
+  const { mutate: replyMessage } = useReplyMessageRequest(id);
+
+  console.log(allMessages, "hhdhhd");
+
+  {
+    //@ts-expect-error HDHHD
+    allMessages?.data?.messages?.map((msg) => {
+      const isSelf = msg.source_request_id === null;
+      const Bubble = isSelf ? SelfChatBubble : PeerChatBubble;
+
+      return (
+        <Bubble
+          key={msg.id}
+          message={msg.body || "No messages yet"}
+          avatar={
+            msg.sender?.avatar
+              ? `/${msg.sender.avatar}`
+              : "/assets/images/Rusty.jpg"
+          }
+          name={`${msg.sender?.first_name ?? ""} ${msg.sender?.last_name ?? ""}`.trim()}
+          time={new Date(msg.created_at).toLocaleString()}
+        />
+      );
+    });
+  }
 
   if (thread && "intro_note" in thread) {
     intro_note = thread.intro_note;
   }
 
-  const sendText = (e: ChangeEvent<HTMLFormElement>) => {
+  const sendText = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setText("");
-    showSuccess("Text sent");
+    if (!text?.trim()) return;
+
+    replyMessage(
+      { body: text }, // Omit<ReplyMessageRequestBody, "thread_id"> — adjust field name
+      {
+        onSuccess: () => {
+          setText("");
+          showSuccess("Text sent");
+        },
+      },
+    );
   };
   return (
     <div className="relative flex flex-col h-full w-full">
@@ -164,29 +208,40 @@ const ActiveChat = ({
         {/* chats */}
         <div className="flex flex-col gap-[15px] mt-[32px]">
           {!isAccepted ? (
-            <>
-              <PeerChatBubble
-                message={intro_note}
-                avatar={avatar}
-                name={name}
-                time={formatTimestamp(thread.updated_at)}
-              />
-            </>
+            <PeerChatBubble
+              message={intro_note}
+              avatar={avatar}
+              name={name}
+              time={formatTimestamp(thread.updated_at)}
+            />
+          ) : //@ts-expect-error HDHHD
+          allMessages?.data?.messages?.length ? (
+            //@ts-expect-error HDHHD
+            allMessages.data.messages.map((msg) =>
+              msg.sender?.id === currentUserId ? (
+                <SelfChatBubble
+                  key={msg.id}
+                  message={msg.body}
+                  time={formatTimestamp(msg.created_at)}
+                />
+              ) : (
+                <PeerChatBubble
+                  key={msg.id}
+                  message={msg.body}
+                  avatar={
+                    msg.sender?.avatar
+                      ? `/${msg.sender.avatar}`
+                      : "/assets/images/Rusty.jpg"
+                  }
+                  name={`${msg.sender?.first_name ?? ""} ${msg.sender?.last_name ?? ""}`.trim()}
+                  time={formatTimestamp(msg.created_at)}
+                />
+              ),
+            )
           ) : (
-            <>
-              <PeerChatBubble
-                message={
-                  "Strong agree! Thanks for the engagement and patronage! 🚑"
-                }
-                avatar={"/assets/images/Rusty.jpg"}
-                name="Jane Doe"
-                time={"Today 11:56"}
-              />
-              <SelfChatBubble
-                message={"Oh! Ok, Thanks 👍🏾"}
-                time={"Today 11:56"}
-              />
-            </>
+            <p className="text-center text-[14px] text-muted-foreground">
+              No messages yet
+            </p>
           )}
         </div>
         {!isAccepted && (
@@ -342,7 +397,7 @@ const PeerChatBubble = ({
         </Avatar>
 
         {/* Message bubble */}
-        <div className="relative max-w-[70%] rounded-[20px] bg-muted px-[12px] py-[7px] text-sm leading-[1.4] text-[#383639]">
+        <div className="relative w-fit max-w-[80%] break-words rounded-[20px] bg-muted px-[12px] py-[7px] text-sm leading-[1.4] text-[#383639]">
           {/* Bubble tail */}
           <div className="absolute bottom-[-7px] left-[-1px] h-6 w-8 overflow-hidden">
             <img
@@ -351,7 +406,7 @@ const PeerChatBubble = ({
               // className="h-[32px] w-[32px] rounded-full object-cover"
             />
           </div>
-          <span className="relative">{message}</span>
+          <span className="relative">{message} </span>
         </div>
       </div>
 
@@ -372,17 +427,11 @@ const SelfChatBubble = ({
 }) => {
   return (
     <div className="flex flex-col items-end">
-      {/* <div className="flex items-end gap-2">
-      </div> */}
       {/* Message bubble */}
-      <div className="relative max-w-[80%] rounded-[20px] bg-primary px-[12px] py-[7px] text-sm leading-[1.4] text-white">
+      <div className="relative w-fit max-w-[80%] break-words rounded-[20px] bg-primary px-[12px] py-[7px] text-sm leading-[1.4] text-white">
         {/* Bubble tail */}
         <div className="absolute bottom-[-7px] right-[-20px] h-6 w-8 overflow-hidden">
-          <img
-            src={"/assets/icons/Shape2.svg"}
-            alt={"bubble tail"}
-            // className="h-[32px] w-[32px] rounded-full object-cover"
-          />
+          <img src={"/assets/icons/Shape2.svg"} alt={"bubble tail"} />
         </div>
         <span className="relative">{message}</span>
       </div>
