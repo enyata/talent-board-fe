@@ -2,7 +2,6 @@
 import { Card } from "@/components/ui/card";
 import React, { useState } from "react";
 import { Search, X } from "lucide-react";
-import { NotAcceptedChatLists } from "@/lib/mock-data";
 import { Input } from "@/components/ui/input";
 import ChatListEmptyState from "./components/ChatListEmptyState";
 import ChatThread from "./components/ChatThread";
@@ -51,6 +50,10 @@ const MessagesPage = () => {
       queryKey: ["active-threads"],
       queryFn: fetchActiveThreads,
     });
+
+  console.log("incomingRequests", incomingRequests);
+  console.log("outgoingRequests", outgoingRequests);
+  console.log("activeThreads", activeThreads);
   const rows = React.useMemo(() => {
     // Extract and safely fallback to empty arrays if undefined
     const outgoing = outgoingRequests ?? [];
@@ -94,7 +97,7 @@ const MessagesPage = () => {
                   active={tab === "requests"}
                   onClick={() => setTab("requests")}
                 >
-                  Requests({NotAcceptedChatLists.length})
+                  Requests({incomingRequests?.length})
                 </TabButton>
               </div>
 

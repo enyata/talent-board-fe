@@ -29,6 +29,11 @@ export interface SendMessageRequestBody {
   intro_note: string;
 }
 
+export interface ReplyMessageRequestBody {
+  body: string;
+  thread_id: string;
+}
+
 export interface ResetPasswordPayload {
   email: string;
   token: string;

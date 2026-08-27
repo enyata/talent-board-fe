@@ -100,7 +100,7 @@ export default function TalentList() {
 
   return (
     <div className="mt-5">
-      <div className="sticky md:top-[82px] top-[68px] py-4 z-10 bg-white">
+      <div className=" md:top-[82px] top-[68px] py-4 z-10 bg-white">
         <TalentSearchFilter isLoading={isLoading} />
       </div>
 
