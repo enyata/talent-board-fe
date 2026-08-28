@@ -25,10 +25,10 @@ const OnboardingFlow = () => {
             break;
     }
     return (
-        <div className='w-full flex justify-center'>
-            {currentFormComponent}
-        </div>
-    )
+      <>
+        <div className="w-full flex justify-center">{currentFormComponent}</div>
+      </>
+    );
 }
 
 export default OnboardingFlow

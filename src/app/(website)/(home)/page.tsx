@@ -6,18 +6,19 @@ import SkillsSection from "./components/skills-section";
 import StatSection from "./components/stat-section";
 import { fetchTopTalents } from "@/api/talent";
 import WhyEnyataSection from "./components/why-enyata";
+import { talentProp } from "@/types/user";
 
 
 export default async function Home() {
-  const talents = await fetchTopTalents();
+  const talents: { data: talentProp[] } | undefined = await fetchTopTalents();
   return (
-    <div className='md:mt-[140px] mt-[40px]'>
+    <div className="md:mt-[140px] mt-[40px]">
       <HeroSection />
       <StatSection />
       <SkillsSection />
       <FeaturedTalentsSection talents={talents?.data} />
       <Walkthrough />
-      <WhyEnyataSection/>
+      <WhyEnyataSection />
       <Footer />
     </div>
   );

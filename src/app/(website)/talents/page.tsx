@@ -1,6 +1,6 @@
 
 import React from 'react'
-import TalentList from './component/talent-list'
+import TalentList from '@/components/talent-list'
 
 const TalentsPage = () => {
   return (

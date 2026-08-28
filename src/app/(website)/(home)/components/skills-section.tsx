@@ -28,26 +28,28 @@ const SkillsRow = ({
     const scrollSmooth = useSpring(scrollOffset, { damping: 20, stiffness: 100 })
 
     return (
-        <section className="overflow-hidden w-full">
-            <motion.div
-                className="flex gap-2 w-max group hover:[animation-play-state:paused]"
-                style={{
-                    animation: `${reverse ? 'scroll-right' : 'scroll-left'} ${baseSpeed}s linear infinite`,
-                    transform: scrollSmooth ? `translateY(${scrollSmooth.get()}px)` : undefined,
-                }}
+      <section className="overflow-hidden w-full">
+        <motion.div
+          className="flex gap-2 w-max group hover:[animation-play-state:paused]"
+          style={{
+            animation: `${reverse ? "scroll-right" : "scroll-left"} ${baseSpeed}s linear infinite`,
+            transform: scrollSmooth
+              ? `translateY(${scrollSmooth.get()}px)`
+              : undefined,
+          }}
+        >
+          {duplicated.map((skill, index) => (
+            <Button
+              key={`${skill}-${index}`}
+              variant="outline"
+              className="h-[38px] whitespace-nowrap text-sm md:text-base px-3 md:px-4 text-[#5F5F5F] cursor-default"
             >
-                {duplicated.map((skill, index) => (
-                    <Button
-                        key={`${skill}-${index}`}
-                        variant="outline"
-                        className="h-[38px] whitespace-nowrap text-sm md:text-base px-3 md:px-4 text-[#5F5F5F]"
-                    >
-                        {skill}
-                    </Button>
-                ))}
-            </motion.div>
-        </section>
-    )
+              {skill}
+            </Button>
+          ))}
+        </motion.div>
+      </section>
+    );
 }
 
 const SkillsSection = () => {

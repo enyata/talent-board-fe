@@ -25,13 +25,9 @@ export const useTalentApi = () => {
         const res = await GET(`/api/v1/talents/${id}`);
         return res?.data ?? null;
     }
-    const upvoteTalent = async (id: string) => {
-        const res = await POST(`/api/v1/talents/${id}/upvote`);
-        return res?.data ?? null;
-    }
     const saveTalent = async (id: string) => {
         const res = await POST(`/api/v1/talents/${id}/save`);
         return res?.data ?? null;
     }
-    return { fetchTalentById, fetchAllTalents, fetchSavedTalents, upvoteTalent, saveTalent };
+    return { fetchTalentById, fetchAllTalents, fetchSavedTalents, saveTalent };
 }

@@ -19,7 +19,7 @@ const cardDetails = [
         image: "/assets/images/walkthrough-img3.svg",
         icon: "/assets/icons/walkthrough-icon3.svg",
         topic: "Get Discovered by Recruiters",
-        desc: "Approved profiles appear in the public talent directory where recruiters can search, filter, and upvote"
+        desc: "Approved profiles appear in the public talent directory where recruiters can search and filter"
     },
     {
         image: "/assets/images/walkthrough-img4.svg",

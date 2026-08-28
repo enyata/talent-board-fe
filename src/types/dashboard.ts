@@ -1,4 +1,4 @@
-export type NotificationType = 'upvote' | 'save' | 'message';
+export type NotificationType = 'save' | 'message';
 
 export interface Sender {
     name: string;
@@ -19,7 +19,6 @@ export interface NotificationData {
 
 export interface TalentDashboardData {
     profile_status: 'approved' | 'rejected' | 'pending';
-    total_upvotes: number;
     profile_views: number;
     search_appearances: number;
     recruiter_saves: number;

@@ -12,7 +12,7 @@ const RecommendedTalent = ({ talents }: { talents: talentProp[] }) => {
         <Card className='shadow-none outline-px md:mt-[36px] gap-0 mt-[24px] bg-[#fafafa] px-4 text-[#101828]'>
             <div className='flex  gap-6 items-baseline justify-between'>
                 <span className='text-[16px] font-semibold self-baseline mt-auto'>Recommended for You</span>
-                <Link href={'/talents'} className=''>
+                <Link href={'/dashboard/talents'} className=''>
                     <Button variant={'outline'} className=' w-[120px] h-[36px] text-[14px] rounded-md cursor-pointer'>
                         View More <span className=''><ArrowRight strokeWidth={3} /></span>
                     </Button>

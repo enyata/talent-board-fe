@@ -6,30 +6,30 @@ import Image from 'next/image'
 
 const cardData = [
   {
-    img: '/assets/images/home-card-img1.avif',
-    icon: '/assets/icons/home-card-icon1.svg',
-    stat: '1OM+',
-    desc: 'Skilled Tech Talents Remain Undiscovered',
-    bg: 'bg-gradient-to-b from-[#A18BDD] to-[#7644FE]',
+    img: "/assets/images/home-card-img1.avif",
+    icon: "/assets/icons/home-card-icon1.svg",
+    stat: "1OM+",
+    desc: "Skilled Tech Talents Remain Undiscovered",
+    bg: "bg-gradient-to-b from-[#A18BDD] to-[#7644FE]",
     reverse: false,
   },
   {
-    img: '/assets/images/home-card-img2.avif',
-    icon: '/assets/icons/home-card-icon2.svg',
-    stat: '1 in 8',
-    desc: 'African Devs Land Global Opportunities',
-    bg: 'bg-[#FF9232]',
+    img: "/assets/images/home-card-img2.avif",
+    icon: "/assets/icons/home-card-icon2.svg",
+    stat: "1 in 8",
+    desc: "African Devs Land Global Opportunities",
+    bg: "bg-[#FF9232]",
     reverse: true,
   },
   {
-    img: '/assets/images/home-card-img3.avif',
-    icon: '/assets/icons/home-card-icon3.svg',
-    stat: '70%',
-    desc: 'Of Recruiters Struggle to Find Verified Talent',
-    bg: 'bg-gradient-to-b from-[#232C4B] to-[#5368B1]',
+    img: "/assets/images/home-card-img3.avif",
+    icon: "/assets/icons/home-card-icon3.svg",
+    stat: "70%",
+    desc: "Of Recruiters Struggle to Find Verified Talent",
+    bg: "bg-gradient-to-b from-[#232C4B] to-[#5368B1]",
     reverse: false,
   },
-]
+];
 
 const containerVariants = {
   hidden: {},
@@ -37,15 +37,6 @@ const containerVariants = {
     transition: {
       staggerChildren: 0.2,
     },
-  },
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 20 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
   },
 }
 
@@ -71,19 +62,19 @@ const StatSection = () => {
         ))}
       </motion.div>
     </section>
-  )
-}
+  );
+};
 
 type StatCardProps = {
-  img: string
-  icon: string
-  stat: string
-  desc: string
-  bg: string
-  reverse: boolean
-}
+  img: string;
+  icon: string;
+  stat: string;
+  desc: string;
+  bg: string;
+  reverse: boolean;
+};
 
-const MotionCard = motion.create(Card)
+const MotionCard = motion.create(Card);
 
 const StatCard: React.FC<StatCardProps> = ({
   img,
@@ -95,20 +86,34 @@ const StatCard: React.FC<StatCardProps> = ({
 }) => {
   return (
     <MotionCard
-      variants={cardVariants}
-      className={`max-w-[394px] w-full h-[480px] p-[20px] ${reverse ? 'pt-[36px]' : 'pb-[36px]'} ${bg} flex ${reverse ? 'flex-col-reverse' : 'flex-col'} justify-between`}
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        show: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.5, ease: "easeOut" },
+        },
+      }}
+      initial="hidden"
+      animate="show"
+      className={`max-w-[394px] w-full h-[480px] p-[20px] overflow-y-hidden ${
+        reverse ? "pt-[36px]" : "pb-[36px]"
+      } ${bg} flex ${
+        reverse ? "flex-col-reverse" : "flex-col"
+      } justify-between`}
     >
       <Image
         src={img}
         alt="statImage"
         width={394}
-        height={480}
+        height={280}
         loading="lazy"
       />
       <div className="flex items-center justify-between">
         <div
-          className={`flex flex-col ${reverse ? 'text-black' : 'text-white'
-            } font-semibold`}
+          className={`flex flex-col ${
+            reverse ? "text-black" : "text-white"
+          } font-semibold`}
         >
           <span className="text-[56px]">{stat}</span>
           <p className="text-[18px]">{desc}</p>
@@ -116,7 +121,7 @@ const StatCard: React.FC<StatCardProps> = ({
         <Image src={icon} alt="icon" width={108} height={108} priority />
       </div>
     </MotionCard>
-  )
-}
+  );
+};
 
 export default StatSection

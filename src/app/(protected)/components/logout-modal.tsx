@@ -1,37 +1,13 @@
-import React, { useTransition } from 'react'
+import React from 'react'
 import { DialogContent, DialogTitle } from '@/components/ui/dialog'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { ButtonWithLoader } from '@/components/ui/button-with-loader'
-import { useRouter } from 'next/navigation'
-import { POST } from '@/lib/requests'
-import { toast } from 'react-toastify'
+import { useLogout } from '@/hooks/useLogout'
 
 const LogoutModal = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void }) => {
-  const router = useRouter()
+  const { handleLogout, isPending } = useLogout()
 
-  const [isPending, startTransition] = useTransition();
-  const handleLogout = () => {
-    startTransition(async () => {
-      try {
-        const res = await POST(
-          `/api/v1/auth/logout`
-        );
-        if (res.status !== "success") {
-          toast.error(res.message || "Something went wrong");
-          return;
-        }
-        setOpenDialog(false)
-        toast.success('Logged out successfully')
-        router.replace('/login')
-
-
-      } catch (error) {
-        console.error("Error from form submission:", error);
-        toast.error("Something went wrong. Please try again.");
-      }
-    });
-  };
   return (
     <DialogContent className='w-[482px] rounded-[8px] md:gap-[48px] justify-center'>
       <DialogTitle className='hidden' />
@@ -55,7 +31,7 @@ const LogoutModal = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
           Cancel
         </Button>
         <ButtonWithLoader
-          onClick={handleLogout}
+          onClick={() => handleLogout(() => setOpenDialog(false))}
           isLoading={isPending}
           disabled={isPending}
           className='rounded-[6px] h-[48px] w-full flex-1 bg-[#EA4335] hover:bg-[#EA4335]/90'

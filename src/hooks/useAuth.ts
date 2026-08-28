@@ -1,7 +1,23 @@
 "use client";
 
-import { GET } from "@/lib/requests";
+import { GET, POST } from "@/lib/requests";
 import { useAuthStore } from "@/store/authStore";
+import {
+  ForgotPasswordPayload,
+  LoginPayload,
+  ResendOtpPayload,
+  ResetPasswordPayload,
+  SignupPayload,
+  VerifyEmailPayload,
+} from "@/types/APIParamsTypes";
+import {
+  ForgotPasswordResponse,
+  LoginResponse,
+  ResendOtpResponse,
+  ResetPasswordResponse,
+  SignupResponse,
+  VerifyEmailResponse,
+} from "@/types/APIResponseTypes";
 
 export const useAuth = () => {
   const { setUser, setLoading, set_isAuthenticated } = useAuthStore();
@@ -29,5 +45,41 @@ export const useAuth = () => {
     }
   };
 
-  return { loginWithProvider, fetchUser };
+  const signup = async (payload: SignupPayload) => {
+    return POST<SignupResponse>("/api/v1/auth/signup", payload);
+  };
+
+  const login = async (payload: LoginPayload) => {
+    return POST<LoginResponse>("/api/v1/auth/login", payload);
+  };
+
+  const verifyEmail = async (payload: VerifyEmailPayload) => {
+    return POST<VerifyEmailResponse>("/api/v1/auth/verify-email", payload);
+  };
+
+  const resendOtp = async (payload: ResendOtpPayload) => {
+    return POST<ResendOtpResponse>("/api/v1/auth/resend-otp", payload);
+  };
+
+  const forgotPassword = async (payload: ForgotPasswordPayload) => {
+    return POST<ForgotPasswordResponse>(
+      "/api/v1/auth/forgot-password",
+      payload,
+    );
+  };
+
+  const resetPassword = async (payload: ResetPasswordPayload) => {
+    return POST<ResetPasswordResponse>("/api/v1/auth/reset-password", payload);
+  };
+
+  return {
+    loginWithProvider,
+    fetchUser,
+    signup,
+    login,
+    verifyEmail,
+    resendOtp,
+    forgotPassword,
+    resetPassword,
+  };
 };
