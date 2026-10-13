@@ -43,12 +43,14 @@ export default function TalentSearchFilter({
     skills = [],
     setFilter,
     resetFilters,
+    jobtitle,
   } = useTalentStore();
   const [localFilters, setLocalFilters] = useState({
     experience,
     country,
     state,
     skills,
+    jobtitle,
   });
 
   const [filterOptions, setFilterOptions] = useState<string[]>([]);
@@ -61,8 +63,9 @@ export default function TalentSearchFilter({
     if (country) params.country = country;
     if (state) params.state = state;
     if (skills.length) params.skills = skills.join(",");
+    if (jobtitle) params.jobtitle = jobtitle;
     return new URLSearchParams(params).toString();
-  }, [debouncedSearch, experience, country, state, skills]);
+  }, [debouncedSearch, experience, country, state, skills, jobtitle]);
 
   useEffect(() => {
     const queryString = buildQueryString();
@@ -88,12 +91,14 @@ export default function TalentSearchFilter({
     const countryParam = searchParams.get("country") || "";
     const stateParam = searchParams.get("state") || "";
     const skillsParam = searchParams.get("skills")?.split(",") || [];
+    const jobTitleParam = searchParams.get("jobtitle") || "";
 
     if (qParam) setFilter("q", qParam);
     if (expParam) setFilter("experience", expParam);
     if (countryParam) setFilter("country", countryParam);
     if (stateParam) setFilter("state", stateParam);
     if (skillsParam.length > 0) setFilter("skills", skillsParam);
+    if (jobTitleParam) setFilter("jobtitle", jobTitleParam);
   }, [searchParams, setFilter]);
 
   const handleFilter = () => {
@@ -108,6 +113,7 @@ export default function TalentSearchFilter({
     if (localFilters.state) params.state = localFilters.state;
     if (localFilters.skills?.length)
       params.skills = localFilters.skills.join(",");
+    if (localFilters.jobtitle) params.jobtitle = localFilters.jobtitle;
 
     const queryString = new URLSearchParams(params).toString();
     router.replace(`?${queryString}`, { scroll: false });
@@ -121,6 +127,7 @@ export default function TalentSearchFilter({
       country: "",
       state: "",
       skills: [],
+      jobtitle: "",
     });
     router.push(window.location.pathname);
   };
@@ -131,8 +138,9 @@ export default function TalentSearchFilter({
       country,
       state,
       skills,
+      jobtitle,
     });
-  }, [q, experience, country, state, skills]);
+  }, [q, experience, country, state, skills, jobtitle]);
 
   return (
     <div className="relative">
@@ -202,7 +210,7 @@ export default function TalentSearchFilter({
 
             {/* FILTER OPTIONS */}
             <div className="flex flex-col mt-[20px] md:flex-row gap-6 text-[#696969]">
-              {["skills", "experience", "location"].map((item) => {
+              {["skills", "experience", "location", "job title"].map((item) => {
                 const isChecked = filterOptions.includes(item);
                 return (
                   <div key={item} className="flex items-center gap-[10px]">
@@ -310,6 +318,30 @@ export default function TalentSearchFilter({
               </div>
             )}
 
+            {/* JOB TITLE */}
+            {filterOptions.includes("job title") && (
+              <div className="mt-4">
+                <Label
+                  htmlFor="job-title-filter"
+                  className="font-normal text-[14px]"
+                >
+                  Filter by job title
+                </Label>
+                <Input
+                  id="job-title-filter"
+                  className="mt-1 h-[38px] text-[14px]"
+                  placeholder="e.g. Frontend Engineer"
+                  value={localFilters.jobtitle ?? ""}
+                  onChange={(e) =>
+                    setLocalFilters((prev) => ({
+                      ...prev,
+                      jobtitle: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+            )}
+
             {/* ACTION BUTTONS */}
             <div className="flex justify-between mt-5">
               <Button
@@ -327,6 +359,7 @@ export default function TalentSearchFilter({
                   (!localFilters.experience &&
                     !localFilters.country &&
                     !localFilters.state &&
+                    !localFilters.jobtitle &&
                     (!localFilters.skills || localFilters.skills.length === 0))
                 }
                 variant="outline"
