@@ -43,6 +43,7 @@ export interface TalentBrief {
 export interface RecruiterDashboardData {
     welcome_message: string;
     saved_talents: TalentBrief[];
-    recommended_talents: string[];  
-    notifications: string[]; 
+    // Typed from how the recruiter dashboard renders them; confirm against the API.
+    recommended_talents: TalentBrief[];
+    notifications: NotificationData[];
 }
