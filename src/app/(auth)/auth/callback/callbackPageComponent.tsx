@@ -1,36 +1,39 @@
-'use client';
+"use client";
 
-
-import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { Loader } from '@/components/ui/loader';
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { Loader } from "@/components/ui/loader";
+import { useAuth } from "@/hooks/useAuth";
+import { startSession, takeTokensFromUrl } from "@/lib/auth-session";
 
 export default function AuthCallbackPageComponent() {
-  const searchParams = useSearchParams();
   const router = useRouter();
+  const { fetchUser } = useAuth();
+  const started = useRef(false);
 
   useEffect(() => {
-    const accessToken = searchParams.get('access_token');
-    const refreshToken = searchParams.get('refresh_token');
+    // Strict Mode runs effects twice in dev; the URL is scrubbed on the first run.
+    if (started.current) return;
+    started.current = true;
 
-    if (!accessToken || !refreshToken) {
-      router.replace('/login');
-      return;
-    }
-    // const appEnv = env('appEnv') ?? 'production';
-    // if (appEnv === 'local') {
-    //   router.replace(
-    //     `/api/auth/finalize?access_token=${accessToken}&refresh_token=${refreshToken}`
-    //   );
-    // } 
+    const finish = async () => {
+      const tokens = takeTokensFromUrl();
+      if (!tokens) {
+        router.replace("/login");
+        return;
+      }
+      try {
+        await startSession(tokens);
+        const user = await fetchUser();
+        router.replace(!user ? "/login" : user.profile_completed ? "/dashboard" : "/onboard");
+      } catch (err) {
+        console.error("Error finalizing auth:", err);
+        router.replace("/login");
+      }
+    };
 
-      router.replace(
-        `/auth/finalize/client?access_token=${accessToken}&refresh_token=${refreshToken}`
-      );
-    
-  }, [searchParams, router]);
+    finish();
+  }, [router, fetchUser]);
 
   return <Loader className="text-primary shadow-none size-[40px]" />;
 }
-
-

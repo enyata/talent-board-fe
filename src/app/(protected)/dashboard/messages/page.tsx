@@ -17,6 +17,7 @@ import {
 import { isThread } from "@/lib/helpers";
 import { ChatListSkeleton } from "./components/ChatListSkeleton";
 import { useAuthStore } from "@/store/authStore";
+import { QueryError } from "@/components/query-error";
 
 type Tab = "all" | "accepted" | "requests";
 
@@ -33,27 +34,28 @@ const MessagesPage = () => {
     fetchIncomingMessageRequests,
     fetchActiveThreads,
   } = useMessagesApi();
-  const { data: outgoingRequests, isLoading: isFetchOutgoingRequestsLoading } =
-    useQuery({
-      queryKey: ["outgoing-requests"],
-      queryFn: fetchOutgoingMessageRequests,
-      enabled: user?.role !== "talent",
-    });
-  const { data: incomingRequests, isLoading: isFetchIncomingRequestsLoading } =
-    useQuery({
-      queryKey: ["incoming-requests"],
-      queryFn: fetchIncomingMessageRequests,
-      enabled: user?.role !== "recruiter",
-    });
-  const { data: activeThreads, isLoading: isFetchActiveThreadsLoading } =
-    useQuery({
-      queryKey: ["active-threads"],
-      queryFn: fetchActiveThreads,
-    });
-
-  console.log("incomingRequests", incomingRequests);
-  console.log("outgoingRequests", outgoingRequests);
-  console.log("activeThreads", activeThreads);
+  const outgoingQuery = useQuery({
+    queryKey: ["outgoing-requests"],
+    queryFn: fetchOutgoingMessageRequests,
+    enabled: user?.role !== "talent",
+  });
+  const incomingQuery = useQuery({
+    queryKey: ["incoming-requests"],
+    queryFn: fetchIncomingMessageRequests,
+    enabled: user?.role !== "recruiter",
+  });
+  const threadsQuery = useQuery({
+    queryKey: ["active-threads"],
+    queryFn: fetchActiveThreads,
+  });
+  const queries = [outgoingQuery, incomingQuery, threadsQuery];
+  const { data: outgoingRequests } = outgoingQuery;
+  const { data: incomingRequests } = incomingQuery;
+  const { data: activeThreads } = threadsQuery;
+  const isLoading = queries.some((q) => q.isLoading);
+  // Any failed source means the list may be incomplete, so don't show it as empty.
+  const failedQueries = queries.filter((q) => q.isError);
+  const retryFailed = () => failedQueries.forEach((q) => q.refetch());
   const rows = React.useMemo(() => {
     // Extract and safely fallback to empty arrays if undefined
     const outgoing = outgoingRequests ?? [];
@@ -97,7 +99,7 @@ const MessagesPage = () => {
                   active={tab === "requests"}
                   onClick={() => setTab("requests")}
                 >
-                  Requests({incomingRequests?.length})
+                  Requests({incomingRequests?.length ?? 0})
                 </TabButton>
               </div>
 
@@ -134,19 +136,23 @@ const MessagesPage = () => {
               </div>
             </div>
             <div>
-              {isFetchActiveThreadsLoading ||
-              isFetchIncomingRequestsLoading ||
-              isFetchOutgoingRequestsLoading ? (
+              {isLoading ? (
                 <>
                   <ChatListSkeleton />
                   <ChatListSkeleton />
                   <ChatListSkeleton />
                   <ChatListSkeleton />
                 </>
+              ) : failedQueries.length ? (
+                <QueryError
+                  title="We couldn't load your messages"
+                  onRetry={retryFailed}
+                  isRetrying={failedQueries.some((q) => q.isRefetching)}
+                />
               ) : (
                 !rows.length && <ChatListEmptyState query={threadSearch} />
               )}
-              {rows.map((chat, idx) => {
+              {!failedQueries.length && rows.map((chat, idx) => {
                 const isActive = selectedThread?.id === chat.id;
                 return (
                   <ChatThread

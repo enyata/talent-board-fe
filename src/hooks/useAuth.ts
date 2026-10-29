@@ -1,7 +1,7 @@
 "use client";
 
 import { GET, POST } from "@/lib/requests";
-import { useAuthStore } from "@/store/authStore";
+import { useAuthStore, User } from "@/store/authStore";
 import {
   ForgotPasswordPayload,
   LoginPayload,
@@ -17,6 +17,7 @@ import {
   ResetPasswordResponse,
   SignupResponse,
   VerifyEmailResponse,
+  ApiEnvelope,
 } from "@/types/APIResponseTypes";
 
 export const useAuth = () => {
@@ -31,7 +32,7 @@ export const useAuth = () => {
 
   const fetchUser = async () => {
     try {
-      const response = await GET("/api/v1/users/me");
+      const response = await GET<ApiEnvelope<{ user: User }>>("/api/v1/users/me");
       if (!response) {
         return null;
       }

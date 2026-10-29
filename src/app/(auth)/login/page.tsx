@@ -1,5 +1,6 @@
 'use client';
 import { motion } from "framer-motion";
+import { startSession } from "@/lib/auth-session";
 import React, { ChangeEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,8 +16,7 @@ import { useAuthStore } from "@/store/authStore";
 const LoginPage = () => {
   const router = useRouter();
   const { login } = useAuth();
-  const { setAccessToken, setRefreshToken, setUser, set_isAuthenticated } =
-    useAuthStore();
+  const { setUser, set_isAuthenticated } = useAuthStore();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formState, setFormState] = useState({
     email: "",
@@ -44,10 +44,7 @@ const LoginPage = () => {
       const { access_token, refresh_token } = response.tokens;
       const { user } = response.data;
 
-      setAccessToken(access_token);
-      setRefreshToken(refresh_token);
-      document.cookie = `access_token=${access_token}; path=/; Secure; SameSite=Strict`;
-      document.cookie = `refresh_token=${refresh_token}; path=/; Secure; SameSite=Strict`;
+      await startSession({ access_token, refresh_token });
       setUser(user);
       set_isAuthenticated(true);
 

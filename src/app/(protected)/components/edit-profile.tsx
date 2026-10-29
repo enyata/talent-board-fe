@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { getProxiedImageUrl } from '@/lib/proxy-image'
 import { PATCH } from '@/lib/requests'
 import { useAuthStore } from '@/store/authStore'
+import { ApiEnvelope } from '@/types/APIResponseTypes'
 import { ProfileSchema, profileSchema } from '@/types/profile-edit'
 import { zodResolver } from '@hookform/resolvers/zod'
 import React, { useTransition } from 'react'
@@ -56,7 +57,7 @@ const EditProfile = ({ setOpenDialog }: { setOpenDialog: (arg0: boolean) => void
     const handleProfileEdit = async () => {
         startTransition(async () => {
             try {
-                const res = await PATCH(
+                const res = await PATCH<ApiEnvelope>(
                     `/api/v1/users/me`, form
                 );
                 if (res.status !== "success") {

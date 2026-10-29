@@ -28,6 +28,7 @@ export default function BookmarkedList() {
       country: store.country,
       state: store.state,
       skills: store.skills,
+      jobtitle: store.jobtitle,
       cursor: store.cursor,
       direction: store.direction,
     }),
@@ -38,6 +39,7 @@ export default function BookmarkedList() {
       store.country,
       store.state,
       store.skills,
+      store.jobtitle,
       store.cursor,
       store.direction,
     ]
@@ -59,6 +61,7 @@ export default function BookmarkedList() {
         country: filters.country,
         state: filters.state,
         skills: filters.skills,
+        jobtitle: filters.jobtitle,
         cursor: pageParam as string | undefined,
         direction: filters.direction,
       };

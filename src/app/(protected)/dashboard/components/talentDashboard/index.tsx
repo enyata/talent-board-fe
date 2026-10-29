@@ -5,12 +5,12 @@ import Notifications from './notifications'
 import TalentDashboardSkeleton from './talent-board-skeleton'
 import { useQuery } from '@tanstack/react-query'
 import { useDashboardApi } from '@/hooks/useDashboard'
-import { TalentDashboardData } from '@/types/dashboard'
+import { QueryError } from '@/components/query-error'
 
 const TalentDashboard = () => {
     const { fetchTalentDashboard } = useDashboardApi()
-    const { data, isLoading } = useQuery<TalentDashboardData>({
-        queryKey: ["dashboard"],
+    const { data, isLoading, isError, refetch, isRefetching } = useQuery({
+        queryKey: ["dashboard", "talent"],
         queryFn: fetchTalentDashboard,
     });
     if (isLoading) {
@@ -18,11 +18,14 @@ const TalentDashboard = () => {
             <TalentDashboardSkeleton />
         )
     }
+    if (isError) {
+        return <QueryError title="We couldn't load your dashboard" onRetry={() => refetch()} isRetrying={isRefetching} />
+    }
     return (
         <div className=' w-full'>
-            <DashboardOverview data={data} />
-            <QuickInsights data={data} />
-            <Notifications data={data} />
+            <DashboardOverview data={data ?? undefined} />
+            <QuickInsights data={data ?? undefined} />
+            <Notifications data={data ?? undefined} />
         </div>
     )
 }

@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { startSession } from "@/lib/auth-session";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -26,8 +27,7 @@ const VerifyEmailForm = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
   const { verifyEmail, resendOtp } = useAuth();
-  const { setAccessToken, setRefreshToken, setUser, set_isAuthenticated } =
-    useAuthStore();
+  const { setUser, set_isAuthenticated } = useAuthStore();
 
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [secondsLeft, setSecondsLeft] = useState(RESEND_SECONDS);
@@ -94,10 +94,7 @@ const VerifyEmailForm = () => {
       const { access_token, refresh_token } = response.tokens;
       const { user } = response.data;
 
-      setAccessToken(access_token);
-      setRefreshToken(refresh_token);
-      document.cookie = `access_token=${access_token}; path=/; Secure; SameSite=Strict`;
-      document.cookie = `refresh_token=${refresh_token}; path=/; Secure; SameSite=Strict`;
+      await startSession({ access_token, refresh_token });
       setUser(user);
       set_isAuthenticated(true);
 

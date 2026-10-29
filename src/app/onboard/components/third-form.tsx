@@ -13,7 +13,7 @@ import { formSteps, OnboardFormSchema } from "@/types/form";
 import { useAuthStore } from "@/store/authStore";
 import { useSkillsApi } from "@/hooks/useSkills";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Skill } from "@/types/APIResponseTypes";
+import { ApiEnvelope, Skill } from "@/types/APIResponseTypes";
 import rolesLibrary from "../../../../public/roles_library.json";
 
 const ROLESOPTIONS = rolesLibrary.sort((a, b) =>
@@ -147,7 +147,7 @@ const ExperienceForm = () => {
   const handleSubmit = () => {
     startTransition(async () => {
       try {
-        const res = await PATCH(
+        const res = await PATCH<ApiEnvelope>(
           `/api/v1/onboarding/${role === "talent" ? "talent" : "recruiter"}`,
           form,
         );

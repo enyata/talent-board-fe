@@ -1,3 +1,10 @@
+/** Standard backend response shape: `{ status, message, data }`. */
+export interface ApiEnvelope<T = unknown> {
+  status: string;
+  message?: string;
+  data: T;
+}
+
 import { User } from "@/store/authStore";
 
 export interface SignupResponseData {
